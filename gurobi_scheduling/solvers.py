@@ -4,7 +4,7 @@ This module contains Gurobi-based solvers used in the bilevel optimization:
 - solve_scheduling: Minimize makespan for job assignment to identical machines
 - solve_leader_knapsack: Maximize total processing time within budget (heuristic)
 """
-
+import sys
 try:
     import gurobipy as gp
     from gurobipy import GRB
@@ -137,3 +137,37 @@ def solve_leader_knapsack(items, budget, time_limit=None, verbose=False):
         return {"x": sol, "obj": obj, "status": status, "model": model}
     else:
         return {"status": status, "message": "No feasible solution or model failed"}
+
+
+if __name__ == "__main__":
+    # Simple test of the solvers
+
+    'add a CLI flag to determine which test to run'
+    args = sys.argv[1:]
+    
+    #solve knapsack problem 1
+    if len(args) >= 1 and args[0] in ("test-knapsack", "knapsack"):
+        print("Testing knapsack solver...")
+        items = [type("_", (), {'duration': 10, 'price': 7})(),
+                 type("_", (), {'duration': 20, 'price': 12})(),
+                 type("_", (), {'duration': 15, 'price': 8})(),
+                 type("_", (), {'duration': 1,  'price': 1})()
+                 ]
+        budget = 30
+        leader_result = solve_leader_knapsack(items, budget, verbose=True)
+        print("Leader knapsack result:", leader_result)
+        sys.exit(0)
+
+    
+    #solve scheduling problem 1
+    if len(args) >= 1 and args[0] in ("test-scheduling", "scheduling"):
+        print("Testing scheduling solver...")
+        n_jobs = 5
+        n_machines = 2
+        processing_times = [4, 2, 5, 3, 6]
+        sched_result = solve_scheduling(n_jobs, n_machines, processing_times, verbose=True)
+        print("Scheduling result:", sched_result)
+        sys.exit(0)
+    # If no test specified, exit
+    print("No test specified. Use 'test-knapsack' or 'test-scheduling' as argument.")  
+    sys.exit(0)
