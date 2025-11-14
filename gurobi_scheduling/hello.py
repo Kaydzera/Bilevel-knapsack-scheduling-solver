@@ -1,5 +1,25 @@
 print("Hello, world!")
 # py -3.13 ....
+
+
+# Instructions to run this example in PowerShell:
+'''
+cd 'C:\Users\oleda\.vscode\Solving stuff with Gurobi\gurobi_scheduling'
+
+# 1) activate the venv (from inside gurobi_scheduling, venv is in parent)
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+& '..\.venv311\Scripts\Activate.ps1'
+
+# 2) verify interpreter and gurobipy
+python --version
+python -c "import gurobipy as gp; print('gurobipy', gp.__version__); print('gurobi', gp.gurobi.version())"
+
+# 3) run the examples
+python hello.py
+python main.py
+'''
+
+
 from gurobipy import *
 from gurobipy import Model, GRB, quicksum
 
