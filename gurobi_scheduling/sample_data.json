@@ -1,0 +1,5 @@
+{
+  "n_jobs": 8,
+  "n_machines": 3,
+  "processing_times": [2, 14, 4, 16, 6, 5, 3, 7]
+}

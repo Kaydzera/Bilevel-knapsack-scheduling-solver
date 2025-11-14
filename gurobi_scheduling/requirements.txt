@@ -1,0 +1,5 @@
+# Requirements for this example
+# Gurobi (gurobipy) — installed via the Gurobi installer for your platform (https://www.gurobi.com/)
+# Python 3.8+ recommended
+
+# Note: gurobipy is typically provided by the Gurobi installer. If you installed gurobipy into a virtualenv, activate that environment before running the example.
