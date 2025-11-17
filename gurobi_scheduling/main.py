@@ -202,3 +202,50 @@ if __name__ == "__main__":
     else:
         print("Solver did not produce a makespan; status:", 
               result.get('status'), result.get('message'))
+
+
+
+
+'''
+To do
+1. Example Instances
+
+Identify small illustrative instances for the algorithm that show different behaviors (e.g., easy, hard, degenerate, pathological).
+
+Select instances that are small enough to follow by hand.
+
+Prepare or visualize these instances (tables, diagrams, timelines, etc.).
+
+2. Theoretical Preparation
+
+Finalize the notation to be used in the thesis.
+
+Prepare the description of model extensions (e.g., constraints, variants, assumptions).
+
+Draft the structure of the main proof(s).
+
+3. Algorithmic Components
+
+Implement and compare different branching rules.
+
+Investigate whether the upper bound can be computed via dynamic programming.
+
+Develop a new or improved upper bound if it offers advantages.
+
+4. Experimental Analysis
+
+Generate different types of instances
+(e.g., varying distributions for job lengths and prices).
+
+Implement detailed logging to capture relevant metrics
+(nodes explored, pruning rate, bound quality, runtime breakdowns, etc.).
+
+Plan and execute the experiment series.
+
+5. Model Extensions
+
+Explore potential extensions of the problem formulation.
+
+Investigate whether job counts can be bounded or controlled artificially
+(e.g., upper limits, scaling, regularization).
+'''
