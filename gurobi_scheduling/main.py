@@ -31,11 +31,11 @@ def create_sample_bilevel():
             - budget: int total budget
             - m: int number of machines for follower
     """
-    durations = [2, 14, 4, 16, 6, 5, 3, 7]
-    prices =    [1,  8, 2, 10, 3, 3, 1, 4]
+    durations = [2, 17, 4, 24, 7, 5, 11, 9]
+    prices =    [1,  8, 2, 10, 3, 3, 5, 4]
     items = [Item(name=f"item{i}", duration=durations[i], price=prices[i]) 
              for i in range(len(durations))]
-    budget = 15
+    budget = 30
     m = 3
     return items, budget, m
 
@@ -134,13 +134,20 @@ if __name__ == "__main__":
         durations = [it.duration for it in items]
         problem = MainProblem(prices, durations, m, budget)
         print("Running branch-and-bound on:", problem)
-        res = run_bnb_classic(problem, max_nodes=10000, verbose=True)
+        res = run_bnb_classic(problem, max_nodes=40000, verbose=False)
         print("\nBranch-and-bound result:")
         print(f"  Best makespan: {res['best_obj']}")
         print(f"  Best selection: {res['best_selection']}")
+        print(f"  Best Schedule: {res['best_schedule']}")
         print(f"  Nodes explored: {res['nodes_explored']}")
         sys.exit(0)
     
+
+
+
+
+
+
     # Test exact IP bound
     if len(args) >= 1 and args[0] == "test-exact-bound":
         from bnb import compute_ip_bound_exact

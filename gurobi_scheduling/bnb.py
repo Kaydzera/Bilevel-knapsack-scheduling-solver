@@ -15,7 +15,7 @@ except Exception as e:
     gp = None
     GRB = None
 
-from solvers import solve_scheduling, solve_leader_knapsack
+from solvers import solve_scheduling, solve_leader_knapsack, solve_scheduling_readable
 from models import MainProblem, ProblemNode
 
 
@@ -75,11 +75,15 @@ def initialize_bnb_state_from_heuristic(items, budget, m, verbose=False):
     if 'x' not in res:
         return {'best_obj': 0.0, 'best_selection': [0]*len(items)}
     sel = res['x']
+
+    # Build processing times for follower scheduling
     proc = []
     for i, cnt in enumerate(sel):
         proc += [items[i].duration] * cnt
     if len(proc) == 0:
         makespan = 0.0
+    
+    # Solve scheduling for follower
     else:
         sched = solve_scheduling(len(proc), m, proc, verbose=False)
         makespan = sched.get('makespan', 0.0)
@@ -209,6 +213,7 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
     if verbose:
         print(f"Initial incumbent from heuristic: makespan={incumbent}, selection={incumbent_sel}")
 
+    print(f"Starting branch-and-bound with max_nodes={max_nodes}")
     nodes = 0
     while frontier:
         node = frontier.pop()  # DFS
@@ -272,16 +277,22 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
 
         if right_child is not None:
             added = try_add(right_child)
-            if verbose and added:
-                print("Added right child")
+            #if verbose and added:
+             #   print("Added right child")
         if lower_child is not None:
             added = try_add(lower_child)
-            if verbose and added:
-                print("Added lower child")
+            #if verbose and added:
+             #   print("Added lower child")
 
         if nodes >= max_nodes:
             if verbose:
                 print(f"Node limit {max_nodes} reached, stopping")
             break
-
-    return {'best_obj': incumbent, 'best_selection': incumbent_sel, 'nodes_explored': nodes}
+    
+    #Solve the scheduling for the best selection found
+    proc = []
+    for i, cnt in enumerate(incumbent_sel):
+        proc += [problem.durations[i]] * cnt
+    sched = solve_scheduling_readable(len(proc), problem.machines, proc, verbose=False)
+    #return the makespan, the selection od the leader, the Schedule of the follower, and the number of nodes explored
+    return {'best_obj': incumbent, 'best_selection': incumbent_sel, 'best_schedule': sched, 'nodes_explored': nodes}
