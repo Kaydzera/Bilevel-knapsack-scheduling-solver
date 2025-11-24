@@ -129,17 +129,26 @@ if __name__ == "__main__":
     
     # Step 4: Run branch-and-bound solver
     if len(args) >= 1 and args[0] in ("bilevel-step4-class", "step4-class"):
+        from logger import create_logger
+        
         items, budget, m = create_sample_bilevel()
         prices = [it.price for it in items]
         durations = [it.duration for it in items]
         problem = MainProblem(prices, durations, m, budget)
+        
+        # Create logger for this run
+        logger = create_logger(instance_name="sample_bilevel")
+        
         print("Running branch-and-bound on:", problem)
-        res = run_bnb_classic(problem, max_nodes=40000, verbose=False)
+        # results
+        res = run_bnb_classic(problem, max_nodes=40000, verbose=False, 
+                             logger=logger, instance_name="sample_bilevel")
         print("\nBranch-and-bound result:")
         print(f"  Best makespan: {res['best_obj']}")
         print(f"  Best selection: {res['best_selection']}")
         print(f"  Best Schedule: {res['best_schedule']}")
         print(f"  Nodes explored: {res['nodes_explored']}")
+        print(f"\nLog files saved to: logs/")
         sys.exit(0)
     
 

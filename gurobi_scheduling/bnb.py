@@ -6,7 +6,9 @@ Includes exact IP bounds and heuristic initialization.
 """
 
 import math
+import time
 from collections import deque
+from typing import Optional
 
 try:
     import gurobipy as gp
@@ -17,6 +19,7 @@ except Exception as e:
 
 from solvers import solve_scheduling, solve_leader_knapsack, solve_scheduling_readable
 from models import MainProblem, ProblemNode
+from logger import BnBLogger
 
 
 def greedy_fractional_total(items, budget):
@@ -178,7 +181,8 @@ def compute_ip_bound_exact(problem: MainProblem, node: ProblemNode, time_limit=2
         return 0.0
 
 
-def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
+def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False, 
+                    logger: Optional[BnBLogger] = None, instance_name: str = "default"):
     """Branch-and-bound solver for the bilevel optimization problem.
     
     Uses depth-first search with exact IP bounds to prune the search tree.
@@ -187,14 +191,33 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
     Args:
         problem: MainProblem instance
         max_nodes: Maximum number of nodes to explore
-        verbose: Whether to print progress
+        verbose: Whether to print progress to console
+        logger: Optional BnBLogger instance for detailed logging
+        instance_name: Name for the instance (used if logger is None)
         
     Returns:
         dict with:
             - best_obj: Best makespan found
             - best_selection: Counts for each job type in best solution
+            - best_schedule: Readable schedule for best solution
             - nodes_explored: Number of nodes visited
     """
+    # Create logger if not provided
+    if logger is None:
+        from logger import create_logger
+        logger = create_logger(instance_name=instance_name)
+    
+    # Log problem characteristics
+    problem_data = {
+        "n_job_types": problem.n_job_types,
+        "machines": problem.machines,
+        "budget": problem.budget_total,
+        "prices": problem.prices,
+        "durations": problem.durations,
+        "max_nodes": max_nodes
+    }
+    logger.start_run(problem_data)
+    
     n = problem.n_job_types
     frontier = deque()
     seen = set()
@@ -205,19 +228,33 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
     seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
 
     # Get initial incumbent from heuristic
+    logger.info("Computing initial heuristic solution...")
     init_state = initialize_bnb_state_from_heuristic(
         [type("_", (), {'duration':d,'price':p})() for d,p in zip(problem.durations, problem.prices)],
         problem.budget_total, problem.machines, verbose=False)
     incumbent = init_state['best_obj']
     incumbent_sel = init_state['best_selection']
+    
+    logger.log_incumbent_update(incumbent, incumbent_sel, node_count=0)
     if verbose:
         print(f"Initial incumbent from heuristic: makespan={incumbent}, selection={incumbent_sel}")
 
+    logger.info(f"Starting branch-and-bound with max_nodes={max_nodes}")
     print(f"Starting branch-and-bound with max_nodes={max_nodes}")
+    
     nodes = 0
     while frontier:
         node = frontier.pop()  # DFS
         nodes += 1
+        
+        # Log node visit
+        node_info = {
+            "depth": node.depth,
+            "occurrences": node.job_occurrences,
+            "remaining_budget": node.remaining_budget
+        }
+        logger.log_node_visit(node_info)
+        
         if verbose:
             print(f"Visiting node: {node}")
 
@@ -231,17 +268,24 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
             else:
                 sched = solve_scheduling(len(proc), problem.machines, proc, verbose=False)
                 makespan = sched.get('makespan', None)
-            if makespan is not None and makespan > incumbent:
-                incumbent = makespan
-                incumbent_sel = list(node.job_occurrences)
-                if verbose:
-                    print(f"New incumbent makespan={incumbent} selection={incumbent_sel}")
+            
+            if makespan is not None:
+                logger.log_node_evaluated(makespan, node_info)
+                
+                if makespan > incumbent:
+                    incumbent = makespan
+                    incumbent_sel = list(node.job_occurrences)
+                    logger.log_incumbent_update(incumbent, incumbent_sel, node_count=nodes)
+                    if verbose:
+                        print(f"New incumbent makespan={incumbent} selection={incumbent_sel}")
             continue
 
         # Compute upper bound for pruning
         try:
             # Solve exact IP bound for remaining items
+            bound_start = time.time()
             solution_node_ip = compute_ip_bound_exact(problem, node, time_limit=2.0)
+            bound_time = time.time() - bound_start
 
             # Add already committed jobs' contribution
             already_committed_length = 0.0
@@ -251,14 +295,21 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
                 already_committed_length += dur * math.ceil(occ / problem.machines)
 
             bound = solution_node_ip + already_committed_length
+            
+            # Log bound computation
+            logger.log_bound_computation(bound, "exact_ip", node.depth, bound_time)
+            
             if verbose:
                 print(f"Computed bound (optimistic makespan) = {bound}")
+            
             # Prune if bound <= incumbent
             if bound <= incumbent:
+                logger.log_node_pruned("bound_dominated", node_info)
                 if verbose:
                     print(f"Pruning node: bound {bound} <= incumbent {incumbent}")
                 continue
         except Exception as e:
+            logger.warning(f"Bound computation failed: {e}")
             if verbose:
                 print(f"Bound computation failed: {e}")
 
@@ -277,22 +328,35 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False):
 
         if right_child is not None:
             added = try_add(right_child)
-            #if verbose and added:
-             #   print("Added right child")
+        else:
+            logger.log_node_pruned("budget_infeasible", 
+                                  {"depth": node.depth, "child_type": "right"})
+            
         if lower_child is not None:
             added = try_add(lower_child)
-            #if verbose and added:
-             #   print("Added lower child")
 
         if nodes >= max_nodes:
+            logger.warning(f"Node limit {max_nodes} reached, stopping")
             if verbose:
                 print(f"Node limit {max_nodes} reached, stopping")
             break
     
-    #Solve the scheduling for the best selection found
+    # Solve the scheduling for the best selection found
+    logger.info("Computing final schedule for best solution...")
     proc = []
     for i, cnt in enumerate(incumbent_sel):
         proc += [problem.durations[i]] * cnt
     sched = solve_scheduling_readable(len(proc), problem.machines, proc, verbose=False)
-    #return the makespan, the selection od the leader, the Schedule of the follower, and the number of nodes explored
-    return {'best_obj': incumbent, 'best_selection': incumbent_sel, 'best_schedule': sched, 'nodes_explored': nodes}
+    
+    # Prepare final result
+    result = {
+        'best_obj': incumbent, 
+        'best_selection': incumbent_sel, 
+        'best_schedule': sched, 
+        'nodes_explored': nodes
+    }
+    
+    # End logging
+    logger.end_run(result)
+    
+    return result
