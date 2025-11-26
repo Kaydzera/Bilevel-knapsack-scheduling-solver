@@ -94,10 +94,14 @@ class ProblemNode:
     def extendable(self):
         """Check if this node can be further expanded.
         
+        A node is extendable if we haven't reached the last job type yet.
+        Once we're at the last job type (depth = n_job_types - 1), we can
+        evaluate the solution directly without creating another level.
+        
         Returns:
-            True if depth < n_job_types (more decisions to make)
+            True if depth < n_job_types - 1 (more job types to decide)
         """
-        return self.depth < self.n_job_types
+        return self.depth < self.n_job_types - 1
 
     def increment_current(self, price):
         """Create a child node with one more copy of the current job type.
