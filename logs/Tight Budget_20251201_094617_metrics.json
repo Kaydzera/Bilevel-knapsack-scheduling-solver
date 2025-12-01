@@ -1,0 +1,163 @@
+{
+  "instance_name": "Tight Budget",
+  "timestamp": "20251201_094617",
+  "start_time": 1764578777.9233196,
+  "end_time": 1764578777.9303188,
+  "total_runtime": 0.00699925422668457,
+  "nodes_explored": 14,
+  "nodes_pruned": 7,
+  "nodes_evaluated": 4,
+  "best_bound_updates": [
+    {
+      "incumbent": 6.0,
+      "selection": [
+        0,
+        0,
+        2,
+        0
+      ],
+      "node_count": 0,
+      "timestamp": 0.001999378204345703
+    },
+    {
+      "incumbent": 8.0,
+      "selection": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "node_count": 10,
+      "timestamp": 0.005000591278076172
+    },
+    {
+      "incumbent": 10.0,
+      "selection": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "node_count": 14,
+      "timestamp": 0.00599980354309082
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 12.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0010001659393310547,
+      "node_count": 1
+    },
+    {
+      "value": 10.0,
+      "type": "exact_ip",
+      "depth": 1,
+      "time": 0.0010008811950683594,
+      "node_count": 2
+    },
+    {
+      "value": 8.0,
+      "type": "exact_ip",
+      "depth": 2,
+      "time": 0.0,
+      "node_count": 3
+    },
+    {
+      "value": 10.0,
+      "type": "exact_ip",
+      "depth": 2,
+      "time": 0.0,
+      "node_count": 5
+    },
+    {
+      "value": 6.0,
+      "type": "exact_ip",
+      "depth": 2,
+      "time": 0.0,
+      "node_count": 7
+    },
+    {
+      "value": 12.0,
+      "type": "exact_ip",
+      "depth": 1,
+      "time": 0.0,
+      "node_count": 8
+    },
+    {
+      "value": 12.0,
+      "type": "exact_ip",
+      "depth": 2,
+      "time": 0.0,
+      "node_count": 9
+    },
+    {
+      "value": 10.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 11
+    },
+    {
+      "value": 10.0,
+      "type": "exact_ip",
+      "depth": 1,
+      "time": 0.0,
+      "node_count": 12
+    },
+    {
+      "value": 10.0,
+      "type": "exact_ip",
+      "depth": 2,
+      "time": 0.0,
+      "node_count": 13
+    }
+  ],
+  "pruning_reasons": {
+    "budget_infeasible": 6,
+    "bound_dominated": 1
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 2,
+    "budget": 6,
+    "prices": [
+      5,
+      4,
+      3,
+      2
+    ],
+    "durations": [
+      10,
+      8,
+      6,
+      4
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 10.0,
+    "best_selection": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 10.0,
+      "machine_assignments": {
+        "0": [
+          0
+        ],
+        "1": []
+      },
+      "machine_loads": {
+        "0": 10.0,
+        "1": 0.0
+      }
+    },
+    "nodes_explored": 14
+  }
+}

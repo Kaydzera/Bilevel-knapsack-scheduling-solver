@@ -1,0 +1,174 @@
+{
+  "instance_name": "Extreme Ratios",
+  "timestamp": "20251201_094617",
+  "start_time": 1764578777.63024,
+  "end_time": 1764578777.6417377,
+  "total_runtime": 0.011497735977172852,
+  "nodes_explored": 13,
+  "nodes_pruned": 14,
+  "nodes_evaluated": 0,
+  "best_bound_updates": [
+    {
+      "incumbent": 90.0,
+      "selection": [
+        12,
+        0,
+        0,
+        0
+      ],
+      "node_count": 0,
+      "timestamp": 0.003499746322631836
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 16.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0009999275207519531,
+      "node_count": 1
+    },
+    {
+      "value": 29.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0009989738464355469,
+      "node_count": 2
+    },
+    {
+      "value": 29.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0010006427764892578,
+      "node_count": 3
+    },
+    {
+      "value": 44.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0009996891021728516,
+      "node_count": 4
+    },
+    {
+      "value": 44.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 5
+    },
+    {
+      "value": 59.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0009996891021728516,
+      "node_count": 6
+    },
+    {
+      "value": 53.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 7
+    },
+    {
+      "value": 68.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 8
+    },
+    {
+      "value": 68.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 9
+    },
+    {
+      "value": 81.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 10
+    },
+    {
+      "value": 75.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 11
+    },
+    {
+      "value": 90.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 12
+    },
+    {
+      "value": 90.0,
+      "type": "exact_ip",
+      "depth": 0,
+      "time": 0.0,
+      "node_count": 13
+    }
+  ],
+  "pruning_reasons": {
+    "bound_dominated": 13,
+    "budget_infeasible": 1
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 2,
+    "budget": 12,
+    "prices": [
+      1,
+      10,
+      4,
+      3
+    ],
+    "durations": [
+      15,
+      2,
+      8,
+      6
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 90.0,
+    "best_selection": [
+      12,
+      0,
+      0,
+      0
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 90.0,
+      "machine_assignments": {
+        "0": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "1": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "machine_loads": {
+        "0": 90.0,
+        "1": 90.0
+      }
+    },
+    "nodes_explored": 13
+  }
+}

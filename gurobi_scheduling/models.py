@@ -64,13 +64,17 @@ class ProblemNode:
     """Node in the branch-and-bound search tree.
     
     Each node represents a partial or complete selection of job types.
-    The depth indicates which job type is currently being decided.
+    The depth indicates up to which job type decisions have been made.
+    Here, depth = 0 means no job types decided yet,
+    depth = 1 means the first job type has been decided, etc.
+    If depth = n_job_types, all job types have been decided and we flag the node as complete.
+    The jobs after depth have not yet been considered and will be accounted for via bound approximations.
     
     Attributes:
         job_occurrences: List of counts for each job type (length = n_job_types)
-        depth: Index of current job type being decided (0..n_job_types)
+        depth: Index of the jobs up to which decisions have been made
         remaining_budget: Budget remaining after selections so far
-        n_job_types: Total number of job types in the problem
+        n_job_types: Total number of job types in the problem, equal to len(job_occurrences)
     """
     
     def __init__(self, job_occurrences, depth, remaining_budget, n_job_types):
@@ -95,19 +99,22 @@ class ProblemNode:
         """Check if this node can be further expanded.
         
         A node is extendable if we haven't reached the last job type yet.
-        Once we're at the last job type (depth = n_job_types - 1), we can
+        Once we're at the last job type (depth = n_job_types), we can
         evaluate the solution directly without creating another level.
         
         Returns:
-            True if depth < n_job_types - 1 (more job types to decide)
+            True if depth < n_job_types  (more job types to decide)
         """
-        return self.depth < self.n_job_types - 1
+        return self.depth < self.n_job_types 
 
     def increment_current(self, price):
         """Create a child node with one more copy of the current job type.
         
         This represents the 'right child' branch: add another copy
         of the current job type and stay at the same depth.
+        
+        Depth semantics: depth=N means we are DECIDING item N.
+        Items 0..N-1 are already decided.
         
         Args:
             price: Cost of one copy of the current job type
@@ -137,7 +144,7 @@ class ProblemNode:
             print("Cannot decrement current job occurrence below zero.")
             return None
         new_occ = list(self.job_occurrences)
-        new_occ[self.depth] -= 1
+        new_occ[self.depth-1] -= 1
         return ProblemNode(new_occ, self.depth, self.remaining_budget + price, self.n_job_types)
 
     def commit_current(self, optional_price=None, optional_n_initial_occurences=None):
