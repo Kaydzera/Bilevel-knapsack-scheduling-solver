@@ -1,0 +1,833 @@
+2025-12-01 09:46:17 - INFO - Initialized logger for instance: Five Jobs
+2025-12-01 09:46:17 - INFO - Run ID: Five Jobs_20251201_094617
+2025-12-01 09:46:17 - INFO - ============================================================
+2025-12-01 09:46:17 - INFO - Starting branch-and-bound solver
+2025-12-01 09:46:17 - INFO - Problem: {'n_job_types': 5, 'machines': 3, 'budget': 15, 'prices': [2, 3, 5, 4, 3], 'durations': [4, 6, 8, 5, 7], 'max_nodes': 100000}
+2025-12-01 09:46:17 - INFO - ============================================================
+2025-12-01 09:46:17 - INFO - Computing initial heuristic solution...
+2025-12-01 09:46:17 - INFO - ==================================================
+2025-12-01 09:46:17 - INFO - NEW INCUMBENT: 14.0
+2025-12-01 09:46:17 - INFO - Selection: [0, 0, 0, 0, 5]
+2025-12-01 09:46:17 - INFO - Found at node: 0
+2025-12-01 09:46:17 - INFO - ==================================================
+2025-12-01 09:46:17 - INFO - Starting branch-and-bound with max_nodes=100000
+2025-12-01 09:46:17 - DEBUG - Node 1: {'depth': 0, 'occurrences': [0, 0, 0, 0, 0], 'remaining_budget': 15}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 26.00 (exact_ip) at depth 0 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 26.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 0.00
+2025-12-01 09:46:17 - DEBUG - Node 2: {'depth': 1, 'occurrences': [0, 0, 0, 0, 0], 'remaining_budget': 15}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 20.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 0.00
+2025-12-01 09:46:17 - DEBUG - Node 3: {'depth': 2, 'occurrences': [0, 0, 0, 0, 0], 'remaining_budget': 15}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 14.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 14.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 0.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 2, 'occurrences': [0, 0, 0, 0, 0], 'remaining_budget': 15}
+2025-12-01 09:46:17 - DEBUG - Node 4: {'depth': 2, 'occurrences': [0, 0, 1, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 5: {'depth': 3, 'occurrences': [0, 0, 1, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 6: {'depth': 4, 'occurrences': [0, 0, 1, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 0, 1, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Node 7: {'depth': 3, 'occurrences': [0, 0, 1, 1, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 13.00
+2025-12-01 09:46:17 - DEBUG - Node 8: {'depth': 4, 'occurrences': [0, 0, 1, 1, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 0, 1, 1, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Node 9: {'depth': 3, 'occurrences': [0, 0, 1, 2, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 13.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 13.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [0, 0, 1, 2, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 10: {'depth': 2, 'occurrences': [0, 0, 2, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 11: {'depth': 3, 'occurrences': [0, 0, 2, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 12: {'depth': 4, 'occurrences': [0, 0, 2, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 0, 2, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Node 13: {'depth': 3, 'occurrences': [0, 0, 2, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 13.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 13.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [0, 0, 2, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 14: {'depth': 2, 'occurrences': [0, 0, 3, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 8.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 2, 'occurrences': [0, 0, 3, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 15: {'depth': 1, 'occurrences': [0, 1, 0, 0, 0], 'remaining_budget': 12}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 26.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 20.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 6.00
+2025-12-01 09:46:17 - DEBUG - Node 16: {'depth': 2, 'occurrences': [0, 1, 0, 0, 0], 'remaining_budget': 12}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 14.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 6.00
+2025-12-01 09:46:17 - DEBUG - Node 17: {'depth': 3, 'occurrences': [0, 1, 0, 0, 0], 'remaining_budget': 12}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 14.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 6.00
+2025-12-01 09:46:17 - DEBUG - Node 18: {'depth': 4, 'occurrences': [0, 1, 0, 0, 0], 'remaining_budget': 12}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 1, 0, 0, 0], 'remaining_budget': 12}
+2025-12-01 09:46:17 - DEBUG - Node 19: {'depth': 3, 'occurrences': [0, 1, 0, 1, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 11.00
+2025-12-01 09:46:17 - DEBUG - Node 20: {'depth': 4, 'occurrences': [0, 1, 0, 1, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 1, 0, 1, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Node 21: {'depth': 3, 'occurrences': [0, 1, 0, 2, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 11.00
+2025-12-01 09:46:17 - DEBUG - Node 22: {'depth': 4, 'occurrences': [0, 1, 0, 2, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 1, 0, 2, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Node 23: {'depth': 3, 'occurrences': [0, 1, 0, 3, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 11.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 11.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [0, 1, 0, 3, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 24: {'depth': 2, 'occurrences': [0, 1, 1, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 26.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Node 25: {'depth': 3, 'occurrences': [0, 1, 1, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Node 26: {'depth': 4, 'occurrences': [0, 1, 1, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 1, 1, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Node 27: {'depth': 3, 'occurrences': [0, 1, 1, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 26.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 19.00
+2025-12-01 09:46:17 - DEBUG - Node 28: {'depth': 4, 'occurrences': [0, 1, 1, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 1, 1, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 29: {'depth': 2, 'occurrences': [0, 1, 2, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 14.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 2, 'occurrences': [0, 1, 2, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 30: {'depth': 1, 'occurrences': [0, 2, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 15.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 6.00
+2025-12-01 09:46:17 - DEBUG - Node 31: {'depth': 2, 'occurrences': [0, 2, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 6.00
+2025-12-01 09:46:17 - DEBUG - Node 32: {'depth': 3, 'occurrences': [0, 2, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 13.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 6.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [0, 2, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Node 33: {'depth': 3, 'occurrences': [0, 2, 0, 1, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 11.00
+2025-12-01 09:46:17 - DEBUG - Node 34: {'depth': 4, 'occurrences': [0, 2, 0, 1, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 2, 0, 1, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Node 35: {'depth': 3, 'occurrences': [0, 2, 0, 2, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 11.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 11.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [0, 2, 0, 2, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 36: {'depth': 2, 'occurrences': [0, 2, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Node 37: {'depth': 3, 'occurrences': [0, 2, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Node 38: {'depth': 4, 'occurrences': [0, 2, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 2, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Node 39: {'depth': 3, 'occurrences': [0, 2, 1, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 19.00
+2025-12-01 09:46:17 - DEBUG - Node 40: {'depth': 4, 'occurrences': [0, 2, 1, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=11.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 2, 1, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 41: {'depth': 1, 'occurrences': [0, 3, 0, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 14.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 8.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 6.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 1, 'occurrences': [0, 3, 0, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Node 42: {'depth': 1, 'occurrences': [0, 4, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 43: {'depth': 2, 'occurrences': [0, 4, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 44: {'depth': 3, 'occurrences': [0, 4, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 45: {'depth': 4, 'occurrences': [0, 4, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=12.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [0, 4, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 46: {'depth': 1, 'occurrences': [0, 5, 0, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 12.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 1, 'occurrences': [0, 5, 0, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 47: {'depth': 0, 'occurrences': [1, 0, 0, 0, 0], 'remaining_budget': 13}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 0 in 0.0005s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 21.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 48: {'depth': 1, 'occurrences': [1, 0, 0, 0, 0], 'remaining_budget': 13}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 24.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 20.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 49: {'depth': 2, 'occurrences': [1, 0, 0, 0, 0], 'remaining_budget': 13}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 14.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 50: {'depth': 3, 'occurrences': [1, 0, 0, 0, 0], 'remaining_budget': 13}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 14.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 51: {'depth': 4, 'occurrences': [1, 0, 0, 0, 0], 'remaining_budget': 13}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=4.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 0, 0, 0, 0], 'remaining_budget': 13}
+2025-12-01 09:46:17 - DEBUG - Node 52: {'depth': 3, 'occurrences': [1, 0, 0, 1, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 9.00
+2025-12-01 09:46:17 - DEBUG - Node 53: {'depth': 4, 'occurrences': [1, 0, 0, 1, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=5.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 0, 0, 1, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Node 54: {'depth': 3, 'occurrences': [1, 0, 0, 2, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 9.00
+2025-12-01 09:46:17 - DEBUG - Node 55: {'depth': 4, 'occurrences': [1, 0, 0, 2, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=5.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 0, 0, 2, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Node 56: {'depth': 3, 'occurrences': [1, 0, 0, 3, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 9.00 (exact_ip) at depth 3 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 9.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [1, 0, 0, 3, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 57: {'depth': 2, 'occurrences': [1, 0, 1, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 24.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 58: {'depth': 3, 'occurrences': [1, 0, 1, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 59: {'depth': 4, 'occurrences': [1, 0, 1, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 0, 1, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Node 60: {'depth': 3, 'occurrences': [1, 0, 1, 1, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 24.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 17.00
+2025-12-01 09:46:17 - DEBUG - Node 61: {'depth': 4, 'occurrences': [1, 0, 1, 1, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 0, 1, 1, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Node 62: {'depth': 3, 'occurrences': [1, 0, 1, 2, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 17.00
+2025-12-01 09:46:17 - DEBUG - Node 63: {'depth': 4, 'occurrences': [1, 0, 1, 2, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=9.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 0, 1, 2, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 64: {'depth': 2, 'occurrences': [1, 0, 2, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 65: {'depth': 3, 'occurrences': [1, 0, 2, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 66: {'depth': 4, 'occurrences': [1, 0, 2, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 0, 2, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 67: {'depth': 1, 'occurrences': [1, 1, 0, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 15.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 68: {'depth': 2, 'occurrences': [1, 1, 0, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 22.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 69: {'depth': 3, 'occurrences': [1, 1, 0, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 70: {'depth': 4, 'occurrences': [1, 1, 0, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 1, 0, 0, 0], 'remaining_budget': 10}
+2025-12-01 09:46:17 - DEBUG - Node 71: {'depth': 3, 'occurrences': [1, 1, 0, 1, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 22.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 72: {'depth': 4, 'occurrences': [1, 1, 0, 1, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 1, 0, 1, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Node 73: {'depth': 3, 'occurrences': [1, 1, 0, 2, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 74: {'depth': 4, 'occurrences': [1, 1, 0, 2, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=9.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 1, 0, 2, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 75: {'depth': 2, 'occurrences': [1, 1, 1, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 76: {'depth': 3, 'occurrences': [1, 1, 1, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 77: {'depth': 4, 'occurrences': [1, 1, 1, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 1, 1, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Node 78: {'depth': 3, 'occurrences': [1, 1, 1, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 23.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 23.00
+2025-12-01 09:46:17 - DEBUG - Node 79: {'depth': 4, 'occurrences': [1, 1, 1, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=9.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 1, 1, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 80: {'depth': 2, 'occurrences': [1, 1, 2, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 81: {'depth': 3, 'occurrences': [1, 1, 2, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 82: {'depth': 4, 'occurrences': [1, 1, 2, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 1, 2, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 83: {'depth': 1, 'occurrences': [1, 2, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 22.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 84: {'depth': 2, 'occurrences': [1, 2, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 22.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 85: {'depth': 3, 'occurrences': [1, 2, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 86: {'depth': 4, 'occurrences': [1, 2, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 2, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Node 87: {'depth': 3, 'occurrences': [1, 2, 0, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 22.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 88: {'depth': 4, 'occurrences': [1, 2, 0, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=9.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 2, 0, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 89: {'depth': 2, 'occurrences': [1, 2, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 90: {'depth': 3, 'occurrences': [1, 2, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 91: {'depth': 4, 'occurrences': [1, 2, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 2, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 92: {'depth': 1, 'occurrences': [1, 3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 93: {'depth': 2, 'occurrences': [1, 3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 94: {'depth': 3, 'occurrences': [1, 3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 95: {'depth': 4, 'occurrences': [1, 3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Node 96: {'depth': 3, 'occurrences': [1, 3, 0, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 97: {'depth': 4, 'occurrences': [1, 3, 0, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=11.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 3, 0, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 98: {'depth': 1, 'occurrences': [1, 4, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 16.00
+2025-12-01 09:46:17 - DEBUG - Node 99: {'depth': 2, 'occurrences': [1, 4, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 16.00
+2025-12-01 09:46:17 - DEBUG - Node 100: {'depth': 3, 'occurrences': [1, 4, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 16.00
+2025-12-01 09:46:17 - DEBUG - Node 101: {'depth': 4, 'occurrences': [1, 4, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=12.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [1, 4, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 102: {'depth': 0, 'occurrences': [2, 0, 0, 0, 0], 'remaining_budget': 11}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 0
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 21.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 103: {'depth': 1, 'occurrences': [2, 0, 0, 0, 0], 'remaining_budget': 11}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 15.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 104: {'depth': 2, 'occurrences': [2, 0, 0, 0, 0], 'remaining_budget': 11}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 105: {'depth': 3, 'occurrences': [2, 0, 0, 0, 0], 'remaining_budget': 11}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 11.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [2, 0, 0, 0, 0], 'remaining_budget': 11}
+2025-12-01 09:46:17 - DEBUG - Node 106: {'depth': 3, 'occurrences': [2, 0, 0, 1, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 9.00
+2025-12-01 09:46:17 - DEBUG - Node 107: {'depth': 4, 'occurrences': [2, 0, 0, 1, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=5.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 0, 0, 1, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Node 108: {'depth': 3, 'occurrences': [2, 0, 0, 2, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 9.00
+2025-12-01 09:46:17 - DEBUG - Node 109: {'depth': 4, 'occurrences': [2, 0, 0, 2, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 0, 0, 2, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 110: {'depth': 2, 'occurrences': [2, 0, 1, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 111: {'depth': 3, 'occurrences': [2, 0, 1, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 3 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 112: {'depth': 4, 'occurrences': [2, 0, 1, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 0, 1, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Node 113: {'depth': 3, 'occurrences': [2, 0, 1, 1, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 17.00
+2025-12-01 09:46:17 - DEBUG - Node 114: {'depth': 4, 'occurrences': [2, 0, 1, 1, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 0, 1, 1, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 115: {'depth': 2, 'occurrences': [2, 0, 2, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 12.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 2, 'occurrences': [2, 0, 2, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 116: {'depth': 1, 'occurrences': [2, 1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 15.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 117: {'depth': 2, 'occurrences': [2, 1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 22.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 118: {'depth': 3, 'occurrences': [2, 1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 119: {'depth': 4, 'occurrences': [2, 1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-01 09:46:17 - DEBUG - Node 120: {'depth': 3, 'occurrences': [2, 1, 0, 1, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 22.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 121: {'depth': 4, 'occurrences': [2, 1, 0, 1, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 1, 0, 1, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Node 122: {'depth': 3, 'occurrences': [2, 1, 0, 2, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 123: {'depth': 4, 'occurrences': [2, 1, 0, 2, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=9.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 1, 0, 2, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 124: {'depth': 2, 'occurrences': [2, 1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 125: {'depth': 3, 'occurrences': [2, 1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 25.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 126: {'depth': 4, 'occurrences': [2, 1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 127: {'depth': 1, 'occurrences': [2, 2, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 8.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 128: {'depth': 2, 'occurrences': [2, 2, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 129: {'depth': 3, 'occurrences': [2, 2, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 130: {'depth': 4, 'occurrences': [2, 2, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 2, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Node 131: {'depth': 3, 'occurrences': [2, 2, 0, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 132: {'depth': 4, 'occurrences': [2, 2, 0, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 2, 0, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 133: {'depth': 2, 'occurrences': [2, 2, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 134: {'depth': 3, 'occurrences': [2, 2, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 135: {'depth': 4, 'occurrences': [2, 2, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [2, 2, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 136: {'depth': 1, 'occurrences': [2, 3, 0, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 10.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 1, 'occurrences': [2, 3, 0, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 137: {'depth': 0, 'occurrences': [3, 0, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 0 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 15.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 138: {'depth': 1, 'occurrences': [3, 0, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 15.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 139: {'depth': 2, 'occurrences': [3, 0, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Node 140: {'depth': 3, 'occurrences': [3, 0, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 11.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 4.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [3, 0, 0, 0, 0], 'remaining_budget': 9}
+2025-12-01 09:46:17 - DEBUG - Node 141: {'depth': 3, 'occurrences': [3, 0, 0, 1, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 9.00
+2025-12-01 09:46:17 - DEBUG - Node 142: {'depth': 4, 'occurrences': [3, 0, 0, 1, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [3, 0, 0, 1, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Node 143: {'depth': 3, 'occurrences': [3, 0, 0, 2, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 9.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 9.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [3, 0, 0, 2, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 144: {'depth': 2, 'occurrences': [3, 0, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 145: {'depth': 3, 'occurrences': [3, 0, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 3 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Node 146: {'depth': 4, 'occurrences': [3, 0, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [3, 0, 1, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Node 147: {'depth': 3, 'occurrences': [3, 0, 1, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 17.00
+2025-12-01 09:46:17 - DEBUG - Node 148: {'depth': 4, 'occurrences': [3, 0, 1, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=9.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [3, 0, 1, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 149: {'depth': 1, 'occurrences': [3, 1, 0, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 8.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 150: {'depth': 2, 'occurrences': [3, 1, 0, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 2 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 151: {'depth': 3, 'occurrences': [3, 1, 0, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 152: {'depth': 4, 'occurrences': [3, 1, 0, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [3, 1, 0, 0, 0], 'remaining_budget': 6}
+2025-12-01 09:46:17 - DEBUG - Node 153: {'depth': 3, 'occurrences': [3, 1, 0, 1, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 15.00
+2025-12-01 09:46:17 - DEBUG - Node 154: {'depth': 4, 'occurrences': [3, 1, 0, 1, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=9.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [3, 1, 0, 1, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 155: {'depth': 2, 'occurrences': [3, 1, 1, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 156: {'depth': 3, 'occurrences': [3, 1, 1, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 18.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 18.00
+2025-12-01 09:46:17 - DEBUG - Node 157: {'depth': 4, 'occurrences': [3, 1, 1, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [3, 1, 1, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 158: {'depth': 1, 'occurrences': [3, 2, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 159: {'depth': 2, 'occurrences': [3, 2, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 160: {'depth': 3, 'occurrences': [3, 2, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 17.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Node 161: {'depth': 4, 'occurrences': [3, 2, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [3, 2, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 162: {'depth': 1, 'occurrences': [3, 3, 0, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 10.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 10.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 1, 'occurrences': [3, 3, 0, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 163: {'depth': 0, 'occurrences': [4, 0, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 0 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 13.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 164: {'depth': 1, 'occurrences': [4, 0, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 165: {'depth': 2, 'occurrences': [4, 0, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 12.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 166: {'depth': 3, 'occurrences': [4, 0, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 167: {'depth': 4, 'occurrences': [4, 0, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [4, 0, 0, 0, 0], 'remaining_budget': 7}
+2025-12-01 09:46:17 - DEBUG - Node 168: {'depth': 3, 'occurrences': [4, 0, 0, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 20.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 13.00
+2025-12-01 09:46:17 - DEBUG - Node 169: {'depth': 4, 'occurrences': [4, 0, 0, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [4, 0, 0, 1, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 170: {'depth': 2, 'occurrences': [4, 0, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 16.00
+2025-12-01 09:46:17 - DEBUG - Node 171: {'depth': 3, 'occurrences': [4, 0, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 16.00
+2025-12-01 09:46:17 - DEBUG - Node 172: {'depth': 4, 'occurrences': [4, 0, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [4, 0, 1, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 173: {'depth': 1, 'occurrences': [4, 1, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Node 174: {'depth': 2, 'occurrences': [4, 1, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Node 175: {'depth': 3, 'occurrences': [4, 1, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 21.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Node 176: {'depth': 4, 'occurrences': [4, 1, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [4, 1, 0, 0, 0], 'remaining_budget': 4}
+2025-12-01 09:46:17 - DEBUG - Node 177: {'depth': 3, 'occurrences': [4, 1, 0, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 19.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 19.00
+2025-12-01 09:46:17 - DEBUG - Node 178: {'depth': 4, 'occurrences': [4, 1, 0, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [4, 1, 0, 1, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 179: {'depth': 1, 'occurrences': [4, 2, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 14.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 1, 'occurrences': [4, 2, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 180: {'depth': 0, 'occurrences': [5, 0, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 0
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 8.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 181: {'depth': 1, 'occurrences': [5, 0, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 8.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 182: {'depth': 2, 'occurrences': [5, 0, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 183: {'depth': 3, 'occurrences': [5, 0, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 184: {'depth': 4, 'occurrences': [5, 0, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [5, 0, 0, 0, 0], 'remaining_budget': 5}
+2025-12-01 09:46:17 - DEBUG - Node 185: {'depth': 3, 'occurrences': [5, 0, 0, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 13.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 13.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 3, 'occurrences': [5, 0, 0, 1, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Node 186: {'depth': 2, 'occurrences': [5, 0, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 16.00
+2025-12-01 09:46:17 - DEBUG - Node 187: {'depth': 3, 'occurrences': [5, 0, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 16.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 16.00
+2025-12-01 09:46:17 - DEBUG - Node 188: {'depth': 4, 'occurrences': [5, 0, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=12.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [5, 0, 1, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 189: {'depth': 1, 'occurrences': [5, 1, 0, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 14.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 1, 'occurrences': [5, 1, 0, 0, 0], 'remaining_budget': 2}
+2025-12-01 09:46:17 - DEBUG - Node 190: {'depth': 0, 'occurrences': [6, 0, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 0
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 191: {'depth': 1, 'occurrences': [6, 0, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 1 in 0.0010s
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 192: {'depth': 2, 'occurrences': [6, 0, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 2
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 193: {'depth': 3, 'occurrences': [6, 0, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 3, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 15.00 (exact_ip) at depth 3
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): 7.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 8.00
+2025-12-01 09:46:17 - DEBUG - Node 194: {'depth': 4, 'occurrences': [6, 0, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-01 09:46:17 - DEBUG -   Node: {'depth': 4, 'occurrences': [6, 0, 0, 0, 0], 'remaining_budget': 3}
+2025-12-01 09:46:17 - DEBUG - Node 195: {'depth': 1, 'occurrences': [6, 1, 0, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 14.00 (exact_ip) at depth 1
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 14.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 1, 'occurrences': [6, 1, 0, 0, 0], 'remaining_budget': 0}
+2025-12-01 09:46:17 - DEBUG - Node 196: {'depth': 0, 'occurrences': [7, 0, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - DEBUG - Pruned (budget_infeasible): {'depth': 0, 'child_type': 'right'}
+2025-12-01 09:46:17 - DEBUG - Bound computed: 12.00 (exact_ip) at depth 0
+2025-12-01 09:46:17 - DEBUG -   -> IP solution (remaining): -0.00
+2025-12-01 09:46:17 - DEBUG -   -> Already committed: 12.00
+2025-12-01 09:46:17 - DEBUG - Pruned (bound_dominated): {'depth': 0, 'occurrences': [7, 0, 0, 0, 0], 'remaining_budget': 1}
+2025-12-01 09:46:17 - INFO - Computing final schedule for best solution...
+2025-12-01 09:46:17 - INFO - Metrics saved to: logs\Five Jobs_20251201_094617_metrics.json
+2025-12-01 09:46:17 - INFO - ============================================================
+2025-12-01 09:46:17 - INFO - Branch-and-bound completed
+2025-12-01 09:46:17 - INFO - Total runtime: 0.092 seconds
+2025-12-01 09:46:17 - INFO - Nodes explored: 196
+2025-12-01 09:46:17 - INFO - Nodes pruned: 83
+2025-12-01 09:46:17 - INFO - Nodes evaluated: 57
+2025-12-01 09:46:17 - INFO - Pruning rate: 42.35%
+2025-12-01 09:46:17 - INFO - ============================================================

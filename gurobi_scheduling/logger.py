@@ -290,3 +290,70 @@ def create_logger(instance_name: str = "default", log_dir: str = "logs") -> BnBL
         Configured BnBLogger instance
     """
     return BnBLogger(log_dir=log_dir, instance_name=instance_name)
+
+
+class NoOpLogger:
+    """No-op logger that does nothing.
+    
+    Used when logging is disabled to avoid creating log files
+    while maintaining the same interface as BnBLogger.
+    """
+    
+    def __init__(self):
+        """Initialize no-op logger."""
+        self.metrics = {
+            "nodes_explored": 0,
+            "nodes_pruned": 0,
+            "nodes_evaluated": 0,
+        }
+        # Create a fake logger attribute for logger.logger.debug() calls
+        self.logger = self
+    
+    def debug(self, msg: str):
+        """No-op debug message."""
+        pass
+    
+    def start_run(self, problem_data: Dict[str, Any]):
+        """No-op start run."""
+        pass
+    
+    def end_run(self, final_result: Optional[Dict[str, Any]] = None):
+        """No-op end run."""
+        pass
+    
+    def log_node(self, node_data: Dict[str, Any]):
+        """No-op log node."""
+        pass
+    
+    def log_node_visit(self, node_data: Dict[str, Any]):
+        """No-op log node visit."""
+        pass
+    
+    def log_node_pruned(self, reason: str, node_data: Dict[str, Any]):
+        """No-op log pruned node."""
+        pass
+    
+    def log_node_evaluated(self, makespan: float, node_data: Dict[str, Any]):
+        """No-op log evaluated node."""
+        pass
+    
+    def log_incumbent_update(self, makespan: float, selection: list, node_count: int):
+        """No-op log incumbent update."""
+        pass
+    
+    def log_bound_computation(self, bound: float, method: str, depth: int, time_taken: float = 0.0):
+        """No-op log bound computation."""
+        pass
+    
+    def info(self, msg: str):
+        """No-op info message."""
+        pass
+    
+    def warning(self, msg: str):
+        """No-op warning message."""
+        pass
+    
+    def error(self, msg: str):
+        """No-op error message."""
+        pass
+
