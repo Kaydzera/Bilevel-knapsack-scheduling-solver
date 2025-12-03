@@ -445,15 +445,18 @@ if __name__ == "__main__":
 
 
 '''
-I would now like to do the following: when solving Maximizes sum(duration[i] * ceil(x[i]/m)) subject to budget constraint, the objective only changes when ceil(x[i]/m) changes for some i.
-Therefore, I would like to implement a knapsack solver that takes as input the values, weights, capacity, and also a parameter m (number of machines), and returns the optimal selection of items that maximizes sum(duration[i] * ceil(x[i]/m)) subject to the budget constraint.
-
-In each row of the dp table, a new item is considered. For each capacity w, we can either not take the item, or take k copies of it (0 <= k <= max_counts[i-1]) if it fits
-(here max_counts[i-1] is the maximum number of copies of item i-1 that can fit in capacity w so that a budget constraint is not violated). The dp table is updated accordingly.
-If we start the table with the last item that will be explored in the bnb tree, we can read off the optimal selection directly for the bound that is the modified knapsack objective by only reading items up to that depth.
-We also have to make sure to account for the fact that the objective uses ceil(x[i]/m) instead of x[i], so we need to adjust the value contribution accordingly when filling the dp table.
-That is, when we consider taking k copies of item i-1, the value contribution should be duration[i-1] * ceil(k/m) instead of just duration[i-1] * k.
-We can achieve this by adding, for each item type i-1, an additional value contribution of duration[i-1] whenever k is a multiple of m.
+e you accumulate m additional items, your benefit increases by one more chunk. 
+To model this realistically under a knapsack budget constraint, the solver represents each item type not as infinitely buyable pieces,
+ but as a fixed set of mutually exclusive 0-1 purchase options:
+   (1) a single-item option that costs cost[i] and yields one benefit block, and 
+   (2) multiple package options, each representing m units, each costing m*cost[i] and yielding one benefit block. 
+Importantly, each option can be taken at most once, ensuring that for each item type, you cannot repeatedly select the same package—each block of possible benefit is represented by its own 0-1 choice. 
+Because the maximum budget is known, the solver pre-generates all possible benefit-producing options for each item type that could ever fit within that budget and organizes them into “groups” tied to each item.
+It then builds a dynamic programming table dp_prefix[i][b] that computes the maximum achievable benefit using only the first i item types and a budget b,
+allowing for efficient queries that ask “What is the best result if only the first k item types are unlocked, and I have budget B?”. 
+Finally, using a separate decision-tracking structure, the solver can reconstruct the exact chosen combination of per-item singles and packages that achieve the optimal benefit, 
+automatically calculating the implied total item counts x[i]. 
+The end result is a flexible, reusable solver that can precompute once and answer many queries extremely fast, even under this non-linear ceil-based reward model.
 '''
 
 class CeilKnapsackSolver:
@@ -467,9 +470,9 @@ class CeilKnapsackSolver:
     - For each item type i:
         * One "single-item" option: value = duration[i], cost = cost[i]
         * Multiple "package" options: each of size m, value = duration[i], cost = m*cost[i]
-          (number of packages limited by budget)
+          (number of packages limited by max_budget)
     - Each option can be taken at most once (0-1 knapsack)
-    - DP table is precomputed for all items and max_budget
+    - DP table is precomputed for all prefixes of items and budgets
     - Reconstruction gives per-item breakdown and total x[i]
     """
 
@@ -484,38 +487,62 @@ class CeilKnapsackSolver:
         # Each group = (value, weight, item_index, type)
         # type: "single" or "package"
         self.groups = []
+        self.item_to_groups = [[] for _ in range(self.n)]  # mapping item -> its group indices
         for i in range(self.n):
             # Single-item option
             if costs[i] <= max_budget:
+                idx = len(self.groups)
                 self.groups.append((durations[i], costs[i], i, "single"))
+                self.item_to_groups[i].append(idx)
 
             # Package options
             max_packages = (max_budget // (m * costs[i]))
             for k in range(max_packages):
+                idx = len(self.groups)
                 self.groups.append((durations[i], m * costs[i], i, "package"))
+                self.item_to_groups[i].append(idx)
 
         self.total_groups = len(self.groups)
 
-        # DP table: dp[g][b] = max value using first g groups with budget b
-        self.dp = [[0] * (max_budget + 1) for _ in range(self.total_groups + 1)]
-        # Decision table: take[g][b] = True if group g-1 was taken
-        self.take = [[False] * (max_budget + 1) for _ in range(self.total_groups + 1)]
+        # Precompute DP tables for all prefixes of items
+        # dp_prefix[i][b] = max value using first i items with budget b
+        self.dp_prefix = [[0] * (max_budget + 1) for _ in range(self.n + 1)]
+        # Decision table: track which group contributed to dp_prefix[i][b]
+        self.take = [[[-1] * (max_budget + 1) for _ in range(len(self.item_to_groups[i-1]) if i > 0 else 1)] for i in range(self.n + 1)]
 
-        self._build_dp()
+        self._build_dp_prefix()
 
-    def _build_dp(self):
-        """Fill the DP table"""
-        for g in range(1, self.total_groups + 1):
-            val, wt, item_i, typ = self.groups[g - 1]
+    def _build_dp_prefix(self):
+        """Fill DP tables for all prefixes of items
+        
+        For each item type i, we have multiple groups (single + packages).
+        Each group can be selected at most once (0-1), but different groups
+        from the same item can be combined.
+        
+        We use standard 0-1 knapsack logic with REVERSE iteration for each group
+        to prevent reusing the same group, but groups are processed sequentially
+        so they can build upon each other.
+        """
+        for i in range(1, self.n + 1):
+            prev_groups = self.item_to_groups[i-1]  # all groups for item i-1
+            dp_prev = self.dp_prefix[i-1]
+            dp_curr = self.dp_prefix[i]
+            
+            # Start with previous solution (no groups from item i-1)
             for b in range(self.max_budget + 1):
-                # Option 1: skip group
-                self.dp[g][b] = self.dp[g - 1][b]
-                # Option 2: take group if it fits
-                if wt <= b:
-                    new_val = self.dp[g - 1][b - wt] + val
-                    if new_val > self.dp[g][b]:
-                        self.dp[g][b] = new_val
-                        self.take[g][b] = True
+                dp_curr[b] = dp_prev[b]
+            
+            # Process each group of item i-1 using 0-1 knapsack logic
+            for g_idx, group in enumerate(prev_groups):
+                val, wt, _, _ = self.groups[group]
+                # REVERSE iteration to ensure each group used at most once
+                for b in range(self.max_budget, wt - 1, -1):
+                    new_val = dp_curr[b - wt] + val
+                    if new_val > dp_curr[b]:
+                        dp_curr[b] = new_val
+                        self.take[i][g_idx][b] = 1  # mark this group as taken at budget b
+                    else:
+                        self.take[i][g_idx][b] = -1  # not taken at budget b
 
     def reconstruct(self, num_item_types, budget):
         """
@@ -527,55 +554,36 @@ class CeilKnapsackSolver:
         if budget > self.max_budget:
             raise ValueError("budget exceeds max_budget")
 
-        # Allowed groups = groups belonging to the first num_item_types items
-        allowed_groups = [g for g, (_, _, i, _) in enumerate(self.groups) if i < num_item_types]
-
-        # Initialize breakdown
         breakdown = [{"single": 0, "packages": 0, "x_total": 0} for _ in range(num_item_types)]
-
-        # Backtrack to determine which groups were taken
         b = budget
-        g = self.total_groups
-        while g > 0 and b >= 0:
-            if g - 1 in allowed_groups and self.take[g][b]:
-                val, wt, item_i, typ = self.groups[g - 1]
-                if typ == "single":
-                    breakdown[item_i]["single"] = 1
-                else:  # "package"
-                    breakdown[item_i]["packages"] += 1
-                b -= wt
-            g -= 1
 
-        # Compute total x[i] for each item
+        # Backtrack over items from last to first
+        for i in range(num_item_types, 0, -1):
+            groups = self.item_to_groups[i-1]
+            # For this item at budget b, find which groups were selected
+            # We need to check all groups and track which ones contributed
+            # Process groups in reverse order to maintain proper backtracking
+            for g_idx in range(len(groups) - 1, -1, -1):
+                group = groups[g_idx]
+                if self.take[i][g_idx][b] == 1:
+                    val, wt, _, typ = self.groups[group]
+                    if typ == "single":
+                        breakdown[i-1]["single"] = 1
+                    else:
+                        breakdown[i-1]["packages"] += 1
+                    b -= wt
+
+        # Compute total x[i]
         for i in range(num_item_types):
             breakdown[i]["x_total"] = breakdown[i]["single"] + breakdown[i]["packages"] * self.m
 
-        max_value = self.dp[self.total_groups][budget]
+        max_value = self.dp_prefix[num_item_types][budget]
 
         return {"max_value": max_value, "breakdown": breakdown}
 
     def query(self, num_item_types, budget):
-        """Return only the max value (shortcut)"""
+        """Return only the max value for first `num_item_types` items and budget"""
         if num_item_types > self.n or budget > self.max_budget:
             raise ValueError("Invalid query")
-        return self.dp[self.total_groups][budget]
+        return self.dp_prefix[num_item_types][budget]
 
-'''
-Ex. Usage
-costs = [3, 5, 10]
-durations = [4, 7, 20]
-m = 4
-max_budget = 50
-
-solver = CeilKnapsackSolver(costs, durations, m, max_budget)
-
-# Reconstruct solution for all items and budget 30
-result = solver.reconstruct(num_item_types=3, budget=30)
-print("Max value:", result["max_value"])
-for i, info in enumerate(result["breakdown"]):
-    print(f"Item {i}: single={info['single']}, packages={info['packages']}, x_total={info['x_total']}")
-
-# Query only max value
-print("Max value for first 2 items, budget 20:", solver.reconstruct(2, 20)["max_value"])
-
-'''
