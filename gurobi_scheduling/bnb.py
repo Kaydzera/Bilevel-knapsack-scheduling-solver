@@ -287,16 +287,19 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     logger.start_run(problem_data)
     
     # Track timing statistics for bound computations
-    total_ceil_time = 0.0
-    total_ip_time = 0.0
-    bound_computation_count = 0
+    
+    #total_ceil_time = 0.0
+    #total_ip_time = 0.0
+    #bound_computation_count = 0
     
     n = problem.n_job_types
     frontier = deque()
     seen = set()
 
     # Initialize with root node at depth=0 (deciding item 0)
-    init_node = ProblemNode(None, depth=0, remaining_budget=problem.budget_total, n_job_types=n)
+    # Using inclusive mode (left_child_enabled=False) for now
+    init_node = ProblemNode(None, depth=0, remaining_budget=problem.budget_total, n_job_types=n,
+                           m=problem.machines, left_child_enabled=False)
     frontier.append(init_node)
     seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
 
@@ -381,8 +384,10 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                         print(f"New incumbent makespan={incumbent} selection={incumbent_sel}")
             continue
         '''
-        # Node is extendable, so we can create children
-        # Optimization: At depth n-1, all items are decided, treat as leaf
+        # Depth semantics: depth=N means we are DECIDING item N
+        # The current item at depth has a committed amount in occurrences[depth]
+
+        # At depth n-1, all items are decided, treat as leaf
         if node.depth == n - 1:
             # All items are decided at this depth, evaluate as leaf directly
             proc = []
@@ -408,7 +413,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         # Always try to add right child (increment current item)
         # We can only prune lower children with the bound, not right children
         price = problem.prices[node.depth]
-        right_child = node.increment_current(price)
+        duration = problem.durations[node.depth]
+        right_child = node.increment_current(price, duration=duration)
 
         if right_child is not None:
             added = try_add(right_child)
@@ -429,6 +435,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             else:
                 solution_node = 0.0
             
+
+            '''
             # # Method 2: IP bound (for verification - currently disabled)
             # solution_node_ip, ip_selection = compute_ip_bound_exact(problem, node, time_limit=2.0)
             # 
@@ -444,17 +452,10 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             #     )
             #     logger.error(error_msg)
             #     raise ValueError(error_msg)
+            '''
 
-            # Add already committed jobs' contribution
-
-            # Depth semantics: depth=N means we are DECIDING item N
-            # The current item at depth has a committed amount in occurrences[depth]
-            # We sum items 0..depth (inclusive) to get total committed contribution
-            already_committed_length = 0.0
-            for i in range(0, node.depth + 1):
-                occ = node.job_occurrences[i]
-                dur = problem.durations[i]
-                already_committed_length += dur * math.ceil(occ / problem.machines)
+            # Add already committed jobs' contribution using optimized node tracking
+            already_committed_length = node.get_already_committed_length()
 
             bound = solution_node + already_committed_length
             
