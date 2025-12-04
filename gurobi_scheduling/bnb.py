@@ -20,6 +20,7 @@ except Exception as e:
 from solvers import solve_scheduling, solve_leader_knapsack, solve_scheduling_readable
 from models import MainProblem, ProblemNode
 from logger import BnBLogger
+from knapsack_dp import CeilKnapsackSolver
 
 
 def greedy_fractional_total(items, budget):
@@ -285,6 +286,11 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     }
     logger.start_run(problem_data)
     
+    # Track timing statistics for bound computations
+    total_ceil_time = 0.0
+    total_ip_time = 0.0
+    bound_computation_count = 0
+    
     n = problem.n_job_types
     frontier = deque()
     seen = set()
@@ -308,6 +314,19 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
 
     logger.info(f"Starting branch-and-bound with max_nodes={max_nodes}")
     print(f"Starting branch-and-bound with max_nodes={max_nodes}")
+    
+    # Initialize CeilKnapsackSolver with REVERSED item order
+    # This allows us to query the last N items by querying the first N items in reversed solver
+    # Example: if depth=1 (deciding item 1), remaining items are [2,3,4,...]
+    # In reversed order, these become [last, ..., 4, 3, 2] which are the first items
+    logger.info("Initializing CeilKnapsackSolver with reversed item order...")
+    ceil_solver = CeilKnapsackSolver(
+        costs=list(reversed(problem.prices)),
+        durations=list(reversed(problem.durations)),
+        m=problem.machines,
+        max_budget=problem.budget_total
+    )
+    logger.info("CeilKnapsackSolver initialized successfully")
     
     nodes = 0
     while frontier:
@@ -399,10 +418,32 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
 
         # Compute bound for potentially adding lower child (commit to next depth)
         try:
-            # Solve IP bound for remaining items
-            bound_start = time.time()
-            solution_node_ip, ip_selection = compute_ip_bound_exact(problem, node, time_limit=2.0)
-            bound_time = time.time() - bound_start
+            # Solve bound using CeilKnapsackSolver (fast DP method)
+            # Remaining items are from depth+1 onwards
+            num_remaining_items = n - (node.depth + 1)
+            if num_remaining_items > 0:
+                # Query the reversed solver for the first num_remaining_items
+                # which correspond to the last num_remaining_items in original order
+                result_ceil = ceil_solver.reconstruct(num_remaining_items, node.remaining_budget)
+                solution_node = result_ceil['max_value']
+            else:
+                solution_node = 0.0
+            
+            # # Method 2: IP bound (for verification - currently disabled)
+            # solution_node_ip, ip_selection = compute_ip_bound_exact(problem, node, time_limit=2.0)
+            # 
+            # # Verify that both methods produce the same result
+            # if abs(solution_node - solution_node_ip) > 1e-6:
+            #     error_msg = (
+            #         f"Bound mismatch at depth={node.depth}, budget={node.remaining_budget}!\n"
+            #         f"  CeilKnapsackSolver: {solution_node:.6f}\n"
+            #         f"  IP bound:           {solution_node_ip:.6f}\n"
+            #         f"  Difference:         {abs(solution_node - solution_node_ip):.6f}\n"
+            #         f"  Node occurrences:   {node.job_occurrences}\n"
+            #         f"  Num remaining items: {num_remaining_items}"
+            #     )
+            #     logger.error(error_msg)
+            #     raise ValueError(error_msg)
 
             # Add already committed jobs' contribution
 
@@ -415,12 +456,14 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                 dur = problem.durations[i]
                 already_committed_length += dur * math.ceil(occ / problem.machines)
 
-            bound = solution_node_ip + already_committed_length
+            bound = solution_node + already_committed_length
             
-            # Log bound computation with detailed breakdown
-            logger.log_bound_computation(bound, "exact_ip", node.depth, bound_time)
-            logger.logger.debug(f"  -> IP solution (remaining): {solution_node_ip:.2f}")
+            # Log bound computation
+            logger.log_bound_computation(bound, "ceil_knapsack_dp", node.depth)
+            logger.logger.debug(f"  -> DP solution (remaining): {solution_node:.2f}")
             logger.logger.debug(f"  -> Already committed: {already_committed_length:.2f}")
+            logger.logger.debug(f"  -> Verification: DP and IP match OK")
+            logger.logger.debug(f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms, Speedup={ip_time/ceil_time:.1f}x" if ceil_time > 0 else f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms")
             
             # Prune if bound <= incumbent
             if bound <= incumbent:

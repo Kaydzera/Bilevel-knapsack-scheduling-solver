@@ -147,7 +147,7 @@ instances.append({
 # RUN TESTS
 # ============================================================
 
-def run_instance(instance_data, use_enumeration=False):
+def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     """Run BnB (and optionally enumeration) on an instance."""
     items = instance_data["items"]
     m = instance_data["machines"]
@@ -172,7 +172,7 @@ def run_instance(instance_data, use_enumeration=False):
     
     # Run BnB
     print("\n### Branch-and-Bound ###")
-    result_bnb = run_bnb_classic(problem, max_nodes=100000, verbose=False, instance_name=name, enable_logging=True)
+    result_bnb = run_bnb_classic(problem, max_nodes=100000, verbose=False, instance_name=name, enable_logging=enable_logging)
     print(f"BnB Result: makespan={result_bnb['best_obj']:.1f}, "
           f"selection={result_bnb['best_selection']}, "
           f"nodes={result_bnb['nodes_explored']}")
@@ -198,9 +198,9 @@ if __name__ == "__main__":
     print("TESTING MULTIPLE INSTANCES")
     print("=" * 70)
     
-    # Run instances with enumeration for verification
+    # Run instances with enumeration for verification (logging disabled)
     for i in range(len(instances)):
-        run_instance(instances[i], use_enumeration=True)
+        run_instance(instances[i], use_enumeration=True, enable_logging=False)
     
     print("\n" + "=" * 70)
     print("ALL TESTS COMPLETED")
