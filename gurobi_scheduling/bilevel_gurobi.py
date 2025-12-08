@@ -52,6 +52,7 @@ def solve_bilevel_simpler(
     best_makespan = 0
     best_occurrences = None
     best_assignments = None
+    nodes_evaluated = 0  # Counter for solve_scheduling_readable calls
     
     count = 0
     start_time = time.time()
@@ -90,6 +91,7 @@ def solve_bilevel_simpler(
         
         # Solve follower's problem
         result = solve_scheduling_readable(len(jobs), m, jobs, verbose=False)
+        nodes_evaluated += 1  # Count each scheduling evaluation
         
         if result is not None and result['makespan'] > best_makespan:
             best_makespan = result['makespan']
@@ -103,13 +105,14 @@ def solve_bilevel_simpler(
     
     if verbose:
         print(f"\nChecked {count} feasible selections in {solve_time:.2f} seconds")
+        print(f"Evaluated {nodes_evaluated} schedules (nodes)")
         if best_occurrences:
             print(f"Best makespan: {best_makespan}")
             print(f"Best occurrences: {best_occurrences}")
             print(f"Budget used: {sum(items[i].price * best_occurrences[i] for i in range(n))}/{budget}")
         print("=" * 70)
     
-    return best_makespan, best_occurrences, best_assignments
+    return best_makespan, best_occurrences, best_assignments, nodes_evaluated
 
 
 if __name__ == "__main__":
@@ -135,4 +138,4 @@ if __name__ == "__main__":
     
     # Test enumeration approach
     print("\n### Complete enumeration method (exact solution) ###")
-    makespan, occ, assign = solve_bilevel_simpler(items, m, budget, time_limit=60.0)
+    makespan, occ, assign, nodes = solve_bilevel_simpler(items, m, budget, time_limit=60.0)

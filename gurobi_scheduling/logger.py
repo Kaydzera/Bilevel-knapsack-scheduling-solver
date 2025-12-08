@@ -279,16 +279,21 @@ class BnBLogger:
         self.logger.error(msg)
 
 
-def create_logger(instance_name: str = "default", log_dir: str = "logs") -> BnBLogger:
+def create_logger(instance_name: str = "default", log_dir: str = None) -> BnBLogger:
     """Factory function to create a BnBLogger.
     
     Args:
         instance_name: Name of the problem instance
-        log_dir: Directory for log files
+        log_dir: Directory for log files (defaults to workspace root logs/)
         
     Returns:
         Configured BnBLogger instance
     """
+    if log_dir is None:
+        # Use absolute path to workspace root logs directory
+        import os
+        workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        log_dir = os.path.join(workspace_root, "logs")
     return BnBLogger(log_dir=log_dir, instance_name=instance_name)
 
 

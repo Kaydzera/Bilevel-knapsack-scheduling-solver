@@ -1,7 +1,12 @@
 """Test multiple instances on both enumeration and BnB."""
+import json
+import os
 from models import MainProblem, Item
 from bnb import run_bnb_classic
 from bilevel_gurobi import solve_bilevel_simpler
+
+# Path to cache enumeration results
+ENUMERATION_CACHE_FILE = "enumeration_results_cache.json"
 
 # ============================================================
 # TEST INSTANCES
@@ -144,6 +149,35 @@ instances.append({
 })
 
 # ============================================================
+# ENUMERATION CACHE MANAGEMENT
+# ============================================================
+
+def load_enumeration_cache():
+    """Load cached enumeration results from file."""
+    if os.path.exists(ENUMERATION_CACHE_FILE):
+        try:
+            with open(ENUMERATION_CACHE_FILE, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Warning: Could not load cache file: {e}")
+            return {}
+    return {}
+
+def save_enumeration_cache(cache):
+    """Save enumeration results to cache file."""
+    try:
+        with open(ENUMERATION_CACHE_FILE, 'w') as f:
+            json.dump(cache, f, indent=2)
+    except Exception as e:
+        print(f"Warning: Could not save cache file: {e}")
+
+def get_instance_key(name, items, m, budget):
+    """Generate a unique key for an instance."""
+    # Use name, m, budget, and item specs as key
+    item_specs = [(i.duration, i.price) for i in items]
+    return f"{name}_{m}_{budget}_{item_specs}"
+
+# ============================================================
 # RUN TESTS
 # ============================================================
 
@@ -180,14 +214,64 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     # Optionally run enumeration (only for small instances)
     if use_enumeration:
         print("\n### Complete Enumeration ###")
-        makespan_enum, occ_enum, _ = solve_bilevel_simpler(items, m, budget, time_limit=30.0, verbose=False)
-        print(f"Enumeration Result: makespan={makespan_enum:.1f}, selection={occ_enum}")
         
-        # Compare
+        # Load cache
+        cache = load_enumeration_cache()
+        instance_key = get_instance_key(name, items, m, budget)
+        
+        # Check if result is cached
+        if instance_key in cache:
+            print("Using cached enumeration result...")
+            cached = cache[instance_key]
+            makespan_enum = cached['makespan']
+            occ_enum = cached['selection']
+            nodes_enum = cached['nodes_evaluated']
+        else:
+            print("Running enumeration (not cached)...")
+            makespan_enum, occ_enum, _, nodes_enum = solve_bilevel_simpler(items, m, budget, time_limit=30.0, verbose=False)
+            
+            # Save to cache
+            cache[instance_key] = {
+                'makespan': makespan_enum,
+                'selection': occ_enum,
+                'nodes_evaluated': nodes_enum
+            }
+            save_enumeration_cache(cache)
+        
+        print(f"Enumeration Result: makespan={makespan_enum:.1f}, selection={occ_enum}")
+        print(f"Nodes: BnB explored {result_bnb['nodes_explored']}, Enumeration evaluated {nodes_enum}")
+        
+        # Compare results
         if abs(result_bnb['best_obj'] - makespan_enum) < 0.01:
             print("OK - Results match!")
         else:
             print("FAIL - Results differ!")
+        
+        # Log comparison to BnB log if logging enabled
+        if enable_logging:
+            # Use absolute path to workspace root logs directory
+            workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            log_dir = os.path.join(workspace_root, "logs")
+            # Find the most recent log file for this instance
+            import glob
+            log_pattern = os.path.join(log_dir, f"{name}_*.log")
+            log_files = glob.glob(log_pattern)
+            if log_files:
+                latest_log = max(log_files, key=os.path.getmtime)
+                try:
+                    with open(latest_log, 'a') as f:
+                        f.write(f"\n{'='*70}\n")
+                        f.write(f"ENUMERATION COMPARISON\n")
+                        f.write(f"{'='*70}\n")
+                        f.write(f"BnB nodes explored: {result_bnb['nodes_explored']}\n")
+                        f.write(f"Enumeration nodes evaluated: {nodes_enum}\n")
+                        f.write(f"Ratio (BnB/Enum): {result_bnb['nodes_explored']/nodes_enum:.2f}x\n")
+                        f.write(f"Enumeration makespan: {makespan_enum:.1f}\n")
+                        f.write(f"BnB makespan: {result_bnb['best_obj']:.1f}\n")
+                        f.write(f"Match: {'YES' if abs(result_bnb['best_obj'] - makespan_enum) < 0.01 else 'NO'}\n")
+                        f.write(f"{'='*70}\n")
+                except Exception as e:
+                    print(f"Warning: Could not write to log file: {e}")
     
     return result_bnb
 

@@ -1,0 +1,269 @@
+{
+  "instance_name": "Tiny Baseline",
+  "timestamp": "20251208_090815",
+  "start_time": 1765181295.821885,
+  "end_time": 1765181295.8460941,
+  "total_runtime": 0.024209022521972656,
+  "nodes_explored": 46,
+  "nodes_pruned": 11,
+  "nodes_evaluated": 18,
+  "best_bound_updates": [
+    {
+      "incumbent": 10.0,
+      "selection": [
+        2,
+        0,
+        0,
+        1
+      ],
+      "node_count": 0,
+      "timestamp": 0.006211519241333008
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 15.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 1
+    },
+    {
+      "value": 13.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 2
+    },
+    {
+      "value": 7.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 3
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 5
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 7
+    },
+    {
+      "value": 13.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 9
+    },
+    {
+      "value": 6.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 11
+    },
+    {
+      "value": 9.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 13
+    },
+    {
+      "value": 15.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 15
+    },
+    {
+      "value": 15.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 16
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 18
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 20
+    },
+    {
+      "value": 15.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 22
+    },
+    {
+      "value": 15.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 23
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 24
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 26
+    },
+    {
+      "value": 6.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 28
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 30
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 32
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 33
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 35
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 36
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 37
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 39
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 41
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 43
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 44
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 45
+    }
+  ],
+  "pruning_reasons": {
+    "budget_infeasible": 11
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 2,
+    "budget": 10,
+    "prices": [
+      3,
+      6,
+      2,
+      4
+    ],
+    "durations": [
+      5,
+      8,
+      3,
+      7
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 10.0,
+    "best_selection": [
+      2,
+      0,
+      0,
+      1
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 10.0,
+      "machine_assignments": {
+        "0": [
+          0,
+          1
+        ],
+        "1": [
+          2
+        ]
+      },
+      "machine_loads": {
+        "0": 10.0,
+        "1": 7.0
+      }
+    },
+    "nodes_explored": 46
+  }
+}
