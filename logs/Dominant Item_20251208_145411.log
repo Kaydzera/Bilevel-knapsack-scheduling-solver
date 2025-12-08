@@ -1,0 +1,302 @@
+2025-12-08 14:54:11 - INFO - Initialized logger for instance: Dominant Item
+2025-12-08 14:54:11 - INFO - Run ID: Dominant Item_20251208_145411
+2025-12-08 14:54:11 - INFO - ============================================================
+2025-12-08 14:54:11 - INFO - Starting branch-and-bound solver
+2025-12-08 14:54:11 - INFO - Problem: {'n_job_types': 4, 'machines': 2, 'budget': 10, 'prices': [2, 5, 4, 3], 'durations': [20, 3, 5, 4], 'max_nodes': 100000}
+2025-12-08 14:54:11 - INFO - ============================================================
+2025-12-08 14:54:11 - INFO - Computing initial heuristic solution...
+2025-12-08 14:54:11 - INFO - ==================================================
+2025-12-08 14:54:11 - INFO - NEW INCUMBENT: 60.0
+2025-12-08 14:54:11 - INFO - Selection: [5, 0, 0, 0]
+2025-12-08 14:54:11 - INFO - Found at node: 0
+2025-12-08 14:54:11 - INFO - ==================================================
+2025-12-08 14:54:11 - INFO - Starting branch-and-bound with max_nodes=100000
+2025-12-08 14:54:11 - INFO - Initializing CeilKnapsackSolver with reversed item order...
+2025-12-08 14:54:11 - INFO - CeilKnapsackSolver initialized successfully
+2025-12-08 14:54:11 - DEBUG - Node 1: {'depth': 0, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 10}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 9.00 (ceil_knapsack_dp) at depth 0
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 9.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 2: {'depth': 1, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 10}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 9.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 9.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 3: {'depth': 2, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 10}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 8.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 8.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 4: {'depth': 3, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 10}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=0.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 10}
+2025-12-08 14:54:11 - DEBUG - Node 5: {'depth': 2, 'occurrences': [0, 0, 1, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 9.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 6: {'depth': 3, 'occurrences': [0, 0, 1, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=5.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 1, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Node 7: {'depth': 2, 'occurrences': [0, 0, 2, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 5.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 8: {'depth': 3, 'occurrences': [0, 0, 2, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=5.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 2, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Node 9: {'depth': 1, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 5}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 8.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 3.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 10: {'depth': 2, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 5}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 7.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 3.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 11: {'depth': 3, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 5}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=3.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 5}
+2025-12-08 14:54:11 - DEBUG - Node 12: {'depth': 2, 'occurrences': [0, 1, 1, 0], 'remaining_budget': 1}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 5.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 13: {'depth': 3, 'occurrences': [0, 1, 1, 0], 'remaining_budget': 1}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=5.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 1, 1, 0], 'remaining_budget': 1}
+2025-12-08 14:54:11 - DEBUG - Node 14: {'depth': 1, 'occurrences': [0, 2, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 3.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 3.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 15: {'depth': 2, 'occurrences': [0, 2, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 3.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 3.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 16: {'depth': 3, 'occurrences': [0, 2, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=3.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 2, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Node 17: {'depth': 0, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 29.00 (ceil_knapsack_dp) at depth 0
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 9.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 18: {'depth': 1, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 29.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 9.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 19: {'depth': 2, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 24.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 20: {'depth': 3, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=20.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 8}
+2025-12-08 14:54:11 - DEBUG - Node 21: {'depth': 2, 'occurrences': [1, 0, 1, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 24.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 22: {'depth': 3, 'occurrences': [1, 0, 1, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=20.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [1, 0, 1, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Node 23: {'depth': 2, 'occurrences': [1, 0, 2, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 20.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 24: {'depth': 3, 'occurrences': [1, 0, 2, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=20.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [1, 0, 2, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Node 25: {'depth': 1, 'occurrences': [1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 24.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 26: {'depth': 2, 'occurrences': [1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 24.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 27: {'depth': 3, 'occurrences': [1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=20.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [1, 1, 0, 0], 'remaining_budget': 3}
+2025-12-08 14:54:11 - DEBUG - Node 28: {'depth': 0, 'occurrences': [2, 0, 0, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 25.00 (ceil_knapsack_dp) at depth 0
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 29: {'depth': 1, 'occurrences': [2, 0, 0, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 25.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 30: {'depth': 2, 'occurrences': [2, 0, 0, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 24.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 20.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 31: {'depth': 3, 'occurrences': [2, 0, 0, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=20.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [2, 0, 0, 0], 'remaining_budget': 6}
+2025-12-08 14:54:11 - DEBUG - Node 32: {'depth': 2, 'occurrences': [2, 0, 1, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 25.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 25.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 33: {'depth': 3, 'occurrences': [2, 0, 1, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=25.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [2, 0, 1, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Node 34: {'depth': 1, 'occurrences': [2, 1, 0, 0], 'remaining_budget': 1}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 23.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 23.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 35: {'depth': 2, 'occurrences': [2, 1, 0, 0], 'remaining_budget': 1}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 23.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 23.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 36: {'depth': 3, 'occurrences': [2, 1, 0, 0], 'remaining_budget': 1}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=23.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [2, 1, 0, 0], 'remaining_budget': 1}
+2025-12-08 14:54:11 - DEBUG - Node 37: {'depth': 0, 'occurrences': [3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 45.00 (ceil_knapsack_dp) at depth 0
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 40.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 38: {'depth': 1, 'occurrences': [3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 45.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 5.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 40.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 39: {'depth': 2, 'occurrences': [3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 44.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 4.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 40.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 40: {'depth': 3, 'occurrences': [3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=40.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [3, 0, 0, 0], 'remaining_budget': 4}
+2025-12-08 14:54:11 - DEBUG - Node 41: {'depth': 2, 'occurrences': [3, 0, 1, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 40.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 40.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 42: {'depth': 3, 'occurrences': [3, 0, 1, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=40.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [3, 0, 1, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Node 43: {'depth': 0, 'occurrences': [4, 0, 0, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 40.00 (ceil_knapsack_dp) at depth 0
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 40.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 44: {'depth': 1, 'occurrences': [4, 0, 0, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 40.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 40.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 45: {'depth': 2, 'occurrences': [4, 0, 0, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 40.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 40.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 46: {'depth': 3, 'occurrences': [4, 0, 0, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=40.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [4, 0, 0, 0], 'remaining_budget': 2}
+2025-12-08 14:54:11 - DEBUG - Node 47: {'depth': 0, 'occurrences': [5, 0, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 0, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 60.00 (ceil_knapsack_dp) at depth 0
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 60.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 48: {'depth': 1, 'occurrences': [5, 0, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 1, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 60.00 (ceil_knapsack_dp) at depth 1
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 60.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 49: {'depth': 2, 'occurrences': [5, 0, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Pruned (budget_infeasible): {'depth': 2, 'child_type': 'right'}
+2025-12-08 14:54:11 - DEBUG - Bound computed: 60.00 (ceil_knapsack_dp) at depth 2
+2025-12-08 14:54:11 - DEBUG -   -> DP solution (remaining): 0.00
+2025-12-08 14:54:11 - DEBUG -   -> Already committed: 60.00
+2025-12-08 14:54:11 - DEBUG -   -> Verification: DP and IP match OK
+2025-12-08 14:54:11 - WARNING - Bound computation failed: name 'ceil_time' is not defined
+2025-12-08 14:54:11 - DEBUG - Node 50: {'depth': 3, 'occurrences': [5, 0, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - DEBUG - Evaluated leaf node: makespan=60.0
+2025-12-08 14:54:11 - DEBUG -   Node: {'depth': 3, 'occurrences': [5, 0, 0, 0], 'remaining_budget': 0}
+2025-12-08 14:54:11 - INFO - Computing final schedule for best solution...
+2025-12-08 14:54:11 - INFO - Metrics saved to: C:\Users\oleda\.vscode\Solving stuff with Gurobi\logs\Dominant Item_20251208_145411_metrics.json
+2025-12-08 14:54:11 - INFO - ============================================================
+2025-12-08 14:54:11 - INFO - Branch-and-bound completed
+2025-12-08 14:54:11 - INFO - Total runtime: 0.014 seconds
+2025-12-08 14:54:11 - INFO - Nodes explored: 50
+2025-12-08 14:54:11 - INFO - Nodes pruned: 17
+2025-12-08 14:54:11 - INFO - Nodes evaluated: 17
+2025-12-08 14:54:11 - INFO - Pruning rate: 34.00%
+2025-12-08 14:54:11 - INFO - ============================================================
+
+======================================================================
+ENUMERATION COMPARISON
+======================================================================
+BnB nodes explored: 50
+Enumeration nodes evaluated: 29
+Ratio (BnB/Enum): 1.72x
+Enumeration makespan: 60.0
+BnB makespan: 60.0
+Match: YES
+======================================================================
