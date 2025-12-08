@@ -1,0 +1,133 @@
+{
+  "instance_name": "Expensive Items",
+  "timestamp": "20251208_145411",
+  "start_time": 1765202051.6337347,
+  "end_time": 1765202051.6367352,
+  "total_runtime": 0.003000497817993164,
+  "nodes_explored": 13,
+  "nodes_pruned": 6,
+  "nodes_evaluated": 4,
+  "best_bound_updates": [
+    {
+      "incumbent": 5.0,
+      "selection": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "node_count": 0,
+      "timestamp": 0.00099945068359375
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 1
+    },
+    {
+      "value": 4.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 2
+    },
+    {
+      "value": 2.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 3
+    },
+    {
+      "value": 4.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 5
+    },
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 7
+    },
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 8
+    },
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 10
+    },
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 11
+    },
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 12
+    }
+  ],
+  "pruning_reasons": {
+    "budget_infeasible": 6
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 2,
+    "budget": 15,
+    "prices": [
+      8,
+      10,
+      9,
+      7
+    ],
+    "durations": [
+      3,
+      5,
+      4,
+      2
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 5.0,
+    "best_selection": [
+      0,
+      1,
+      0,
+      0
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 5.0,
+      "machine_assignments": {
+        "0": [
+          0
+        ],
+        "1": []
+      },
+      "machine_loads": {
+        "0": 5.0,
+        "1": 0.0
+      }
+    },
+    "nodes_explored": 13
+  }
+}

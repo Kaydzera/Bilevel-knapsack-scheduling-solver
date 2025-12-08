@@ -282,9 +282,9 @@ if __name__ == "__main__":
     print("TESTING MULTIPLE INSTANCES")
     print("=" * 70)
     
-    # Run instances with enumeration for verification (logging disabled)
+    # Run instances with enumeration for verification (logging enabled)
     for i in range(len(instances)):
-        run_instance(instances[i], use_enumeration=True, enable_logging=False)
+        run_instance(instances[i], use_enumeration=True, enable_logging=True)
     
     print("\n" + "=" * 70)
     print("ALL TESTS COMPLETED")

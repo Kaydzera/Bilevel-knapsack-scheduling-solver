@@ -1,9 +1,9 @@
 {
   "instance_name": "Tiny Baseline",
-  "timestamp": "20251208_090815",
-  "start_time": 1765181295.821885,
-  "end_time": 1765181295.8460941,
-  "total_runtime": 0.024209022521972656,
+  "timestamp": "20251208_145411",
+  "start_time": 1765202051.233003,
+  "end_time": 1765202051.2540033,
+  "total_runtime": 0.021000385284423828,
   "nodes_explored": 46,
   "nodes_pruned": 11,
   "nodes_evaluated": 18,
@@ -17,7 +17,7 @@
         1
       ],
       "node_count": 0,
-      "timestamp": 0.006211519241333008
+      "timestamp": 0.0060007572174072266
     }
   ],
   "bound_computations": [

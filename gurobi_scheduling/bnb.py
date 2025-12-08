@@ -297,9 +297,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     seen = set()
 
     # Initialize with root node at depth=0 (deciding item 0)
-    # Using inclusive mode (left_child_enabled=False) for now
     init_node = ProblemNode(None, depth=0, remaining_budget=problem.budget_total, n_job_types=n,
-                           m=problem.machines, left_child_enabled=False)
+                           m=problem.machines, branch_type='root')
     frontier.append(init_node)
     seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
 
@@ -410,74 +409,88 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                         print(f"New incumbent makespan={incumbent} selection={incumbent_sel}")
             continue
         
-        # Always try to add right child (increment current item)
-        # We can only prune lower children with the bound, not right children
+        # Get which children can be created based on branch type
+        can_create = node.can_create_children()
         price = problem.prices[node.depth]
         duration = problem.durations[node.depth]
-        right_child = node.increment_current(price, duration=duration)
-
-        if right_child is not None:
-            added = try_add(right_child)
-        else:
-            logger.log_node_pruned("budget_infeasible", 
-                                  {"depth": node.depth, "child_type": "right"})
+        
+        # Try to add right child (increment current item) if allowed
+        if can_create['right']:
+            right_child = node.increment_current(price, duration=duration)
+            if right_child is not None:
+                added = try_add(right_child)
+            else:
+                logger.log_node_pruned("budget_infeasible", 
+                                      {"depth": node.depth, "child_type": "right"})
+        
+        # Try to add left child (decrement current item) if allowed
+        if can_create['left']:
+            left_child = node.decrement_current(price)
+            if left_child is not None:
+                added = try_add(left_child)
+            # If decrement returns None, it means occurrences[depth] is already 0
 
         # Compute bound for potentially adding lower child (commit to next depth)
-        try:
-            # Solve bound using CeilKnapsackSolver (fast DP method)
-            # Remaining items are from depth+1 onwards
-            num_remaining_items = n - (node.depth + 1)
-            if num_remaining_items > 0:
-                # Query the reversed solver for the first num_remaining_items
-                # which correspond to the last num_remaining_items in original order
-                result_ceil = ceil_solver.reconstruct(num_remaining_items, node.remaining_budget)
-                solution_node = result_ceil['max_value']
-            else:
-                solution_node = 0.0
-            
+        if can_create['lower']:
+            try:
+                # Solve bound using CeilKnapsackSolver (fast DP method)
+                # Remaining items are from depth+1 onwards
+                num_remaining_items = n - (node.depth + 1)
+                if num_remaining_items > 0:
+                    # Query the reversed solver for the first num_remaining_items
+                    # which correspond to the last num_remaining_items in original order
+                    result_ceil = ceil_solver.reconstruct(num_remaining_items, node.remaining_budget)
+                    solution_node = result_ceil['max_value']
+                else:
+                    solution_node = 0.0
+                
 
-            '''
-            # # Method 2: IP bound (for verification - currently disabled)
-            # solution_node_ip, ip_selection = compute_ip_bound_exact(problem, node, time_limit=2.0)
-            # 
-            # # Verify that both methods produce the same result
-            # if abs(solution_node - solution_node_ip) > 1e-6:
-            #     error_msg = (
-            #         f"Bound mismatch at depth={node.depth}, budget={node.remaining_budget}!\n"
-            #         f"  CeilKnapsackSolver: {solution_node:.6f}\n"
-            #         f"  IP bound:           {solution_node_ip:.6f}\n"
-            #         f"  Difference:         {abs(solution_node - solution_node_ip):.6f}\n"
-            #         f"  Node occurrences:   {node.job_occurrences}\n"
-            #         f"  Num remaining items: {num_remaining_items}"
-            #     )
-            #     logger.error(error_msg)
-            #     raise ValueError(error_msg)
-            '''
+                '''
+                # # Method 2: IP bound (for verification - currently disabled)
+                # solution_node_ip, ip_selection = compute_ip_bound_exact(problem, node, time_limit=2.0)
+                # 
+                # # Verify that both methods produce the same result
+                # if abs(solution_node - solution_node_ip) > 1e-6:
+                #     error_msg = (
+                #         f"Bound mismatch at depth={node.depth}, budget={node.remaining_budget}!\n"
+                #         f"  CeilKnapsackSolver: {solution_node:.6f}\n"
+                #         f"  IP bound:           {solution_node_ip:.6f}\n"
+                #         f"  Difference:         {abs(solution_node - solution_node_ip):.6f}\n"
+                #         f"  Node occurrences:   {node.job_occurrences}\n"
+                #         f"  Num remaining items: {num_remaining_items}"
+                #     )
+                #     logger.error(error_msg)
+                #     raise ValueError(error_msg)
+                '''
 
-            # Add already committed jobs' contribution using optimized node tracking
-            already_committed_length = node.get_already_committed_length()
+                # Add already committed jobs' contribution using optimized node tracking
+                # For 'right' branch: get_already_committed_length() returns max directly
+                # For 'root'/'left' branch: need to pass duration to distribute jobs at depth
+                if node._branch_type == 'right':
+                    already_committed_length = node.get_already_committed_length()
+                else:
+                    already_committed_length = node.get_already_committed_length(duration_at_depth=duration)
 
-            bound = solution_node + already_committed_length
-            
-            # Log bound computation
-            logger.log_bound_computation(bound, "ceil_knapsack_dp", node.depth)
-            logger.logger.debug(f"  -> DP solution (remaining): {solution_node:.2f}")
-            logger.logger.debug(f"  -> Already committed: {already_committed_length:.2f}")
-            logger.logger.debug(f"  -> Verification: DP and IP match OK")
-            logger.logger.debug(f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms, Speedup={ip_time/ceil_time:.1f}x" if ceil_time > 0 else f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms")
-            
-            # Prune if bound <= incumbent
-            if bound <= incumbent:
-                logger.log_node_pruned("bound_dominated", node_info)
-                continue
-        except Exception as e:
-            logger.warning(f"Bound computation failed: {e}")
+                bound = solution_node + already_committed_length
+                
+                # Log bound computation
+                logger.log_bound_computation(bound, "ceil_knapsack_dp", node.depth)
+                logger.logger.debug(f"  -> DP solution (remaining): {solution_node:.2f}")
+                logger.logger.debug(f"  -> Already committed: {already_committed_length:.2f}")
+                logger.logger.debug(f"  -> Verification: DP and IP match OK")
+                logger.logger.debug(f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms, Speedup={ip_time/ceil_time:.1f}x" if ceil_time > 0 else f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms")
+                
+                # Prune if bound <= incumbent
+                if bound <= incumbent:
+                    logger.log_node_pruned("bound_dominated", node_info)
+                    continue
+            except Exception as e:
+                logger.warning(f"Bound computation failed: {e}")
 
-        # Expand node: lower_child (commit)
-        
-        lower_child = node.commit_current()            
-        if lower_child is not None:
-            added = try_add(lower_child)
+            # Expand node: lower_child (commit)
+            lower_child = node.commit_current(duration=duration)            
+            if lower_child is not None:
+                added = try_add(lower_child)
 
         if nodes >= max_nodes:
             logger.warning(f"Node limit {max_nodes} reached, stopping")
