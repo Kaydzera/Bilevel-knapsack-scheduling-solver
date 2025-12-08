@@ -477,8 +477,6 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                 logger.log_bound_computation(bound, "ceil_knapsack_dp", node.depth)
                 logger.logger.debug(f"  -> DP solution (remaining): {solution_node:.2f}")
                 logger.logger.debug(f"  -> Already committed: {already_committed_length:.2f}")
-                logger.logger.debug(f"  -> Verification: DP and IP match OK")
-                logger.logger.debug(f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms, Speedup={ip_time/ceil_time:.1f}x" if ceil_time > 0 else f"  -> Timing: DP={ceil_time*1000:.2f}ms, IP={ip_time*1000:.2f}ms")
                 
                 # Prune if bound <= incumbent
                 if bound <= incumbent:
