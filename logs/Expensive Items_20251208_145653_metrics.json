@@ -1,0 +1,85 @@
+{
+  "instance_name": "Expensive Items",
+  "timestamp": "20251208_145653",
+  "start_time": 1765202213.3333387,
+  "end_time": 1765202213.3343387,
+  "total_runtime": 0.0009999275207519531,
+  "nodes_explored": 2,
+  "nodes_pruned": 3,
+  "nodes_evaluated": 0,
+  "best_bound_updates": [
+    {
+      "incumbent": 5.0,
+      "selection": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "node_count": 0,
+      "timestamp": 0.0
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 1
+    },
+    {
+      "value": 5.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 2
+    }
+  ],
+  "pruning_reasons": {
+    "bound_dominated": 2,
+    "budget_infeasible": 1
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 2,
+    "budget": 15,
+    "prices": [
+      8,
+      10,
+      9,
+      7
+    ],
+    "durations": [
+      3,
+      5,
+      4,
+      2
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 5.0,
+    "best_selection": [
+      0,
+      1,
+      0,
+      0
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 5.0,
+      "machine_assignments": {
+        "0": [
+          0
+        ],
+        "1": []
+      },
+      "machine_loads": {
+        "0": 5.0,
+        "1": 0.0
+      }
+    },
+    "nodes_explored": 2
+  }
+}

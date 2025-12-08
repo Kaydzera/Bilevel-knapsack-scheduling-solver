@@ -1,0 +1,118 @@
+{
+  "instance_name": "Dominant Item",
+  "timestamp": "20251208_145653",
+  "start_time": 1765202213.2203386,
+  "end_time": 1765202213.222339,
+  "total_runtime": 0.0020003318786621094,
+  "nodes_explored": 6,
+  "nodes_pruned": 7,
+  "nodes_evaluated": 0,
+  "best_bound_updates": [
+    {
+      "incumbent": 60.0,
+      "selection": [
+        5,
+        0,
+        0,
+        0
+      ],
+      "node_count": 0,
+      "timestamp": 0.0010008811950683594
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 9.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 1
+    },
+    {
+      "value": 29.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 2
+    },
+    {
+      "value": 25.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 3
+    },
+    {
+      "value": 45.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 4
+    },
+    {
+      "value": 40.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 5
+    },
+    {
+      "value": 60.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 6
+    }
+  ],
+  "pruning_reasons": {
+    "bound_dominated": 6,
+    "budget_infeasible": 1
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 2,
+    "budget": 10,
+    "prices": [
+      2,
+      5,
+      4,
+      3
+    ],
+    "durations": [
+      20,
+      3,
+      5,
+      4
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 60.0,
+    "best_selection": [
+      5,
+      0,
+      0,
+      0
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 60.0,
+      "machine_assignments": {
+        "0": [
+          0,
+          1,
+          2
+        ],
+        "1": [
+          3,
+          4
+        ]
+      },
+      "machine_loads": {
+        "0": 60.0,
+        "1": 40.0
+      }
+    },
+    "nodes_explored": 6
+  }
+}
