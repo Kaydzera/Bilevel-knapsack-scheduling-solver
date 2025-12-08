@@ -1,0 +1,104 @@
+{
+  "Tiny Baseline_2_10_[(5, 3), (8, 6), (3, 2), (7, 4)]": {
+    "makespan": 10.0,
+    "selection": [
+      0,
+      0,
+      1,
+      2
+    ],
+    "nodes_evaluated": 27
+  },
+  "Uniform Ratios_2_12_[(4, 2), (6, 3), (8, 4), (10, 5)]": {
+    "makespan": 16.0,
+    "selection": [
+      0,
+      0,
+      3,
+      0
+    ],
+    "nodes_evaluated": 46
+  },
+  "Dominant Item_2_10_[(20, 2), (3, 5), (5, 4), (4, 3)]": {
+    "makespan": 60.0,
+    "selection": [
+      5,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 29
+  },
+  "Large Budget_2_20_[(3, 2), (7, 3), (5, 4), (9, 5)]": {
+    "makespan": 24.0,
+    "selection": [
+      1,
+      6,
+      0,
+      0
+    ],
+    "nodes_evaluated": 191
+  },
+  "More Machines_4_15_[(6, 3), (8, 4), (4, 2), (10, 5)]": {
+    "makespan": 12.0,
+    "selection": [
+      5,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 83
+  },
+  "Extreme Ratios_2_12_[(15, 1), (2, 10), (8, 4), (6, 3)]": {
+    "makespan": 90.0,
+    "selection": [
+      11,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 63
+  },
+  "Five Jobs_3_15_[(4, 2), (6, 3), (8, 5), (5, 4), (7, 3)]": {
+    "makespan": 14.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      4
+    ],
+    "nodes_evaluated": 167
+  },
+  "Tight Budget_2_6_[(10, 5), (8, 4), (6, 3), (4, 2)]": {
+    "makespan": 10.0,
+    "selection": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 9
+  },
+  "Expensive Items_2_15_[(3, 8), (5, 10), (4, 9), (2, 7)]": {
+    "makespan": 5.0,
+    "selection": [
+      0,
+      1,
+      0,
+      0
+    ],
+    "nodes_evaluated": 6
+  },
+  "Mixed Characteristics_3_18_[(12, 2), (3, 8), (7, 4), (5, 5), (9, 3)]": {
+    "makespan": 36.0,
+    "selection": [
+      7,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 172
+  }
+}
