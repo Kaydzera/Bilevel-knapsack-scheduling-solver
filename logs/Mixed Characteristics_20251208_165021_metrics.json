@@ -1,12 +1,12 @@
 {
   "instance_name": "Mixed Characteristics",
-  "timestamp": "20251208_145653",
-  "start_time": 1765202213.3363378,
-  "end_time": 1765202213.3436234,
-  "total_runtime": 0.007285594940185547,
-  "nodes_explored": 38,
-  "nodes_pruned": 37,
-  "nodes_evaluated": 1,
+  "timestamp": "20251208_165021",
+  "start_time": 1765209021.4089205,
+  "end_time": 1765209021.418923,
+  "total_runtime": 0.010002374649047852,
+  "nodes_explored": 39,
+  "nodes_pruned": 38,
+  "nodes_evaluated": 2,
   "best_bound_updates": [
     {
       "incumbent": 36.0,
@@ -18,7 +18,7 @@
         0
       ],
       "node_count": 0,
-      "timestamp": 0.001285552978515625
+      "timestamp": 0.0019996166229248047
     }
   ],
   "bound_computations": [
@@ -265,13 +265,6 @@
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
-      "node_count": 36
-    },
-    {
-      "value": 36.0,
-      "type": "ceil_knapsack_dp",
-      "depth": 0,
-      "time": null,
       "node_count": 37
     },
     {
@@ -280,11 +273,18 @@
       "depth": 0,
       "time": null,
       "node_count": 38
+    },
+    {
+      "value": 36.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 39
     }
   ],
   "pruning_reasons": {
     "bound_dominated": 25,
-    "budget_infeasible": 12
+    "budget_infeasible": 13
   },
   "problem_data": {
     "n_job_types": 5,
@@ -341,6 +341,6 @@
         "2": 36.0
       }
     },
-    "nodes_explored": 38
+    "nodes_explored": 39
   }
 }
