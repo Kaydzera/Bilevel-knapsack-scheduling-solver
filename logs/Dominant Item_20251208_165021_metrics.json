@@ -1,9 +1,9 @@
 {
   "instance_name": "Dominant Item",
-  "timestamp": "20251208_145653",
-  "start_time": 1765202213.2203386,
-  "end_time": 1765202213.222339,
-  "total_runtime": 0.0020003318786621094,
+  "timestamp": "20251208_165021",
+  "start_time": 1765209021.1482363,
+  "end_time": 1765209021.151236,
+  "total_runtime": 0.0029997825622558594,
   "nodes_explored": 6,
   "nodes_pruned": 7,
   "nodes_evaluated": 0,
@@ -17,7 +17,7 @@
         0
       ],
       "node_count": 0,
-      "timestamp": 0.0010008811950683594
+      "timestamp": 0.00099945068359375
     }
   ],
   "bound_computations": [

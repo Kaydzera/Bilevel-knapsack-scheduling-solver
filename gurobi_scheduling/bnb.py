@@ -383,6 +383,27 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                         print(f"New incumbent makespan={incumbent} selection={incumbent_sel}")
             continue
         '''
+
+        # Get which children can be created based on branch type
+        can_create = node.can_create_children()
+        price = problem.prices[node.depth]
+        duration = problem.durations[node.depth]
+        
+        # Try to add right child (increment current item) if allowed
+        if can_create['right']:
+            right_child = node.increment_current(price, duration=duration)
+            if right_child is not None:
+                added = try_add(right_child)
+            else:
+                logger.log_node_pruned("budget_infeasible", 
+                                      {"depth": node.depth, "child_type": "right"})
+        
+        # Try to add left child (decrement current item) if allowed
+        if can_create['left']:
+            left_child = node.decrement_current(price)
+            if left_child is not None:
+                added = try_add(left_child)
+            # If decrement returns None, it means occurrences[depth] is already 0
         # Depth semantics: depth=N means we are DECIDING item N
         # The current item at depth has a committed amount in occurrences[depth]
 
@@ -409,26 +430,7 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                         print(f"New incumbent makespan={incumbent} selection={incumbent_sel}")
             continue
         
-        # Get which children can be created based on branch type
-        can_create = node.can_create_children()
-        price = problem.prices[node.depth]
-        duration = problem.durations[node.depth]
-        
-        # Try to add right child (increment current item) if allowed
-        if can_create['right']:
-            right_child = node.increment_current(price, duration=duration)
-            if right_child is not None:
-                added = try_add(right_child)
-            else:
-                logger.log_node_pruned("budget_infeasible", 
-                                      {"depth": node.depth, "child_type": "right"})
-        
-        # Try to add left child (decrement current item) if allowed
-        if can_create['left']:
-            left_child = node.decrement_current(price)
-            if left_child is not None:
-                added = try_add(left_child)
-            # If decrement returns None, it means occurrences[depth] is already 0
+
 
         # Compute bound for potentially adding lower child (commit to next depth)
         if can_create['lower']:
@@ -680,6 +682,77 @@ At depth 4 and 'occurrences': [1, 1, 1, 0], the occurence-amount of all four ite
 This solution has makespan 10, so we do not update the incumbent of 16.
 
 At depth 4 and 'occurrences': [1, 1, 1, 1], the node cannot exist, as we would exceed the budget of 12 (2 + 3 + 4 + 5 = 14 > 12).
+
+
+
+
+
+
+
+No its not:
+Example 1: Starting with heuristic [0,0,2,0]
+
+depth 0, [0,0,2,0], remaining_budget = 6 - 0*5 = 6
+Lower child: depth 1, [0,0,2,0], remaining_budget = 6 - 05 - 04 = 6 ✓
+Lower child: depth 2, [0,0,2,0], remaining_budget = 6 - 05 - 04 - 2*3 = 0 ✓
+Lower child: depth 3, [0,0,2,0], remaining_budget = 0 - 0*2 = 0 ✓
+Example 2: Starting with [1,2,1,1], budget=10
+
+depth 0, [1,2,1,1], remaining_budget = 10 - 1*5 = 5
+Lower child: depth 1, [1,2,1,1], remaining_budget = 5 - 2*4 = -3 ✗ EXCEEDS!
+Fallback: depth 1, [1,0,1,1], remaining_budget = 5 - 0*4 = 5 ✓
+Lower child: depth 2, [1,0,1,1], remaining_budget = 5 - 1*3 = 2 ✓
+Lower child: depth 3, [1,0,1,1], remaining_budget = 2 - 1*2 = 0 ✓
+Example 3: Starting with [2,3,2,1], budget=12
+
+depth 0, [2,3,2,1], remaining_budget = 12 - 2*5 = 2
+Lower child: depth 1, [2,3,2,1], remaining_budget = 2 - 3*4 = -10 ✗ EXCEEDS!
+Fallback: depth 1, [2,0,2,1], remaining_budget = 2 - 0*4 = 2 ✓
+Lower child: depth 2, [2,0,2,1], remaining_budget = 2 - 2*3 = -4 ✗ EXCEEDS!
+Fallback: depth 2, [2,0,0,1], remaining_budget = 2 - 0*3 = 2 ✓
+Lower child: depth 3, [2,0,0,1], remaining_budget = 2 - 1*2 = 0 ✓
+Example 4: Starting with [1,1,1,1], budget=15
+
+depth 0, [1,1,1,1], remaining_budget = 15 - 1*5 = 10
+Lower child: depth 1, [1,1,1,1], remaining_budget = 10 - 1*4 = 6 ✓
+Lower child: depth 2, [1,1,1,1], remaining_budget = 6 - 1*3 = 3 ✓
+Lower child: depth 3, [1,1,1,1], remaining_budget = 3 - 1*2 = 1 ✓
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 '''

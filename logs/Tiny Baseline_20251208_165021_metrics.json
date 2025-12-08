@@ -1,12 +1,12 @@
 {
   "instance_name": "Tiny Baseline",
-  "timestamp": "20251208_145653",
-  "start_time": 1765202213.1960533,
-  "end_time": 1765202213.2083395,
-  "total_runtime": 0.012286186218261719,
-  "nodes_explored": 30,
-  "nodes_pruned": 21,
-  "nodes_evaluated": 5,
+  "timestamp": "20251208_165021",
+  "start_time": 1765209021.1082368,
+  "end_time": 1765209021.1252367,
+  "total_runtime": 0.01699995994567871,
+  "nodes_explored": 35,
+  "nodes_pruned": 26,
+  "nodes_evaluated": 10,
   "best_bound_updates": [
     {
       "incumbent": 10.0,
@@ -17,7 +17,7 @@
         1
       ],
       "node_count": 0,
-      "timestamp": 0.006285190582275391
+      "timestamp": 0.004999399185180664
     }
   ],
   "bound_computations": [
@@ -68,63 +68,56 @@
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
-      "node_count": 8
+      "node_count": 9
     },
     {
       "value": 9.0,
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
-      "node_count": 9
+      "node_count": 10
     },
     {
       "value": 15.0,
       "type": "ceil_knapsack_dp",
       "depth": 1,
       "time": null,
-      "node_count": 10
+      "node_count": 11
     },
     {
       "value": 15.0,
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
-      "node_count": 11
+      "node_count": 12
     },
     {
       "value": 8.0,
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
-      "node_count": 13
+      "node_count": 15
     },
     {
       "value": 8.0,
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
-      "node_count": 14
+      "node_count": 16
     },
     {
       "value": 15.0,
       "type": "ceil_knapsack_dp",
       "depth": 0,
       "time": null,
-      "node_count": 15
+      "node_count": 17
     },
     {
       "value": 15.0,
       "type": "ceil_knapsack_dp",
       "depth": 1,
       "time": null,
-      "node_count": 16
-    },
-    {
-      "value": 12.0,
-      "type": "ceil_knapsack_dp",
-      "depth": 2,
-      "time": null,
-      "node_count": 17
+      "node_count": 18
     },
     {
       "value": 12.0,
@@ -134,42 +127,21 @@
       "node_count": 19
     },
     {
-      "value": 6.0,
-      "type": "ceil_knapsack_dp",
-      "depth": 2,
-      "time": null,
-      "node_count": 21
-    },
-    {
-      "value": 8.0,
+      "value": 12.0,
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
       "node_count": 22
     },
     {
-      "value": 8.0,
+      "value": 6.0,
       "type": "ceil_knapsack_dp",
-      "depth": 1,
-      "time": null,
-      "node_count": 23
-    },
-    {
-      "value": 12.0,
-      "type": "ceil_knapsack_dp",
-      "depth": 0,
-      "time": null,
-      "node_count": 24
-    },
-    {
-      "value": 12.0,
-      "type": "ceil_knapsack_dp",
-      "depth": 1,
+      "depth": 2,
       "time": null,
       "node_count": 25
     },
     {
-      "value": 12.0,
+      "value": 8.0,
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
@@ -178,28 +150,56 @@
     {
       "value": 8.0,
       "type": "ceil_knapsack_dp",
-      "depth": 2,
+      "depth": 1,
+      "time": null,
+      "node_count": 27
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
       "time": null,
       "node_count": 28
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 29
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 30
     },
     {
       "value": 8.0,
       "type": "ceil_knapsack_dp",
       "depth": 2,
       "time": null,
-      "node_count": 29
+      "node_count": 33
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 34
     },
     {
       "value": 10.0,
       "type": "ceil_knapsack_dp",
       "depth": 0,
       "time": null,
-      "node_count": 30
+      "node_count": 35
     }
   ],
   "pruning_reasons": {
     "bound_dominated": 13,
-    "budget_infeasible": 8
+    "budget_infeasible": 13
   },
   "problem_data": {
     "n_job_types": 4,
@@ -244,6 +244,6 @@
         "1": 7.0
       }
     },
-    "nodes_explored": 30
+    "nodes_explored": 35
   }
 }

@@ -1,0 +1,163 @@
+{
+  "instance_name": "Tight Budget",
+  "timestamp": "20251208_165021",
+  "start_time": 1765209021.3939207,
+  "end_time": 1765209021.40092,
+  "total_runtime": 0.00699925422668457,
+  "nodes_explored": 19,
+  "nodes_pruned": 11,
+  "nodes_evaluated": 9,
+  "best_bound_updates": [
+    {
+      "incumbent": 6.0,
+      "selection": [
+        0,
+        0,
+        2,
+        0
+      ],
+      "node_count": 0,
+      "timestamp": 0.0009996891021728516
+    },
+    {
+      "incumbent": 8.0,
+      "selection": [
+        0,
+        0,
+        0,
+        3
+      ],
+      "node_count": 7,
+      "timestamp": 0.002998828887939453
+    },
+    {
+      "incumbent": 10.0,
+      "selection": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "node_count": 19,
+      "timestamp": 0.0060002803802490234
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 1
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 2
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 3
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 8
+    },
+    {
+      "value": 6.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 11
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 12
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 13
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "time": null,
+      "node_count": 16
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "time": null,
+      "node_count": 17
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "time": null,
+      "node_count": 18
+    }
+  ],
+  "pruning_reasons": {
+    "budget_infeasible": 10,
+    "bound_dominated": 1
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 2,
+    "budget": 6,
+    "prices": [
+      5,
+      4,
+      3,
+      2
+    ],
+    "durations": [
+      10,
+      8,
+      6,
+      4
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 10.0,
+    "best_selection": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 10.0,
+      "machine_assignments": {
+        "0": [
+          0
+        ],
+        "1": []
+      },
+      "machine_loads": {
+        "0": 10.0,
+        "1": 0.0
+      }
+    },
+    "nodes_explored": 19
+  }
+}
