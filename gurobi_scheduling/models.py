@@ -257,7 +257,7 @@ class ProblemNode:
         return ProblemNode(new_occ, self.depth, self.remaining_budget + price, self.n_job_types,
                           m=self._m, branch_type='left', machine_loads=new_loads)
 
-    def commit_current(self, duration=None, optional_price=None, optional_n_initial_occurences=None):
+    def commit_current(self, duration=None, price_at_new_depth=None, optional_price=None, optional_n_initial_occurences=None):
         """Create a child node that moves to the next job type.
         
         This is the 'lower child' branch: finalize the current job type
@@ -271,6 +271,7 @@ class ProblemNode:
         
         Args:
             duration: Duration of the current job type (required for root/left branches)
+            price_at_new_depth: Price of job at the NEW depth (for budget calculation)
             optional_price: If provided with optional_n_initial_occurences, 
                            pre-commits that many copies
             optional_n_initial_occurences: Number of copies to pre-commit
@@ -310,8 +311,25 @@ class ProblemNode:
             job_occ[self.depth] += optional_n_initial_occurences
             return ProblemNode(job_occ, self.depth + 1, rem_budget, self.n_job_types,
                               m=self._m, branch_type='root', machine_loads=new_loads)
-        # If no optional parameters, just move to next depth
-        return ProblemNode(self.job_occurrences, self.depth + 1, self.remaining_budget, self.n_job_types,
+        
+        # Calculate budget to spend on the NEW depth we're moving to
+        new_depth = self.depth + 1
+        new_budget = self.remaining_budget
+        new_occurrences = list(self.job_occurrences)
+        
+        if new_depth < self.n_job_types and price_at_new_depth is not None:
+            # Spend budget for jobs at the new depth
+            job_count_at_new_depth = new_occurrences[new_depth]
+            cost_at_new_depth = job_count_at_new_depth * price_at_new_depth
+            new_budget -= cost_at_new_depth
+            
+            # Fallback: if budget would be negative, set occurrence at new depth to 0
+            if new_budget < 0:
+                new_occurrences[new_depth] = 0
+                new_budget = self.remaining_budget  # Reset budget without that job
+        
+        # Move to next depth
+        return ProblemNode(new_occurrences, new_depth, new_budget, self.n_job_types,
                           m=self._m, branch_type='root', machine_loads=new_loads)
 
     def can_create_children(self):
@@ -525,6 +543,16 @@ if __name__ == "__main__":
     assert sorted(lower._machine_loads) == [5.0, 5.0], "Lower should have distributed 2 jobs"
     print("PASS Complex tree builds correctly")
 
+
+
+
+
+
+
+
+
+
+
     # Test setup: 3 job types, 2 machines, budget 20
     # Prices: [2, 3, 4], Durations: [5, 6, 7]
     
@@ -535,7 +563,7 @@ if __name__ == "__main__":
     print("Starting with job_occurrences=[1,2,1] at depth=0")
     
     # Start with a root node that has [1,2,1] jobs
-    start = ProblemNode([1, 2, 1], depth=0, remaining_budget=20, n_job_types=n_jobs, m=m, branch_type='root')
+    start = ProblemNode([1, 2, 1], depth=0, remaining_budget=18, n_job_types=n_jobs, m=m, branch_type='root')
     print(f"\n1. Start (root): {start}")
     print(f"   Branch type: {start._branch_type}")
     print(f"   Machine loads: {start._machine_loads}")

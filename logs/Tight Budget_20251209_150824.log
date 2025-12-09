@@ -1,0 +1,108 @@
+2025-12-09 15:08:24 - INFO - Initialized logger for instance: Tight Budget
+2025-12-09 15:08:24 - INFO - Run ID: Tight Budget_20251209_150824
+2025-12-09 15:08:24 - INFO - ============================================================
+2025-12-09 15:08:24 - INFO - Starting branch-and-bound solver
+2025-12-09 15:08:24 - INFO - Problem: {'n_job_types': 4, 'machines': 2, 'budget': 6, 'prices': [5, 4, 3, 2], 'durations': [10, 8, 6, 4], 'max_nodes': 100000}
+2025-12-09 15:08:24 - INFO - ============================================================
+2025-12-09 15:08:24 - INFO - Computing initial heuristic solution...
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - INFO - NEW INCUMBENT: 6.0
+2025-12-09 15:08:24 - INFO - Selection: [0, 0, 2, 0]
+2025-12-09 15:08:24 - INFO - Found at node: 0
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - INFO - Initializing CeilKnapsackSolver with reversed item order...
+2025-12-09 15:08:24 - INFO - CeilKnapsackSolver initialized successfully
+2025-12-09 15:08:24 - INFO - Starting branch-and-bound with max_nodes=100000
+2025-12-09 15:08:24 - DEBUG - Node 1: {'depth': 0, 'occurrences': [0, 0, 2, 0], 'remaining_budget': 6, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Bound: 12.00 (ceil_knapsack_dp) = remaining 12.00 + committed 0.00 at depth 0
+2025-12-09 15:08:24 - DEBUG - Node 2: {'depth': 1, 'occurrences': [0, 0, 2, 0], 'remaining_budget': 6, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Bound: 10.00 (ceil_knapsack_dp) = remaining 10.00 + committed 0.00 at depth 1
+2025-12-09 15:08:24 - DEBUG - Node 3: {'depth': 2, 'occurrences': [0, 0, 2, 0], 'remaining_budget': 0, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 3
+2025-12-09 15:08:24 - DEBUG - Bound: 6.00 (ceil_knapsack_dp) = remaining 0.00 + committed 6.00 at depth 2
+2025-12-09 15:08:24 - DEBUG - Pruned by bound_dominated at node 3
+2025-12-09 15:08:24 - DEBUG - Node 4: {'depth': 2, 'occurrences': [0, 0, 1, 0], 'remaining_budget': 3, 'node_type': 'left'}
+2025-12-09 15:08:24 - DEBUG - Bound: 10.00 (ceil_knapsack_dp) = remaining 4.00 + committed 6.00 at depth 2
+2025-12-09 15:08:24 - DEBUG - Node 5: {'depth': 3, 'occurrences': [0, 0, 1, 0], 'remaining_budget': 3, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 1, 0], 'remaining_budget': 3, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Node 6: {'depth': 3, 'occurrences': [0, 0, 1, 1], 'remaining_budget': 1, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 6
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=6.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 1, 1], 'remaining_budget': 1, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Node 7: {'depth': 2, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 6, 'node_type': 'left'}
+2025-12-09 15:08:24 - DEBUG - Bound: 8.00 (ceil_knapsack_dp) = remaining 8.00 + committed 0.00 at depth 2
+2025-12-09 15:08:24 - DEBUG - Node 8: {'depth': 3, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 6, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=0.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 6, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Node 9: {'depth': 3, 'occurrences': [0, 0, 0, 1], 'remaining_budget': 4, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=4.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 0, 1], 'remaining_budget': 4, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Node 10: {'depth': 3, 'occurrences': [0, 0, 0, 2], 'remaining_budget': 2, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=4.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 0, 2], 'remaining_budget': 2, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Node 11: {'depth': 3, 'occurrences': [0, 0, 0, 3], 'remaining_budget': 0, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 11
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 0, 0, 3], 'remaining_budget': 0, 'node_type': 'right'}
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - INFO - NEW INCUMBENT: 8.0
+2025-12-09 15:08:24 - INFO - Selection: [0, 0, 0, 3]
+2025-12-09 15:08:24 - INFO - Found at node: 11
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - DEBUG - Node 12: {'depth': 1, 'occurrences': [0, 1, 2, 0], 'remaining_budget': 2, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 12
+2025-12-09 15:08:24 - DEBUG - Bound: 12.00 (ceil_knapsack_dp) = remaining 4.00 + committed 8.00 at depth 1
+2025-12-09 15:08:24 - DEBUG - Node 13: {'depth': 2, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 2, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 13
+2025-12-09 15:08:24 - DEBUG - Bound: 12.00 (ceil_knapsack_dp) = remaining 4.00 + committed 8.00 at depth 2
+2025-12-09 15:08:24 - DEBUG - Node 14: {'depth': 3, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 2, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 2, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Node 15: {'depth': 3, 'occurrences': [0, 1, 0, 1], 'remaining_budget': 0, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 15
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=8.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [0, 1, 0, 1], 'remaining_budget': 0, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Node 16: {'depth': 0, 'occurrences': [1, 0, 2, 0], 'remaining_budget': 1, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 16
+2025-12-09 15:08:24 - DEBUG - Bound: 10.00 (ceil_knapsack_dp) = remaining 0.00 + committed 10.00 at depth 0
+2025-12-09 15:08:24 - DEBUG - Node 17: {'depth': 1, 'occurrences': [1, 0, 2, 0], 'remaining_budget': 1, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 17
+2025-12-09 15:08:24 - DEBUG - Bound: 10.00 (ceil_knapsack_dp) = remaining 0.00 + committed 10.00 at depth 1
+2025-12-09 15:08:24 - DEBUG - Node 18: {'depth': 2, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 1, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 18
+2025-12-09 15:08:24 - DEBUG - Bound: 10.00 (ceil_knapsack_dp) = remaining 0.00 + committed 10.00 at depth 2
+2025-12-09 15:08:24 - DEBUG - Node 19: {'depth': 3, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 1, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 19
+2025-12-09 15:08:24 - DEBUG - Evaluated leaf node: makespan=10.0
+2025-12-09 15:08:24 - DEBUG -   Node: {'depth': 3, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 1, 'node_type': 'root'}
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - INFO - NEW INCUMBENT: 10.0
+2025-12-09 15:08:24 - INFO - Selection: [1, 0, 0, 0]
+2025-12-09 15:08:24 - INFO - Found at node: 19
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - INFO - Computing final schedule for best solution...
+2025-12-09 15:08:24 - INFO - Metrics saved to: C:\Users\oleda\.vscode\Solving stuff with Gurobi\logs\Tight Budget_20251209_150824_metrics.json
+2025-12-09 15:08:24 - INFO - ============================================================
+2025-12-09 15:08:24 - INFO - Branch-and-bound completed
+2025-12-09 15:08:24 - INFO - Total runtime: 0.005 seconds
+2025-12-09 15:08:24 - INFO - Nodes explored: 19
+2025-12-09 15:08:24 - INFO - Nodes pruned: 11
+2025-12-09 15:08:24 - INFO - Nodes evaluated: 9
+2025-12-09 15:08:24 - INFO - Pruning rate: 57.89%
+2025-12-09 15:08:24 - INFO - Final Result:
+2025-12-09 15:08:24 - INFO -   Makespan: 10.0
+2025-12-09 15:08:24 - INFO -   Selection: [1, 0, 0, 0]
+2025-12-09 15:08:24 - INFO -   Schedule makespan: 10.0
+2025-12-09 15:08:24 - INFO - ============================================================
+
+======================================================================
+ENUMERATION COMPARISON
+======================================================================
+BnB nodes explored: 19
+Enumeration nodes evaluated: 9
+Ratio (BnB/Enum): 2.11x
+Enumeration makespan: 10.0
+BnB makespan: 10.0
+Match: YES
+======================================================================
