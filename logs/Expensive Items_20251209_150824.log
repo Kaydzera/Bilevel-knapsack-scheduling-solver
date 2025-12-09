@@ -1,0 +1,47 @@
+2025-12-09 15:08:24 - INFO - Initialized logger for instance: Expensive Items
+2025-12-09 15:08:24 - INFO - Run ID: Expensive Items_20251209_150824
+2025-12-09 15:08:24 - INFO - ============================================================
+2025-12-09 15:08:24 - INFO - Starting branch-and-bound solver
+2025-12-09 15:08:24 - INFO - Problem: {'n_job_types': 4, 'machines': 2, 'budget': 15, 'prices': [8, 10, 9, 7], 'durations': [3, 5, 4, 2], 'max_nodes': 100000}
+2025-12-09 15:08:24 - INFO - ============================================================
+2025-12-09 15:08:24 - INFO - Computing initial heuristic solution...
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - INFO - NEW INCUMBENT: 5.0
+2025-12-09 15:08:24 - INFO - Selection: [0, 1, 0, 0]
+2025-12-09 15:08:24 - INFO - Found at node: 0
+2025-12-09 15:08:24 - INFO - ==================================================
+2025-12-09 15:08:24 - INFO - Initializing CeilKnapsackSolver with reversed item order...
+2025-12-09 15:08:24 - INFO - CeilKnapsackSolver initialized successfully
+2025-12-09 15:08:24 - INFO - Starting branch-and-bound with max_nodes=100000
+2025-12-09 15:08:24 - DEBUG - Node 1: {'depth': 0, 'occurrences': [0, 1, 0, 0], 'remaining_budget': 15, 'node_type': 'root'}
+2025-12-09 15:08:24 - DEBUG - Bound: 5.00 (ceil_knapsack_dp) = remaining 5.00 + committed 0.00 at depth 0
+2025-12-09 15:08:24 - DEBUG - Pruned by bound_dominated at node 1
+2025-12-09 15:08:24 - DEBUG - Node 2: {'depth': 0, 'occurrences': [1, 1, 0, 0], 'remaining_budget': 7, 'node_type': 'right'}
+2025-12-09 15:08:24 - DEBUG - Pruned by budget_infeasible at node 2
+2025-12-09 15:08:24 - DEBUG - Bound: 5.00 (ceil_knapsack_dp) = remaining 2.00 + committed 3.00 at depth 0
+2025-12-09 15:08:24 - DEBUG - Pruned by bound_dominated at node 2
+2025-12-09 15:08:24 - INFO - Computing final schedule for best solution...
+2025-12-09 15:08:24 - INFO - Metrics saved to: C:\Users\oleda\.vscode\Solving stuff with Gurobi\logs\Expensive Items_20251209_150824_metrics.json
+2025-12-09 15:08:24 - INFO - ============================================================
+2025-12-09 15:08:24 - INFO - Branch-and-bound completed
+2025-12-09 15:08:24 - INFO - Total runtime: 0.001 seconds
+2025-12-09 15:08:24 - INFO - Nodes explored: 2
+2025-12-09 15:08:24 - INFO - Nodes pruned: 3
+2025-12-09 15:08:24 - INFO - Nodes evaluated: 0
+2025-12-09 15:08:24 - INFO - Pruning rate: 150.00%
+2025-12-09 15:08:24 - INFO - Final Result:
+2025-12-09 15:08:24 - INFO -   Makespan: 5.0
+2025-12-09 15:08:24 - INFO -   Selection: [0, 1, 0, 0]
+2025-12-09 15:08:24 - INFO -   Schedule makespan: 5.0
+2025-12-09 15:08:24 - INFO - ============================================================
+
+======================================================================
+ENUMERATION COMPARISON
+======================================================================
+BnB nodes explored: 2
+Enumeration nodes evaluated: 6
+Ratio (BnB/Enum): 0.33x
+Enumeration makespan: 5.0
+BnB makespan: 5.0
+Match: YES
+======================================================================

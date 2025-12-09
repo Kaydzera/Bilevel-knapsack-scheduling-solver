@@ -1,9 +1,9 @@
 {
   "instance_name": "Expensive Items",
-  "timestamp": "20251208_165021",
-  "start_time": 1765209021.4039207,
-  "end_time": 1765209021.4059212,
-  "total_runtime": 0.002000570297241211,
+  "timestamp": "20251209_150824",
+  "start_time": 1765289304.5106676,
+  "end_time": 1765289304.5116658,
+  "total_runtime": 0.0009982585906982422,
   "nodes_explored": 2,
   "nodes_pruned": 3,
   "nodes_evaluated": 0,
@@ -17,7 +17,7 @@
         0
       ],
       "node_count": 0,
-      "timestamp": 0.0009996891021728516
+      "timestamp": 0.0
     }
   ],
   "bound_computations": [
@@ -25,14 +25,12 @@
       "value": 5.0,
       "type": "ceil_knapsack_dp",
       "depth": 0,
-      "time": null,
       "node_count": 1
     },
     {
       "value": 5.0,
       "type": "ceil_knapsack_dp",
       "depth": 0,
-      "time": null,
       "node_count": 2
     }
   ],

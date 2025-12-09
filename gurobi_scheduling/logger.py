@@ -133,6 +133,17 @@ class BnBLogger:
         if self.metrics['nodes_explored'] > 0:
             prune_rate = 100 * self.metrics['nodes_pruned'] / self.metrics['nodes_explored']
             self.logger.info(f"Pruning rate: {prune_rate:.2f}%")
+        
+        # Log final result details
+        if final_result:
+            self.logger.info("Final Result:")
+            self.logger.info(f"  Makespan: {final_result.get('best_obj', 'N/A')}")
+            self.logger.info(f"  Selection: {final_result.get('best_selection', 'N/A')}")
+            if 'best_schedule' in final_result:
+                schedule = final_result['best_schedule']
+                if isinstance(schedule, dict) and 'makespan' in schedule:
+                    self.logger.info(f"  Schedule makespan: {schedule['makespan']}")
+        
         self.logger.info("=" * 60)
     
     def log_node_visit(self, node_info: Dict[str, Any]):
@@ -144,12 +155,12 @@ class BnBLogger:
         self.metrics["nodes_explored"] += 1
         self.logger.debug(f"Node {self.metrics['nodes_explored']}: {node_info}")
     
-    def log_node_pruned(self, reason: str, node_info: Optional[Dict[str, Any]] = None):
+    def log_node_pruned(self, reason: str, node_number: Optional[int] = None):
         """Log pruning a node.
         
         Args:
             reason: Why the node was pruned (e.g., "bound", "infeasible")
-            node_info: Optional dict with node details
+            node_number: Optional node number (simplified from full node_info)
         """
         self.metrics["nodes_pruned"] += 1
         
@@ -158,8 +169,8 @@ class BnBLogger:
             self.metrics["pruning_reasons"][reason] = 0
         self.metrics["pruning_reasons"][reason] += 1
         
-        if node_info:
-            self.logger.debug(f"Pruned ({reason}): {node_info}")
+        if node_number is not None:
+            self.logger.debug(f"Pruned by {reason} at node {node_number}")
         else:
             self.logger.debug(f"Node pruned: {reason}")
     
@@ -199,27 +210,29 @@ class BnBLogger:
         self.logger.info("=" * 50)
     
     def log_bound_computation(self, bound_value: float, bound_type: str,
-                             node_depth: int, computation_time: Optional[float] = None):
+                             node_depth: int, remaining_bound: Optional[float] = None, 
+                             committed_value: Optional[float] = None):
         """Log computing an upper bound.
         
         Args:
             bound_value: The bound value computed
             bound_type: Type of bound (e.g., "exact_ip", "fractional", "dynamic_prog")
             node_depth: Depth in the tree where bound was computed
-            computation_time: Time taken to compute bound (seconds)
+            remaining_bound: Bound on remaining items
+            committed_value: Value of already committed items
         """
         bound_info = {
             "value": bound_value,
             "type": bound_type,
             "depth": node_depth,
-            "time": computation_time,
             "node_count": self.metrics["nodes_explored"]
         }
         self.metrics["bound_computations"].append(bound_info)
         
-        if computation_time:
-            self.logger.debug(f"Bound computed: {bound_value:.2f} ({bound_type}) "
-                            f"at depth {node_depth} in {computation_time:.4f}s")
+        if remaining_bound is not None and committed_value is not None:
+            self.logger.debug(f"Bound: {bound_value:.2f} ({bound_type}) = "
+                            f"remaining {remaining_bound:.2f} + committed {committed_value:.2f} "
+                            f"at depth {node_depth}")
         else:
             self.logger.debug(f"Bound computed: {bound_value:.2f} ({bound_type}) "
                             f"at depth {node_depth}")

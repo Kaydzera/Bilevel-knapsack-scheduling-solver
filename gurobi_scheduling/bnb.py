@@ -296,14 +296,9 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     frontier = deque()
     seen = set()
 
-    # Initialize with root node at depth=0 (deciding item 0)
-    init_node = ProblemNode(None, depth=0, remaining_budget=problem.budget_total, n_job_types=n,
-                           m=problem.machines, branch_type='root')
-    frontier.append(init_node)
-    seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
-
     # Get initial incumbent from heuristic
     logger.info("Computing initial heuristic solution...")
+
     init_state = initialize_bnb_state_from_heuristic(
         [type("_", (), {'duration':d,'price':p})() for d,p in zip(problem.durations, problem.prices)],
         problem.budget_total, problem.machines, verbose=False)
@@ -314,9 +309,19 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     if verbose:
         print(f"Initial incumbent from heuristic: makespan={incumbent}, selection={incumbent_sel}")
 
-    logger.info(f"Starting branch-and-bound with max_nodes={max_nodes}")
-    print(f"Starting branch-and-bound with max_nodes={max_nodes}")
+    # Initialize root node at depth=0 with heuristic solution
+    # At depth 0, only job at index 0 is "paid for"
+    budget_spent_at_depth_0 = incumbent_sel[0] * problem.prices[0]
+    remaining_budget_at_depth_0 = problem.budget_total - budget_spent_at_depth_0
     
+    init_node = ProblemNode(incumbent_sel, depth=0, remaining_budget=remaining_budget_at_depth_0, 
+                           n_job_types=n, m=problem.machines, branch_type='root')
+    frontier.append(init_node)
+
+    # Track seen nodes to avoid duplicates, this part is obsolete
+    seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
+
+   
     # Initialize CeilKnapsackSolver with REVERSED item order
     # This allows us to query the last N items by querying the first N items in reversed solver
     # Example: if depth=1 (deciding item 1), remaining items are [2,3,4,...]
@@ -330,7 +335,13 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     )
     logger.info("CeilKnapsackSolver initialized successfully")
     
+
+    logger.info(f"Starting branch-and-bound with max_nodes={max_nodes}")
+    print(f"Starting branch-and-bound with max_nodes={max_nodes}")
+
+    #Node counter
     nodes = 0
+
     while frontier:
         node = frontier.pop()  # DFS
         nodes += 1
@@ -339,7 +350,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         node_info = {
             "depth": node.depth,
             "occurrences": node.job_occurrences,
-            "remaining_budget": node.remaining_budget
+            "remaining_budget": node.remaining_budget,
+            "node_type": node._branch_type
         }
         logger.log_node_visit(node_info)
     
@@ -353,36 +365,6 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             seen.add(key)
             frontier.append(child)
             return True
-        '''
-        # If node is not extendable (depth >= n_job_types), we've decided all items
-        # Just evaluate this solution
-        if not node.extendable:
-            #I dont think this can happen anymore
-            #to make sure, throw an Exception
-            raise Exception("Non-extendable node encountered in branch-and-bound search")   
-    
-
-            proc = []
-            for i, cnt in enumerate(node.job_occurrences):
-                proc += [problem.durations[i]] * cnt
-            if len(proc) == 0:
-                makespan = 0.0
-            else:
-                sched = solve_scheduling(len(proc), problem.machines, proc, verbose=False)
-                makespan = sched.get('makespan', None)
-            
-            if makespan is not None:
-                logger.log_node_evaluated(makespan, node_info)
-                
-                if makespan > incumbent:
-                
-                    incumbent = makespan
-                    incumbent_sel = list(node.job_occurrences)
-                    logger.log_incumbent_update(incumbent, incumbent_sel, node_count=nodes)
-                    if verbose:
-                        print(f"New incumbent makespan={incumbent} selection={incumbent_sel}")
-            continue
-        '''
 
         # Get which children can be created based on branch type
         can_create = node.can_create_children()
@@ -395,8 +377,7 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             if right_child is not None:
                 added = try_add(right_child)
             else:
-                logger.log_node_pruned("budget_infeasible", 
-                                      {"depth": node.depth, "child_type": "right"})
+                logger.log_node_pruned("budget_infeasible", nodes)
         
         # Try to add left child (decrement current item) if allowed
         if can_create['left']:
@@ -475,20 +456,21 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
 
                 bound = solution_node + already_committed_length
                 
-                # Log bound computation
-                logger.log_bound_computation(bound, "ceil_knapsack_dp", node.depth)
-                logger.logger.debug(f"  -> DP solution (remaining): {solution_node:.2f}")
-                logger.logger.debug(f"  -> Already committed: {already_committed_length:.2f}")
+                # Log bound computation (one line)
+                logger.log_bound_computation(bound, "ceil_knapsack_dp", node.depth, 
+                                            solution_node, already_committed_length)
                 
                 # Prune if bound <= incumbent
                 if bound <= incumbent:
-                    logger.log_node_pruned("bound_dominated", node_info)
+                    logger.log_node_pruned("bound_dominated", nodes)
                     continue
             except Exception as e:
                 logger.warning(f"Bound computation failed: {e}")
 
             # Expand node: lower_child (commit)
-            lower_child = node.commit_current(duration=duration)            
+            # Pass the price at the NEW depth for budget calculation
+            price_at_new_depth = problem.prices[node.depth + 1] if node.depth + 1 < n else None
+            lower_child = node.commit_current(duration=duration, price_at_new_depth=price_at_new_depth)            
             if lower_child is not None:
                 added = try_add(lower_child)
 
