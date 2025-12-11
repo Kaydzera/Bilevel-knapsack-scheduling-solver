@@ -1,9 +1,9 @@
 {
   "instance_name": "Mixed Characteristics",
-  "timestamp": "20251209_150824",
-  "start_time": 1765289304.5126667,
-  "end_time": 1765289304.5216656,
-  "total_runtime": 0.008998870849609375,
+  "timestamp": "20251211_101127",
+  "start_time": 1765444287.0362952,
+  "end_time": 1765444287.0462947,
+  "total_runtime": 0.009999513626098633,
   "nodes_explored": 39,
   "nodes_pruned": 38,
   "nodes_evaluated": 2,
@@ -18,7 +18,7 @@
         0
       ],
       "node_count": 0,
-      "timestamp": 0.002001047134399414
+      "timestamp": 0.0019991397857666016
     }
   ],
   "bound_computations": [
@@ -304,6 +304,7 @@
         "2": 36.0
       }
     },
-    "nodes_explored": 39
+    "nodes_explored": 39,
+    "runtime": 0.009999513626098633
   }
 }

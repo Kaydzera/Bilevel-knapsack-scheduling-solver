@@ -1,0 +1,62 @@
+2025-12-11 10:44:03 - INFO - Initialized logger for instance: Dominant Item
+2025-12-11 10:44:03 - INFO - Run ID: Dominant Item_20251211_104403
+2025-12-11 10:44:03 - INFO - ============================================================
+2025-12-11 10:44:03 - INFO - Starting branch-and-bound solver
+2025-12-11 10:44:03 - INFO - Problem: {'n_job_types': 4, 'machines': 2, 'budget': 10, 'prices': [2, 5, 4, 3], 'durations': [20, 3, 5, 4], 'max_nodes': 100000}
+2025-12-11 10:44:03 - INFO - ============================================================
+2025-12-11 10:44:03 - INFO - Computing initial heuristic solution...
+2025-12-11 10:44:03 - INFO - ==================================================
+2025-12-11 10:44:03 - INFO - NEW INCUMBENT: 60.0
+2025-12-11 10:44:03 - INFO - Selection: [5, 0, 0, 0]
+2025-12-11 10:44:03 - INFO - Found at node: 0
+2025-12-11 10:44:03 - INFO - ==================================================
+2025-12-11 10:44:03 - INFO - Initializing CeilKnapsackSolver with reversed item order...
+2025-12-11 10:44:03 - INFO - CeilKnapsackSolver initialized successfully
+2025-12-11 10:44:03 - INFO - Starting branch-and-bound with max_nodes=100000
+2025-12-11 10:44:03 - DEBUG - Node 1: {'depth': 0, 'occurrences': [5, 0, 0, 0], 'remaining_budget': 0, 'node_type': 'root'}
+2025-12-11 10:44:03 - DEBUG - Pruned by budget_infeasible at node 1
+2025-12-11 10:44:03 - DEBUG - Bound: 60.00 (ceil_knapsack_dp) = remaining 0.00 + committed 60.00 at depth 0
+2025-12-11 10:44:03 - DEBUG - Pruned by bound_dominated at node 1
+2025-12-11 10:44:03 - DEBUG - Node 2: {'depth': 0, 'occurrences': [4, 0, 0, 0], 'remaining_budget': 2, 'node_type': 'left'}
+2025-12-11 10:44:03 - DEBUG - Bound: 40.00 (ceil_knapsack_dp) = remaining 0.00 + committed 40.00 at depth 0
+2025-12-11 10:44:03 - DEBUG - Pruned by bound_dominated at node 2
+2025-12-11 10:44:03 - DEBUG - Node 3: {'depth': 0, 'occurrences': [3, 0, 0, 0], 'remaining_budget': 4, 'node_type': 'left'}
+2025-12-11 10:44:03 - DEBUG - Bound: 45.00 (ceil_knapsack_dp) = remaining 5.00 + committed 40.00 at depth 0
+2025-12-11 10:44:03 - DEBUG - Pruned by bound_dominated at node 3
+2025-12-11 10:44:03 - DEBUG - Node 4: {'depth': 0, 'occurrences': [2, 0, 0, 0], 'remaining_budget': 6, 'node_type': 'left'}
+2025-12-11 10:44:03 - DEBUG - Bound: 25.00 (ceil_knapsack_dp) = remaining 5.00 + committed 20.00 at depth 0
+2025-12-11 10:44:03 - DEBUG - Pruned by bound_dominated at node 4
+2025-12-11 10:44:03 - DEBUG - Node 5: {'depth': 0, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 8, 'node_type': 'left'}
+2025-12-11 10:44:03 - DEBUG - Bound: 29.00 (ceil_knapsack_dp) = remaining 9.00 + committed 20.00 at depth 0
+2025-12-11 10:44:03 - DEBUG - Pruned by bound_dominated at node 5
+2025-12-11 10:44:03 - DEBUG - Node 6: {'depth': 0, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 10, 'node_type': 'left'}
+2025-12-11 10:44:03 - DEBUG - Bound: 9.00 (ceil_knapsack_dp) = remaining 9.00 + committed 0.00 at depth 0
+2025-12-11 10:44:03 - DEBUG - Pruned by bound_dominated at node 6
+2025-12-11 10:44:03 - INFO - Computing final schedule for best solution...
+2025-12-11 10:44:03 - INFO - Metrics saved to: C:\Users\oleda\.vscode\Solving stuff with Gurobi\logs\Dominant Item_20251211_104403_metrics.json
+2025-12-11 10:44:03 - INFO - ============================================================
+2025-12-11 10:44:03 - INFO - Branch-and-bound completed
+2025-12-11 10:44:03 - INFO - Total runtime: 0.003 seconds
+2025-12-11 10:44:03 - INFO - Nodes explored: 6
+2025-12-11 10:44:03 - INFO - Nodes pruned: 6
+2025-12-11 10:44:03 - INFO - Nodes evaluated: 0
+2025-12-11 10:44:03 - INFO - Pruning rate: 100.00%
+2025-12-11 10:44:03 - INFO - Final Result:
+2025-12-11 10:44:03 - INFO -   Makespan: 60.0
+2025-12-11 10:44:03 - INFO -   Selection: [5, 0, 0, 0]
+2025-12-11 10:44:03 - INFO -   Schedule makespan: 60.0
+2025-12-11 10:44:03 - INFO - ============================================================
+
+======================================================================
+ENUMERATION COMPARISON
+======================================================================
+BnB nodes explored: 6
+Enumeration nodes evaluated: 29
+Ratio (BnB/Enum): 0.21x
+BnB runtime: 0.0030s
+Enumeration runtime: 0.0130s
+Speedup (Enum/BnB): 4.33x
+Enumeration makespan: 60.0
+BnB makespan: 60.0
+Match: YES
+======================================================================

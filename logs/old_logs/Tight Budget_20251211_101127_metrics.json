@@ -1,9 +1,9 @@
 {
   "instance_name": "Tight Budget",
-  "timestamp": "20251209_150824",
-  "start_time": 1765289304.50367,
-  "end_time": 1765289304.5086656,
-  "total_runtime": 0.004995584487915039,
+  "timestamp": "20251211_101127",
+  "start_time": 1765444287.002298,
+  "end_time": 1765444287.0092947,
+  "total_runtime": 0.006996631622314453,
   "nodes_explored": 19,
   "nodes_pruned": 11,
   "nodes_evaluated": 9,
@@ -17,7 +17,7 @@
         0
       ],
       "node_count": 0,
-      "timestamp": 0.0
+      "timestamp": 0.0009968280792236328
     },
     {
       "incumbent": 8.0,
@@ -28,7 +28,7 @@
         3
       ],
       "node_count": 11,
-      "timestamp": 0.0029985904693603516
+      "timestamp": 0.003996372222900391
     },
     {
       "incumbent": 10.0,
@@ -39,7 +39,7 @@
         0
       ],
       "node_count": 19,
-      "timestamp": 0.0039958953857421875
+      "timestamp": 0.0059964656829833984
     }
   ],
   "bound_computations": [
@@ -148,6 +148,7 @@
         "1": 0.0
       }
     },
-    "nodes_explored": 19
+    "nodes_explored": 19,
+    "runtime": 0.006996631622314453
   }
 }

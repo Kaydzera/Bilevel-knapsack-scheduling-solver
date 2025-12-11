@@ -226,20 +226,28 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             makespan_enum = cached['makespan']
             occ_enum = cached['selection']
             nodes_enum = cached['nodes_evaluated']
+            runtime_enum = cached.get('runtime', None)  # Get runtime if available
         else:
             print("Running enumeration (not cached)...")
-            makespan_enum, occ_enum, _, nodes_enum = solve_bilevel_simpler(items, m, budget, time_limit=30.0, verbose=False)
+            makespan_enum, occ_enum, _, nodes_enum, runtime_enum = solve_bilevel_simpler(items, m, budget, time_limit=30.0, verbose=False)
             
             # Save to cache
             cache[instance_key] = {
                 'makespan': makespan_enum,
                 'selection': occ_enum,
-                'nodes_evaluated': nodes_enum
+                'nodes_evaluated': nodes_enum,
+                'runtime': runtime_enum
             }
             save_enumeration_cache(cache)
         
         print(f"Enumeration Result: makespan={makespan_enum:.1f}, selection={occ_enum}")
         print(f"Nodes: BnB explored {result_bnb['nodes_explored']}, Enumeration evaluated {nodes_enum}")
+        
+        # Compare runtimes
+        bnb_runtime = result_bnb.get('runtime', None)
+        if bnb_runtime is not None and runtime_enum is not None:
+            speedup = runtime_enum / bnb_runtime if bnb_runtime > 0 else float('inf')
+            print(f"Runtime: BnB {bnb_runtime:.4f}s, Enumeration {runtime_enum:.4f}s (Speedup: {speedup:.2f}x)")
         
         # Compare results
         if abs(result_bnb['best_obj'] - makespan_enum) < 0.01:
@@ -249,29 +257,37 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
         
         # Log comparison to BnB log if logging enabled
         if enable_logging:
-            # Use absolute path to workspace root logs directory
-            workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            log_dir = os.path.join(workspace_root, "logs")
-            # Find the most recent log file for this instance
+            from logger import BnBLogger
+            from pathlib import Path
             import glob
-            log_pattern = os.path.join(log_dir, f"{name}_*.log")
-            log_files = glob.glob(log_pattern)
+            
+            # Find the most recent log file for this instance
+            log_dir = Path("logs")
+            log_pattern = f"{name}_*.log"
+            log_files = list(log_dir.glob(log_pattern))
+            
             if log_files:
-                latest_log = max(log_files, key=os.path.getmtime)
-                try:
-                    with open(latest_log, 'a') as f:
-                        f.write(f"\n{'='*70}\n")
-                        f.write(f"ENUMERATION COMPARISON\n")
-                        f.write(f"{'='*70}\n")
-                        f.write(f"BnB nodes explored: {result_bnb['nodes_explored']}\n")
-                        f.write(f"Enumeration nodes evaluated: {nodes_enum}\n")
-                        f.write(f"Ratio (BnB/Enum): {result_bnb['nodes_explored']/nodes_enum:.2f}x\n")
-                        f.write(f"Enumeration makespan: {makespan_enum:.1f}\n")
-                        f.write(f"BnB makespan: {result_bnb['best_obj']:.1f}\n")
-                        f.write(f"Match: {'YES' if abs(result_bnb['best_obj'] - makespan_enum) < 0.01 else 'NO'}\n")
-                        f.write(f"{'='*70}\n")
-                except Exception as e:
-                    print(f"Warning: Could not write to log file: {e}")
+                # Sort by modification time and get the most recent
+                most_recent_log = max(log_files, key=lambda p: p.stat().st_mtime)
+                
+                # Append comparison to log file
+                with open(most_recent_log, 'a') as f:
+                    f.write("\n" + "=" * 70 + "\n")
+                    f.write("ENUMERATION COMPARISON\n")
+                    f.write("=" * 70 + "\n")
+                    f.write(f"BnB nodes explored: {result_bnb['nodes_explored']}\n")
+                    f.write(f"Enumeration nodes evaluated: {nodes_enum}\n")
+                    f.write(f"Ratio (BnB/Enum): {result_bnb['nodes_explored']/nodes_enum:.2f}x\n")
+                    if bnb_runtime is not None and runtime_enum is not None:
+                        f.write(f"BnB runtime: {bnb_runtime:.4f}s\n")
+                        f.write(f"Enumeration runtime: {runtime_enum:.4f}s\n")
+                        speedup = runtime_enum / bnb_runtime if bnb_runtime > 0 else float('inf')
+                        f.write(f"Speedup (Enum/BnB): {speedup:.2f}x\n")
+                    f.write(f"Enumeration makespan: {makespan_enum}\n")
+                    f.write(f"BnB makespan: {result_bnb['best_obj']}\n")
+                    match = "YES" if abs(result_bnb['best_obj'] - makespan_enum) < 0.01 else "NO"
+                    f.write(f"Match: {match}\n")
+                    f.write("=" * 70 + "\n")
     
     return result_bnb
 

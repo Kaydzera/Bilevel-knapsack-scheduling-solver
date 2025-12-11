@@ -487,12 +487,16 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         proc += [problem.durations[i]] * cnt
     sched = solve_scheduling_readable(len(proc), problem.machines, proc, verbose=False)
     
+    # Calculate runtime before creating result
+    runtime = time.time() - logger.metrics['start_time'] if hasattr(logger, 'metrics') else None
+    
     # Prepare final result
     result = {
         'best_obj': incumbent, 
         'best_selection': incumbent_sel, 
         'best_schedule': sched, 
-        'nodes_explored': nodes
+        'nodes_explored': nodes,
+        'runtime': runtime
     }
     
     # End logging

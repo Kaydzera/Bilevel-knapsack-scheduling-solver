@@ -1,11 +1,11 @@
 {
   "instance_name": "Extreme Ratios",
-  "timestamp": "20251209_150824",
-  "start_time": 1765289304.3726692,
-  "end_time": 1765289304.3746657,
-  "total_runtime": 0.0019965171813964844,
+  "timestamp": "20251211_104403",
+  "start_time": 1765446243.7221506,
+  "end_time": 1765446243.7304258,
+  "total_runtime": 0.008275270462036133,
   "nodes_explored": 13,
-  "nodes_pruned": 14,
+  "nodes_pruned": 13,
   "nodes_evaluated": 0,
   "best_bound_updates": [
     {
@@ -17,7 +17,7 @@
         0
       ],
       "node_count": 0,
-      "timestamp": 0.0009965896606445312
+      "timestamp": 0.006127357482910156
     }
   ],
   "bound_computations": [
@@ -156,6 +156,7 @@
         "1": 90.0
       }
     },
-    "nodes_explored": 13
+    "nodes_explored": 13,
+    "runtime": 0.008275270462036133
   }
 }
