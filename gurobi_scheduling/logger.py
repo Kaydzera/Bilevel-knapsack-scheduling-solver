@@ -162,13 +162,16 @@ class BnBLogger:
             reason: Why the node was pruned (e.g., "bound", "infeasible")
             node_number: Optional node number (simplified from full node_info)
         """
-        self.metrics["nodes_pruned"] += 1
+        # Only increment nodes_pruned counter for bound_dominated (what we're actively working on)
+        if reason == "bound_dominated":
+            self.metrics["nodes_pruned"] += 1
         
-        # Track pruning reasons
+        # Track pruning reasons (all types)
         if reason not in self.metrics["pruning_reasons"]:
             self.metrics["pruning_reasons"][reason] = 0
         self.metrics["pruning_reasons"][reason] += 1
         
+        # Log both types of pruning
         if node_number is not None:
             self.logger.debug(f"Pruned by {reason} at node {node_number}")
         else:

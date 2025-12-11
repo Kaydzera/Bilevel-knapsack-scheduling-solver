@@ -112,7 +112,7 @@ def solve_bilevel_simpler(
             print(f"Budget used: {sum(items[i].price * best_occurrences[i] for i in range(n))}/{budget}")
         print("=" * 70)
     
-    return best_makespan, best_occurrences, best_assignments, nodes_evaluated
+    return best_makespan, best_occurrences, best_assignments, nodes_evaluated, solve_time
 
 
 if __name__ == "__main__":
@@ -138,4 +138,4 @@ if __name__ == "__main__":
     
     # Test enumeration approach
     print("\n### Complete enumeration method (exact solution) ###")
-    makespan, occ, assign, nodes = solve_bilevel_simpler(items, m, budget, time_limit=60.0)
+    makespan, occ, assign, nodes, runtime = solve_bilevel_simpler(items, m, budget, time_limit=60.0)

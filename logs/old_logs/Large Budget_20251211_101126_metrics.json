@@ -1,8 +1,8 @@
 {
   "instance_name": "Large Budget",
-  "timestamp": "20251209_150824",
-  "start_time": 1765289304.286667,
-  "end_time": 1765289304.3096657,
+  "timestamp": "20251211_101126",
+  "start_time": 1765444286.3307812,
+  "end_time": 1765444286.3537798,
   "total_runtime": 0.022998571395874023,
   "nodes_explored": 94,
   "nodes_pruned": 77,
@@ -17,7 +17,7 @@
         0
       ],
       "node_count": 0,
-      "timestamp": 0.0009999275207519531
+      "timestamp": 0.001999378204345703
     }
   ],
   "bound_computations": [
@@ -529,6 +529,7 @@
         "1": 21.0
       }
     },
-    "nodes_explored": 94
+    "nodes_explored": 94,
+    "runtime": 0.022998571395874023
   }
 }

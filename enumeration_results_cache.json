@@ -7,7 +7,8 @@
       1,
       2
     ],
-    "nodes_evaluated": 27
+    "nodes_evaluated": 27,
+    "runtime": 0.014002323150634766
   },
   "Uniform Ratios_2_12_[(4, 2), (6, 3), (8, 4), (10, 5)]": {
     "makespan": 16.0,
@@ -17,7 +18,8 @@
       3,
       0
     ],
-    "nodes_evaluated": 46
+    "nodes_evaluated": 46,
+    "runtime": 0.024000167846679688
   },
   "Dominant Item_2_10_[(20, 2), (3, 5), (5, 4), (4, 3)]": {
     "makespan": 60.0,
@@ -27,7 +29,8 @@
       0,
       0
     ],
-    "nodes_evaluated": 29
+    "nodes_evaluated": 29,
+    "runtime": 0.01299905776977539
   },
   "Large Budget_2_20_[(3, 2), (7, 3), (5, 4), (9, 5)]": {
     "makespan": 24.0,
@@ -37,7 +40,8 @@
       0,
       0
     ],
-    "nodes_evaluated": 191
+    "nodes_evaluated": 191,
+    "runtime": 0.13899970054626465
   },
   "More Machines_4_15_[(6, 3), (8, 4), (4, 2), (10, 5)]": {
     "makespan": 12.0,
@@ -47,7 +51,8 @@
       0,
       0
     ],
-    "nodes_evaluated": 83
+    "nodes_evaluated": 83,
+    "runtime": 0.06799864768981934
   },
   "Extreme Ratios_2_12_[(15, 1), (2, 10), (8, 4), (6, 3)]": {
     "makespan": 90.0,
@@ -57,7 +62,8 @@
       0,
       0
     ],
-    "nodes_evaluated": 63
+    "nodes_evaluated": 63,
+    "runtime": 0.04800081253051758
   },
   "Five Jobs_3_15_[(4, 2), (6, 3), (8, 5), (5, 4), (7, 3)]": {
     "makespan": 14.0,
@@ -68,7 +74,8 @@
       0,
       4
     ],
-    "nodes_evaluated": 167
+    "nodes_evaluated": 167,
+    "runtime": 0.18800044059753418
   },
   "Tight Budget_2_6_[(10, 5), (8, 4), (6, 3), (4, 2)]": {
     "makespan": 10.0,
@@ -78,7 +85,8 @@
       0,
       0
     ],
-    "nodes_evaluated": 9
+    "nodes_evaluated": 9,
+    "runtime": 0.0029997825622558594
   },
   "Expensive Items_2_15_[(3, 8), (5, 10), (4, 9), (2, 7)]": {
     "makespan": 5.0,
@@ -88,7 +96,8 @@
       0,
       0
     ],
-    "nodes_evaluated": 6
+    "nodes_evaluated": 6,
+    "runtime": 0.0020024776458740234
   },
   "Mixed Characteristics_3_18_[(12, 2), (3, 8), (7, 4), (5, 5), (9, 3)]": {
     "makespan": 36.0,
@@ -99,6 +108,7 @@
       0,
       0
     ],
-    "nodes_evaluated": 172
+    "nodes_evaluated": 172,
+    "runtime": 0.19300079345703125
   }
 }

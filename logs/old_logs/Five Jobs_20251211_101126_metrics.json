@@ -1,9 +1,9 @@
 {
   "instance_name": "Five Jobs",
-  "timestamp": "20251209_150824",
-  "start_time": 1765289304.3766687,
-  "end_time": 1765289304.4996707,
-  "total_runtime": 0.1230020523071289,
+  "timestamp": "20251211_101126",
+  "start_time": 1765444286.688781,
+  "end_time": 1765444286.801298,
+  "total_runtime": 0.11251688003540039,
   "nodes_explored": 203,
   "nodes_pruned": 132,
   "nodes_evaluated": 72,
@@ -18,7 +18,7 @@
         5
       ],
       "node_count": 0,
-      "timestamp": 0.0019969940185546875
+      "timestamp": 0.003999471664428711
     }
   ],
   "bound_computations": [
@@ -864,6 +864,7 @@
         "2": 14.0
       }
     },
-    "nodes_explored": 203
+    "nodes_explored": 203,
+    "runtime": 0.11251688003540039
   }
 }

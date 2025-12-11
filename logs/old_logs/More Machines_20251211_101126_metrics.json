@@ -1,0 +1,449 @@
+{
+  "instance_name": "More Machines",
+  "timestamp": "20251211_101126",
+  "start_time": 1765444286.5027812,
+  "end_time": 1765444286.5467803,
+  "total_runtime": 0.04399919509887695,
+  "nodes_explored": 110,
+  "nodes_pruned": 62,
+  "nodes_evaluated": 49,
+  "best_bound_updates": [
+    {
+      "incumbent": 12.0,
+      "selection": [
+        5,
+        0,
+        0,
+        0
+      ],
+      "node_count": 0,
+      "timestamp": 0.0009984970092773438
+    }
+  ],
+  "bound_computations": [
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "node_count": 1
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "node_count": 2
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "node_count": 3
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 4
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 5
+    },
+    {
+      "value": 6.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 8
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 9
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 10
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 11
+    },
+    {
+      "value": 24.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "node_count": 12
+    },
+    {
+      "value": 20.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 13
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 14
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 17
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 20
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 23
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 24
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 25
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 26
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 29
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 30
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 31
+    },
+    {
+      "value": 28.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "node_count": 32
+    },
+    {
+      "value": 20.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 33
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 34
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 38
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 42
+    },
+    {
+      "value": 16.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 45
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 48
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 49
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 50
+    },
+    {
+      "value": 22.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 51
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 52
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 55
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 58
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 59
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 60
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 61
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 62
+    },
+    {
+      "value": 22.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 0,
+      "node_count": 63
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 64
+    },
+    {
+      "value": 10.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 65
+    },
+    {
+      "value": 14.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 66
+    },
+    {
+      "value": 14.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 70
+    },
+    {
+      "value": 14.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 74
+    },
+    {
+      "value": 14.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 77
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 80
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 83
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 84
+    },
+    {
+      "value": 22.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 85
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 86
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 90
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 93
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 96
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 99
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 100
+    },
+    {
+      "value": 22.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 101
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 102
+    },
+    {
+      "value": 18.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 105
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 108
+    },
+    {
+      "value": 8.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 2,
+      "node_count": 109
+    },
+    {
+      "value": 12.0,
+      "type": "ceil_knapsack_dp",
+      "depth": 1,
+      "node_count": 110
+    }
+  ],
+  "pruning_reasons": {
+    "budget_infeasible": 35,
+    "bound_dominated": 27
+  },
+  "problem_data": {
+    "n_job_types": 4,
+    "machines": 4,
+    "budget": 15,
+    "prices": [
+      3,
+      4,
+      2,
+      5
+    ],
+    "durations": [
+      6,
+      8,
+      4,
+      10
+    ],
+    "max_nodes": 100000
+  },
+  "final_result": {
+    "best_obj": 12.0,
+    "best_selection": [
+      5,
+      0,
+      0,
+      0
+    ],
+    "best_schedule": {
+      "status": 2,
+      "makespan": 12.0,
+      "machine_assignments": {
+        "0": [
+          3
+        ],
+        "1": [
+          0
+        ],
+        "2": [
+          2
+        ],
+        "3": [
+          1,
+          4
+        ]
+      },
+      "machine_loads": {
+        "0": 6.0,
+        "1": 6.0,
+        "2": 6.0,
+        "3": 12.0
+      }
+    },
+    "nodes_explored": 110,
+    "runtime": 0.04399919509887695
+  }
+}

@@ -1,0 +1,83 @@
+2025-12-11 10:11:26 - INFO - Initialized logger for instance: Extreme Ratios
+2025-12-11 10:11:26 - INFO - Run ID: Extreme Ratios_20251211_101126
+2025-12-11 10:11:26 - INFO - ============================================================
+2025-12-11 10:11:26 - INFO - Starting branch-and-bound solver
+2025-12-11 10:11:26 - INFO - Problem: {'n_job_types': 4, 'machines': 2, 'budget': 12, 'prices': [1, 10, 4, 3], 'durations': [15, 2, 8, 6], 'max_nodes': 100000}
+2025-12-11 10:11:26 - INFO - ============================================================
+2025-12-11 10:11:26 - INFO - Computing initial heuristic solution...
+2025-12-11 10:11:26 - INFO - ==================================================
+2025-12-11 10:11:26 - INFO - NEW INCUMBENT: 90.0
+2025-12-11 10:11:26 - INFO - Selection: [12, 0, 0, 0]
+2025-12-11 10:11:26 - INFO - Found at node: 0
+2025-12-11 10:11:26 - INFO - ==================================================
+2025-12-11 10:11:26 - INFO - Initializing CeilKnapsackSolver with reversed item order...
+2025-12-11 10:11:26 - INFO - CeilKnapsackSolver initialized successfully
+2025-12-11 10:11:26 - INFO - Starting branch-and-bound with max_nodes=100000
+2025-12-11 10:11:26 - DEBUG - Node 1: {'depth': 0, 'occurrences': [12, 0, 0, 0], 'remaining_budget': 0, 'node_type': 'root'}
+2025-12-11 10:11:26 - DEBUG - Pruned by budget_infeasible at node 1
+2025-12-11 10:11:26 - DEBUG - Bound: 90.00 (ceil_knapsack_dp) = remaining 0.00 + committed 90.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 1
+2025-12-11 10:11:26 - DEBUG - Node 2: {'depth': 0, 'occurrences': [11, 0, 0, 0], 'remaining_budget': 1, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 90.00 (ceil_knapsack_dp) = remaining 0.00 + committed 90.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 2
+2025-12-11 10:11:26 - DEBUG - Node 3: {'depth': 0, 'occurrences': [10, 0, 0, 0], 'remaining_budget': 2, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 75.00 (ceil_knapsack_dp) = remaining 0.00 + committed 75.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 3
+2025-12-11 10:11:26 - DEBUG - Node 4: {'depth': 0, 'occurrences': [9, 0, 0, 0], 'remaining_budget': 3, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 81.00 (ceil_knapsack_dp) = remaining 6.00 + committed 75.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 4
+2025-12-11 10:11:26 - DEBUG - Node 5: {'depth': 0, 'occurrences': [8, 0, 0, 0], 'remaining_budget': 4, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 68.00 (ceil_knapsack_dp) = remaining 8.00 + committed 60.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 5
+2025-12-11 10:11:26 - DEBUG - Node 6: {'depth': 0, 'occurrences': [7, 0, 0, 0], 'remaining_budget': 5, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 68.00 (ceil_knapsack_dp) = remaining 8.00 + committed 60.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 6
+2025-12-11 10:11:26 - DEBUG - Node 7: {'depth': 0, 'occurrences': [6, 0, 0, 0], 'remaining_budget': 6, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 53.00 (ceil_knapsack_dp) = remaining 8.00 + committed 45.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 7
+2025-12-11 10:11:26 - DEBUG - Node 8: {'depth': 0, 'occurrences': [5, 0, 0, 0], 'remaining_budget': 7, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 59.00 (ceil_knapsack_dp) = remaining 14.00 + committed 45.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 8
+2025-12-11 10:11:26 - DEBUG - Node 9: {'depth': 0, 'occurrences': [4, 0, 0, 0], 'remaining_budget': 8, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 44.00 (ceil_knapsack_dp) = remaining 14.00 + committed 30.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 9
+2025-12-11 10:11:26 - DEBUG - Node 10: {'depth': 0, 'occurrences': [3, 0, 0, 0], 'remaining_budget': 9, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 44.00 (ceil_knapsack_dp) = remaining 14.00 + committed 30.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 10
+2025-12-11 10:11:26 - DEBUG - Node 11: {'depth': 0, 'occurrences': [2, 0, 0, 0], 'remaining_budget': 10, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 29.00 (ceil_knapsack_dp) = remaining 14.00 + committed 15.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 11
+2025-12-11 10:11:26 - DEBUG - Node 12: {'depth': 0, 'occurrences': [1, 0, 0, 0], 'remaining_budget': 11, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 29.00 (ceil_knapsack_dp) = remaining 14.00 + committed 15.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 12
+2025-12-11 10:11:26 - DEBUG - Node 13: {'depth': 0, 'occurrences': [0, 0, 0, 0], 'remaining_budget': 12, 'node_type': 'left'}
+2025-12-11 10:11:26 - DEBUG - Bound: 16.00 (ceil_knapsack_dp) = remaining 16.00 + committed 0.00 at depth 0
+2025-12-11 10:11:26 - DEBUG - Pruned by bound_dominated at node 13
+2025-12-11 10:11:26 - INFO - Computing final schedule for best solution...
+2025-12-11 10:11:26 - INFO - Metrics saved to: C:\Users\oleda\.vscode\Solving stuff with Gurobi\logs\Extreme Ratios_20251211_101126_metrics.json
+2025-12-11 10:11:26 - INFO - ============================================================
+2025-12-11 10:11:26 - INFO - Branch-and-bound completed
+2025-12-11 10:11:26 - INFO - Total runtime: 0.004 seconds
+2025-12-11 10:11:26 - INFO - Nodes explored: 13
+2025-12-11 10:11:26 - INFO - Nodes pruned: 14
+2025-12-11 10:11:26 - INFO - Nodes evaluated: 0
+2025-12-11 10:11:26 - INFO - Pruning rate: 107.69%
+2025-12-11 10:11:26 - INFO - Final Result:
+2025-12-11 10:11:26 - INFO -   Makespan: 90.0
+2025-12-11 10:11:26 - INFO -   Selection: [12, 0, 0, 0]
+2025-12-11 10:11:26 - INFO -   Schedule makespan: 90.0
+2025-12-11 10:11:26 - INFO - ============================================================
+
+======================================================================
+ENUMERATION COMPARISON
+======================================================================
+BnB nodes explored: 13
+Enumeration nodes evaluated: 63
+Ratio (BnB/Enum): 0.21x
+BnB runtime: 0.0040s
+Enumeration runtime: 0.0480s
+Speedup (Enum/BnB): 12.00x
+Enumeration makespan: 90.0
+BnB makespan: 90.0
+Match: YES
+======================================================================
