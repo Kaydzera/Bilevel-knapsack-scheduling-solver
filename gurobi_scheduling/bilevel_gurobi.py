@@ -70,7 +70,12 @@ def solve_bilevel_simpler(
         if time.time() - start_time > time_limit:
             if verbose:
                 print(f"\nTime limit reached after checking {count} selections")
-            break
+            #raise an exception
+            raise TimeoutError("Time limit exceeded in bilevel enumeration.")
+
+
+
+            #break
         
         # Check budget
         cost = sum(items[i].price * occurrences[i] for i in range(n))
@@ -98,8 +103,8 @@ def solve_bilevel_simpler(
             best_occurrences = list(occurrences)
             best_assignments = result['machine_assignments']
             
-            if verbose and count % 1000 == 0:
-                print(f"  Checked {count} selections, best makespan so far: {best_makespan}")
+        if verbose and count % 1000 == 0:
+            print(f"  Checked {count} selections, best makespan so far: {best_makespan}")
     
     solve_time = time.time() - start_time
     
@@ -139,3 +144,18 @@ if __name__ == "__main__":
     # Test enumeration approach
     print("\n### Complete enumeration method (exact solution) ###")
     makespan, occ, assign, nodes, runtime = solve_bilevel_simpler(items, m, budget, time_limit=60.0)
+
+
+
+'''
+pls explain the follwing points or tell me a littlebit about these:
+Real-world applications (how is this related to cloud computing?)
+Node representation and branching rules
+Bound dominance pruning
+Optimality dominance pruning
+List scheduling algorithm
+Gurobi MIP formulation (optional benchmark)
+Node priority queue
+
+Pruning mechanisms - Bound dominance vs optimality dominance
+'''

@@ -31,7 +31,7 @@ class BnBLogger:
         """
         self.instance_name = instance_name
         self.log_dir = Path(log_dir)
-        self.log_dir.mkdir(exist_ok=True)
+        self.log_dir.mkdir(parents=True, exist_ok=True)
         
         # Create timestamp for this run
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

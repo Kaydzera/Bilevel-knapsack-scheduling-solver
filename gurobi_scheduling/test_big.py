@@ -1,152 +1,102 @@
-"""Test multiple instances on both enumeration and BnB."""
+"""Test 100 large and complex instances on both enumeration and BnB."""
 import json
 import os
+import random
 from models import MainProblem, Item
 from bnb import run_bnb_classic
 from bilevel_gurobi import solve_bilevel_simpler
 
 # Path to cache enumeration results
-ENUMERATION_CACHE_FILE = "enumeration_results_cache.json"
+ENUMERATION_CACHE_FILE = "enumeration_results_cache_big.json"
+
+# Set seed for reproducibility
+random.seed(42)
 
 # ============================================================
-# TEST INSTANCES
+# GENERATE 100 COMPLEX TEST INSTANCES
 # ============================================================
 
-instances = []
+def generate_instances():
+    """Generate 100 complex test instances with varying characteristics."""
+    instances = []
+    
+    # Configuration ranges for complex instances
+    job_counts = [6, 7, 8, 10, 12]  # More job types
+    machine_counts = [3, 4, 5, 6, 8]  # More machines
+    budget_multipliers = [1.5, 2.0, 2.5, 3.0, 4.0]  # Higher budgets relative to items
+    
+    instance_id = 1
+    
+    # Generate diverse instances
+    for iteration in range(100):
+        # Vary complexity
+        n_jobs = random.choice(job_counts)
+        n_machines = random.choice(machine_counts)
+        
+        # Generate items with different characteristics
+        items = []
+        total_min_cost = 0
+        
+        for j in range(n_jobs):
+            # Generate durations and prices with different patterns
+            if iteration % 5 == 0:
+                # Pattern 1: Uniform ratios
+                base_ratio = random.uniform(1.5, 3.0)
+                duration = random.randint(3, 15)
+                price = max(1, int(duration / base_ratio))
+            elif iteration % 5 == 1:
+                # Pattern 2: High variance - some cheap, some expensive
+                if j % 2 == 0:
+                    duration = random.randint(10, 20)  # Long and cheap
+                    price = random.randint(1, 3)
+                else:
+                    duration = random.randint(2, 5)  # Short and expensive
+                    price = random.randint(8, 15)
+            elif iteration % 5 == 2:
+                # Pattern 3: Increasing durations and prices
+                duration = 3 + j * 2
+                price = 2 + j
+            elif iteration % 5 == 3:
+                # Pattern 4: Random but realistic
+                duration = random.randint(4, 18)
+                price = random.randint(2, 12)
+            else:
+                # Pattern 5: Extreme cases
+                if random.random() < 0.3:
+                    duration = random.randint(20, 30)  # Very long
+                    price = random.randint(1, 3)  # Very cheap
+                else:
+                    duration = random.randint(3, 12)
+                    price = random.randint(3, 10)
+            
+            items.append(Item(name=f"J{j+1}", duration=duration, price=price))
+            total_min_cost += price
+        
+        # Set budget based on total minimum cost and a multiplier
+        budget_mult = random.choice(budget_multipliers)
+        budget = int(total_min_cost * budget_mult / n_jobs) + random.randint(5, 20)
+        
+        # Create instance name based on characteristics
+        avg_duration = sum(item.duration for item in items) / len(items)
+        avg_price = sum(item.price for item in items) / len(items)
+        avg_ratio = avg_duration / avg_price if avg_price > 0 else 0
+        
+        name = f"Complex_{instance_id:03d}_J{n_jobs}_M{n_machines}_B{budget}"
+        
+        instances.append({
+            "name": name,
+            "items": items,
+            "machines": n_machines,
+            "budget": budget,
+            "id": instance_id
+        })
+        
+        instance_id += 1
+    
+    return instances
 
-# Instance 1: Tiny - baseline (4 jobs, 2 machines, budget 10)
-instances.append({
-    "name": "Tiny Baseline",
-    "items": [
-        Item(name="A", duration=5, price=3),   # ratio: 1.67
-        Item(name="B", duration=8, price=6),   # ratio: 1.33
-        Item(name="C", duration=3, price=2),   # ratio: 1.50
-        Item(name="D", duration=7, price=4),   # ratio: 1.75
-    ],
-    "machines": 2,
-    "budget": 10
-})
-
-
-# Instance 2: Uniform - all items have same duration/price ratio
-instances.append({
-    "name": "Uniform Ratios",
-    "items": [
-        Item(name="A", duration=4, price=2),   # ratio: 2.00
-        Item(name="B", duration=6, price=3),   # ratio: 2.00
-        Item(name="C", duration=8, price=4),   # ratio: 2.00
-        Item(name="D", duration=10, price=5),  # ratio: 2.00
-    ],
-    "machines": 2,
-    "budget": 12
-})
-
-
-# Instance 3: High variance - one very attractive item
-instances.append({
-    "name": "Dominant Item",
-    "items": [
-        Item(name="A", duration=20, price=2),  # ratio: 10.00 - very cheap, long duration
-        Item(name="B", duration=3, price=5),   # ratio: 0.60 - expensive, short
-        Item(name="C", duration=5, price=4),   # ratio: 1.25
-        Item(name="D", duration=4, price=3),   # ratio: 1.33
-    ],
-    "machines": 2,
-    "budget": 10
-})
-
-# Instance 4: Larger budget - more exploration
-instances.append({
-    "name": "Large Budget",
-    "items": [
-        Item(name="A", duration=3, price=2),   # ratio: 1.50
-        Item(name="B", duration=7, price=3),   # ratio: 2.33
-        Item(name="C", duration=5, price=4),   # ratio: 1.25
-        Item(name="D", duration=9, price=5),   # ratio: 1.80
-    ],
-    "machines": 2,
-    "budget": 20
-})
-
-# Instance 5: More machines - different scheduling dynamics
-instances.append({
-    "name": "More Machines",
-    "items": [
-        Item(name="A", duration=6, price=3),   # ratio: 2.00
-        Item(name="B", duration=8, price=4),   # ratio: 2.00
-        Item(name="C", duration=4, price=2),   # ratio: 2.00
-        Item(name="D", duration=10, price=5),  # ratio: 2.00
-    ],
-    "machines": 4,
-    "budget": 15
-})
-
-# Instance 6: Extreme ratios - cheap vs expensive
-instances.append({
-    "name": "Extreme Ratios",
-    "items": [
-        Item(name="A", duration=15, price=1),  # ratio: 15.00 - very cheap
-        Item(name="B", duration=2, price=10),  # ratio: 0.20 - very expensive
-        Item(name="C", duration=8, price=4),   # ratio: 2.00
-        Item(name="D", duration=6, price=3),   # ratio: 2.00
-    ],
-    "machines": 2,
-    "budget": 12
-})
-
-# Instance 7: Five job types - larger search space
-instances.append({
-    "name": "Five Jobs",
-    "items": [
-        Item(name="A", duration=4, price=2),   # ratio: 2.00
-        Item(name="B", duration=6, price=3),   # ratio: 2.00
-        Item(name="C", duration=8, price=5),   # ratio: 1.60
-        Item(name="D", duration=5, price=4),   # ratio: 1.25
-        Item(name="E", duration=7, price=3),   # ratio: 2.33
-    ],
-    "machines": 3,
-    "budget": 15
-})
-
-# Instance 8: Tight budget - few feasible solutions
-instances.append({
-    "name": "Tight Budget",
-    "items": [
-        Item(name="A", duration=10, price=5),  # ratio: 2.00
-        Item(name="B", duration=8, price=4),   # ratio: 2.00
-        Item(name="C", duration=6, price=3),   # ratio: 2.00
-        Item(name="D", duration=4, price=2),   # ratio: 2.00
-    ],
-    "machines": 2,
-    "budget": 6
-})
-
-# Instance 9: All expensive - budget is the main constraint
-instances.append({
-    "name": "Expensive Items",
-    "items": [
-        Item(name="A", duration=3, price=8),   # ratio: 0.38
-        Item(name="B", duration=5, price=10),  # ratio: 0.50
-        Item(name="C", duration=4, price=9),   # ratio: 0.44
-        Item(name="D", duration=2, price=7),   # ratio: 0.29
-    ],
-    "machines": 2,
-    "budget": 15
-})
-
-# Instance 10: Mixed - combination of interesting properties
-instances.append({
-    "name": "Mixed Characteristics",
-    "items": [
-        Item(name="A", duration=12, price=2),  # ratio: 6.00 - cheap, long
-        Item(name="B", duration=3, price=8),   # ratio: 0.38 - expensive, short
-        Item(name="C", duration=7, price=4),   # ratio: 1.75
-        Item(name="D", duration=5, price=5),   # ratio: 1.00
-        Item(name="E", duration=9, price=3),   # ratio: 3.00
-    ],
-    "machines": 3,
-    "budget": 18
-})
+# Generate all instances
+instances = generate_instances()
 
 # ============================================================
 # ENUMERATION CACHE MANAGEMENT
@@ -207,13 +157,13 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     # Run BnB
     print("\n### Branch-and-Bound ###")
     from logger import create_logger
-    logger = create_logger(instance_name=name, log_dir="logs/test_small") if enable_logging else None
+    logger = create_logger(instance_name=name, log_dir="logs/test_big") if enable_logging else None
     result_bnb = run_bnb_classic(problem, max_nodes=100000, verbose=False, logger=logger, instance_name=name, enable_logging=enable_logging)
     print(f"BnB Result: makespan={result_bnb['best_obj']:.1f}, "
           f"selection={result_bnb['best_selection']}, "
           f"nodes={result_bnb['nodes_explored']}")
     
-    # Optionally run enumeration (only for small instances)
+    # Optionally run enumeration (only for smaller instances due to time)
     if use_enumeration:
         print("\n### Complete Enumeration ###")
         
@@ -228,10 +178,10 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             makespan_enum = cached['makespan']
             occ_enum = cached['selection']
             nodes_enum = cached['nodes_evaluated']
-            runtime_enum = cached.get('runtime', None)  # Get runtime if available
+            runtime_enum = cached.get('runtime', None)
         else:
             print("Running enumeration (not cached)...")
-            makespan_enum, occ_enum, _, nodes_enum, runtime_enum = solve_bilevel_simpler(items, m, budget, time_limit=30.0, verbose=False)
+            makespan_enum, occ_enum, _, nodes_enum, runtime_enum = solve_bilevel_simpler(items, m, budget, time_limit=3600.0, verbose=False)
             
             # Save to cache
             cache[instance_key] = {
@@ -264,7 +214,7 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             import glob
             
             # Find the most recent log file for this instance
-            log_dir = Path("logs/test_small")
+            log_dir = Path("logs/test_big")
             log_pattern = f"{name}_*.log"
             log_files = list(log_dir.glob(log_pattern))
             
@@ -297,18 +247,28 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
 # Run all instances
 if __name__ == "__main__":
     print("\n" + "=" * 70)
-    print("TESTING MULTIPLE INSTANCES")
+    print("TESTING 100 COMPLEX INSTANCES")
     print("=" * 70)
     
-    # Run instances with enumeration for verification (logging enabled)
+    # Print summary of instance characteristics
+    print("\nInstance Summary:")
+    print(f"Total instances: {len(instances)}")
+    
+    job_counts = {}
+    machine_counts = {}
+    for inst in instances:
+        n_jobs = len(inst['items'])
+        n_machines = inst['machines']
+        job_counts[n_jobs] = job_counts.get(n_jobs, 0) + 1
+        machine_counts[n_machines] = machine_counts.get(n_machines, 0) + 1
+    
+    print(f"Job types distribution: {dict(sorted(job_counts.items()))}")
+    print(f"Machine counts distribution: {dict(sorted(machine_counts.items()))}")
+    
+    # Run instances with enumeration for all (using 1 hour time limit per instance)
     for i in range(len(instances)):
         run_instance(instances[i], use_enumeration=True, enable_logging=True)
     
     print("\n" + "=" * 70)
     print("ALL TESTS COMPLETED")
     print("=" * 70)
-
-    #cd 'c:\Users\oleda\.vscode\Solving stuff with Gurobi\gurobi_scheduling'; & "C:/Users/oleda/.vscode/Solving stuff with Gurobi/.venv311/Scripts/python.exe" test_small.py
-
-
-

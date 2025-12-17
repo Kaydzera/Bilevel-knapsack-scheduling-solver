@@ -1,0 +1,283 @@
+{
+  "Medium Baseline_3_50_[(8, 4), (10, 5), (6, 3), (12, 6), (7, 4), (9, 5)]": {
+    "makespan": 40.0,
+    "selection": [
+      0,
+      10,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 12744,
+    "runtime": 23.24480390548706
+  },
+  "Varied Ratios_4_30_[(15, 3), (8, 7), (12, 4), (6, 5), (10, 6), (7, 4)]": {
+    "makespan": 45.0,
+    "selection": [
+      9,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 1038,
+    "runtime": 1.3277502059936523
+  },
+  "High Budget_4_40_[(9, 5), (11, 6), (8, 4), (13, 7), (7, 3), (10, 5), (6, 4)]": {
+    "makespan": 28.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      13,
+      0,
+      0
+    ],
+    "nodes_evaluated": 7434,
+    "runtime": 15.469611883163452
+  },
+  "Many Machines_6_28_[(12, 5), (10, 4), (8, 3), (14, 6), (9, 4), (11, 5)]": {
+    "makespan": 20.0,
+    "selection": [
+      0,
+      7,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 964,
+    "runtime": 1.1704978942871094
+  },
+  "Cheap Dominant_3_22_[(25, 3), (8, 6), (10, 7), (7, 5), (9, 6), (6, 4), (11, 8)]": {
+    "makespan": 75.0,
+    "selection": [
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 294,
+    "runtime": 0.22699928283691406
+  },
+  "Expensive Focus_4_35_[(7, 10), (9, 12), (6, 9), (8, 11), (5, 8), (10, 13)]": {
+    "makespan": 10.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "nodes_evaluated": 83,
+    "runtime": 0.04599928855895996
+  },
+  "Eight Jobs_4_32_[(10, 5), (8, 4), (12, 6), (9, 5), (11, 6), (7, 4), (13, 7), (6, 3)]": {
+    "makespan": 24.0,
+    "selection": [
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "nodes_evaluated": 3922,
+    "runtime": 8.962698221206665
+  },
+  "Tight Constraints_3_18_[(14, 6), (12, 5), (10, 4), (8, 3), (11, 5), (9, 4)]": {
+    "makespan": 20.0,
+    "selection": [
+      0,
+      0,
+      2,
+      0,
+      2,
+      0
+    ],
+    "nodes_evaluated": 175,
+    "runtime": 0.14551210403442383
+  },
+  "Mixed Complexity_5_35_[(18, 4), (6, 9), (11, 5), (9, 6), (13, 5), (7, 4), (10, 7)]": {
+    "makespan": 36.0,
+    "selection": [
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 1837,
+    "runtime": 2.4650039672851562
+  },
+  "Balanced Medium_4_27_[(11, 5), (9, 4), (13, 6), (8, 4), (10, 5), (12, 6)]": {
+    "makespan": 22.0,
+    "selection": [
+      3,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    "nodes_evaluated": 505,
+    "runtime": 0.5856866836547852
+  },
+  "Large Scale Baseline_6_70_[(15, 8), (18, 10), (12, 6), (20, 12), (14, 7), (16, 9), (10, 5)]": {
+    "makespan": 36.0,
+    "selection": [
+      0,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 9304,
+    "runtime": 21.78590750694275
+  },
+  "High Capacity_8_85_[(22, 10), (18, 8), (25, 12), (20, 9), (15, 7), (12, 6), (28, 14), (16, 8), (14, 7)]": {
+    "makespan": 40.0,
+    "selection": [
+      0,
+      0,
+      0,
+      9,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 66541,
+    "runtime": 916.4096899032593
+  },
+  "Cost Sensitive_7_65_[(35, 15), (30, 12), (25, 10), (28, 14), (32, 16), (20, 8)]": {
+    "makespan": 40.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      8
+    ],
+    "nodes_evaluated": 450,
+    "runtime": 0.5395474433898926
+  },
+  "_comment_Wide_Variety": "WARNING: Enumeration could not verify this solution. Makespan and selection are from BnB (which found optimal in 2.43s). Enumeration ran for 2 hours (7200s), checked 128,751 selections, but only found makespan 52.0. Search space too large (~3.3B combinations) for complete enumeration. BnB solution trusted as optimal.",
+  "Wide Variety_9_95_[(40, 8), (15, 15), (25, 10), (18, 9), (22, 11), (30, 12), (20, 8), (12, 6), (16, 8), (28, 14)]": {
+    "makespan": 80.0,
+    "selection": [
+      0,
+      2,
+      0,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 128751,
+    "runtime": 7200.02
+  },
+  "Heavy Workload_5_75_[(35, 14), (30, 12), (40, 16), (25, 10), (28, 14), (32, 16), (22, 11), (20, 8)]": {
+    "makespan": 60.0,
+    "selection": [
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 2397,
+    "runtime": 5.6829893589019775
+  },
+  "Distributed Resources_10_80_[(24, 12), (20, 10), (18, 9), (16, 8), (22, 11), (14, 7), (12, 6)]": {
+    "makespan": 28.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      11,
+      0
+    ],
+    "nodes_evaluated": 10095,
+    "runtime": 19.534974813461304
+  },
+  "Premium Options_6_60_[(20, 25), (25, 30), (18, 22), (30, 20), (35, 15)]": {
+    "makespan": 35.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "nodes_evaluated": 31,
+    "runtime": 0.018490076065063477
+  },
+  "Flexible Capacity_7_90_[(28, 14), (24, 12), (32, 16), (20, 10), (26, 13), (22, 11), (18, 9), (30, 15), (16, 8)]": {
+    "makespan": 44.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 14888,
+    "runtime": 117.42847156524658
+  },
+  "High Budget Extreme_8_100_[(45, 18), (38, 16), (42, 20), (35, 14), (40, 16), (30, 12), (32, 16), (28, 14)]": {
+    "makespan": 45.0,
+    "selection": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 3116,
+    "runtime": 6.937116384506226
+  },
+  "Balanced Large_8_55_[(26, 13), (22, 11), (24, 12), (20, 10), (28, 14), (18, 9)]": {
+    "makespan": 28.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "nodes_evaluated": 297,
+    "runtime": 0.31951141357421875
+  }
+}

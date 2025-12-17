@@ -397,7 +397,7 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             if len(proc) == 0:
                 makespan = 0.0
             else:
-                sched = solve_scheduling(len(proc), problem.machines, proc, verbose=False)
+                sched =    (len(proc), problem.machines, proc, verbose=False)
                 makespan = sched.get('makespan', None)
             
             if makespan is not None:
