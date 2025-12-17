@@ -1,0 +1,68 @@
+2025-12-16 14:11:28 - INFO - Initialized logger for instance: Cheap Dominant
+2025-12-16 14:11:28 - INFO - Run ID: Cheap Dominant_20251216_141128
+2025-12-16 14:11:28 - INFO - ============================================================
+2025-12-16 14:11:28 - INFO - Starting branch-and-bound solver
+2025-12-16 14:11:28 - INFO - Problem: {'n_job_types': 7, 'machines': 3, 'budget': 22, 'prices': [3, 6, 7, 5, 6, 4, 8], 'durations': [25, 8, 10, 7, 9, 6, 11], 'max_nodes': 500000}
+2025-12-16 14:11:28 - INFO - ============================================================
+2025-12-16 14:11:28 - INFO - Computing initial heuristic solution...
+2025-12-16 14:11:28 - INFO - ==================================================
+2025-12-16 14:11:28 - INFO - NEW INCUMBENT: 75.0
+2025-12-16 14:11:28 - INFO - Selection: [7, 0, 0, 0, 0, 0, 0]
+2025-12-16 14:11:28 - INFO - Found at node: 0
+2025-12-16 14:11:28 - INFO - ==================================================
+2025-12-16 14:11:28 - INFO - Initializing CeilKnapsackSolver with reversed item order...
+2025-12-16 14:11:28 - INFO - CeilKnapsackSolver initialized successfully
+2025-12-16 14:11:28 - INFO - Starting branch-and-bound with max_nodes=500000
+2025-12-16 14:11:28 - DEBUG - Node 1: {'depth': 0, 'occurrences': [7, 0, 0, 0, 0, 0, 0], 'remaining_budget': 1, 'node_type': 'root'}
+2025-12-16 14:11:28 - DEBUG - Pruned by budget_infeasible at node 1
+2025-12-16 14:11:28 - DEBUG - Bound: 75.00 (ceil_knapsack_dp) = remaining 0.00 + committed 75.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 1
+2025-12-16 14:11:28 - DEBUG - Node 2: {'depth': 0, 'occurrences': [6, 0, 0, 0, 0, 0, 0], 'remaining_budget': 4, 'node_type': 'left'}
+2025-12-16 14:11:28 - DEBUG - Bound: 56.00 (ceil_knapsack_dp) = remaining 6.00 + committed 50.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 2
+2025-12-16 14:11:28 - DEBUG - Node 3: {'depth': 0, 'occurrences': [5, 0, 0, 0, 0, 0, 0], 'remaining_budget': 7, 'node_type': 'left'}
+2025-12-16 14:11:28 - DEBUG - Bound: 60.00 (ceil_knapsack_dp) = remaining 10.00 + committed 50.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 3
+2025-12-16 14:11:28 - DEBUG - Node 4: {'depth': 0, 'occurrences': [4, 0, 0, 0, 0, 0, 0], 'remaining_budget': 10, 'node_type': 'left'}
+2025-12-16 14:11:28 - DEBUG - Bound: 65.00 (ceil_knapsack_dp) = remaining 15.00 + committed 50.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 4
+2025-12-16 14:11:28 - DEBUG - Node 5: {'depth': 0, 'occurrences': [3, 0, 0, 0, 0, 0, 0], 'remaining_budget': 13, 'node_type': 'left'}
+2025-12-16 14:11:28 - DEBUG - Bound: 44.00 (ceil_knapsack_dp) = remaining 19.00 + committed 25.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 5
+2025-12-16 14:11:28 - DEBUG - Node 6: {'depth': 0, 'occurrences': [2, 0, 0, 0, 0, 0, 0], 'remaining_budget': 16, 'node_type': 'left'}
+2025-12-16 14:11:28 - DEBUG - Bound: 48.00 (ceil_knapsack_dp) = remaining 23.00 + committed 25.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 6
+2025-12-16 14:11:28 - DEBUG - Node 7: {'depth': 0, 'occurrences': [1, 0, 0, 0, 0, 0, 0], 'remaining_budget': 19, 'node_type': 'left'}
+2025-12-16 14:11:28 - DEBUG - Bound: 52.00 (ceil_knapsack_dp) = remaining 27.00 + committed 25.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 7
+2025-12-16 14:11:28 - DEBUG - Node 8: {'depth': 0, 'occurrences': [0, 0, 0, 0, 0, 0, 0], 'remaining_budget': 22, 'node_type': 'left'}
+2025-12-16 14:11:28 - DEBUG - Bound: 32.00 (ceil_knapsack_dp) = remaining 32.00 + committed 0.00 at depth 0
+2025-12-16 14:11:28 - DEBUG - Pruned by bound_dominated at node 8
+2025-12-16 14:11:28 - INFO - Computing final schedule for best solution...
+2025-12-16 14:11:28 - INFO - Metrics saved to: logs\test_middle\Cheap Dominant_20251216_141128_metrics.json
+2025-12-16 14:11:28 - INFO - ============================================================
+2025-12-16 14:11:28 - INFO - Branch-and-bound completed
+2025-12-16 14:11:28 - INFO - Total runtime: 0.004 seconds
+2025-12-16 14:11:28 - INFO - Nodes explored: 8
+2025-12-16 14:11:28 - INFO - Nodes pruned: 8
+2025-12-16 14:11:28 - INFO - Nodes evaluated: 0
+2025-12-16 14:11:28 - INFO - Pruning rate: 100.00%
+2025-12-16 14:11:28 - INFO - Final Result:
+2025-12-16 14:11:28 - INFO -   Makespan: 75.0
+2025-12-16 14:11:28 - INFO -   Selection: [7, 0, 0, 0, 0, 0, 0]
+2025-12-16 14:11:28 - INFO -   Schedule makespan: 75.0
+2025-12-16 14:11:28 - INFO - ============================================================
+
+======================================================================
+ENUMERATION COMPARISON
+======================================================================
+BnB nodes explored: 8
+Enumeration nodes evaluated: 294
+Ratio (BnB/Enum): 0.03x
+BnB runtime: 0.0040s
+Enumeration runtime: 0.2270s
+Speedup (Enum/BnB): 56.74x
+Enumeration makespan: 75.0
+BnB makespan: 75.0
+Match: YES
+======================================================================

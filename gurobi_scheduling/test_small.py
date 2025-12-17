@@ -206,7 +206,9 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     
     # Run BnB
     print("\n### Branch-and-Bound ###")
-    result_bnb = run_bnb_classic(problem, max_nodes=100000, verbose=False, instance_name=name, enable_logging=enable_logging)
+    from logger import create_logger
+    logger = create_logger(instance_name=name, log_dir="logs/test_small") if enable_logging else None
+    result_bnb = run_bnb_classic(problem, max_nodes=100000, verbose=False, logger=logger, instance_name=name, enable_logging=enable_logging)
     print(f"BnB Result: makespan={result_bnb['best_obj']:.1f}, "
           f"selection={result_bnb['best_selection']}, "
           f"nodes={result_bnb['nodes_explored']}")
@@ -262,7 +264,7 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             import glob
             
             # Find the most recent log file for this instance
-            log_dir = Path("logs")
+            log_dir = Path("logs/test_small")
             log_pattern = f"{name}_*.log"
             log_files = list(log_dir.glob(log_pattern))
             
