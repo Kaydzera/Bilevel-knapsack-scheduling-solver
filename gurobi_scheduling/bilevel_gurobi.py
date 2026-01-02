@@ -70,12 +70,8 @@ def solve_bilevel_simpler(
         if time.time() - start_time > time_limit:
             if verbose:
                 print(f"\nTime limit reached after checking {count} selections")
-            #raise an exception
-            raise TimeoutError("Time limit exceeded in bilevel enumeration.")
-
-
-
-            #break
+            #raise an exception with count information
+            raise TimeoutError(f"Time limit exceeded in bilevel enumeration after checking {count} selections.")
         
         # Check budget
         cost = sum(items[i].price * occurrences[i] for i in range(n))

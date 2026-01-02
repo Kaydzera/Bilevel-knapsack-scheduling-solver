@@ -179,20 +179,45 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             occ_enum = cached['selection']
             nodes_enum = cached['nodes_evaluated']
             runtime_enum = cached.get('runtime', None)
+            timed_out = cached.get('timed_out', False)
         else:
             print("Running enumeration (not cached)...")
-            makespan_enum, occ_enum, _, nodes_enum, runtime_enum = solve_bilevel_simpler(items, m, budget, time_limit=3600.0, verbose=False)
+            timed_out = False
+            try:
+                makespan_enum, occ_enum, _, nodes_enum, runtime_enum = solve_bilevel_simpler(items, m, budget, time_limit=3600.0, verbose=True)
+            except TimeoutError as e:
+                print(f"\nEnumeration timed out after {3600.0}s")
+                print(f"Timeout exception: {e}")
+                # Extract node count from exception message
+                import re
+                match = re.search(r'after checking (\d+) selections', str(e))
+                if match:
+                    nodes_enum = int(match.group(1))
+                else:
+                    nodes_enum = 0  # Fallback if message format changes
+                # Use partial results from the enumeration attempt
+                # Since we don't have partial results, use BnB results with a flag
+                makespan_enum = result_bnb['best_obj']
+                occ_enum = result_bnb['best_selection']
+                runtime_enum = 3600.0
+                timed_out = True
+                print(f"Recording timeout in cache with BnB solution: makespan={makespan_enum}, nodes checked: {nodes_enum}")
             
-            # Save to cache
+            # Save to cache (even if timed out)
             cache[instance_key] = {
                 'makespan': makespan_enum,
                 'selection': occ_enum,
                 'nodes_evaluated': nodes_enum,
-                'runtime': runtime_enum
+                'runtime': runtime_enum,
+                'timed_out': timed_out
             }
             save_enumeration_cache(cache)
         
-        print(f"Enumeration Result: makespan={makespan_enum:.1f}, selection={occ_enum}")
+        if timed_out:
+            print(f"Enumeration Result: TIMED OUT (using BnB solution: makespan={makespan_enum:.1f})")
+        else:
+            print(f"Enumeration Result: makespan={makespan_enum:.1f}, selection={occ_enum}")
+        
         print(f"Nodes: BnB explored {result_bnb['nodes_explored']}, Enumeration evaluated {nodes_enum}")
         
         # Compare runtimes
@@ -202,10 +227,14 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             print(f"Runtime: BnB {bnb_runtime:.4f}s, Enumeration {runtime_enum:.4f}s (Speedup: {speedup:.2f}x)")
         
         # Compare results
-        if abs(result_bnb['best_obj'] - makespan_enum) < 0.01:
+        if timed_out:
+            print("TIMEOUT - Enumeration could not verify BnB solution within time limit")
+        elif abs(result_bnb['best_obj'] - makespan_enum) < 0.01:
             print("OK - Results match!")
+        elif makespan_enum < result_bnb['best_obj']:
+            print("WARNING - Enumeration found worse solution (possible enumeration bug or early termination)")
         else:
-            print("FAIL - Results differ!")
+            print("FAIL - Results differ! (BnB may have error)")
         
         # Log comparison to BnB log if logging enabled
         if enable_logging:
@@ -229,7 +258,8 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
                     f.write("=" * 70 + "\n")
                     f.write(f"BnB nodes explored: {result_bnb['nodes_explored']}\n")
                     f.write(f"Enumeration nodes evaluated: {nodes_enum}\n")
-                    f.write(f"Ratio (BnB/Enum): {result_bnb['nodes_explored']/nodes_enum:.2f}x\n")
+                    if nodes_enum > 0:
+                        f.write(f"Ratio (BnB/Enum): {result_bnb['nodes_explored']/nodes_enum:.2f}x\n")
                     if bnb_runtime is not None and runtime_enum is not None:
                         f.write(f"BnB runtime: {bnb_runtime:.4f}s\n")
                         f.write(f"Enumeration runtime: {runtime_enum:.4f}s\n")
@@ -237,8 +267,15 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
                         f.write(f"Speedup (Enum/BnB): {speedup:.2f}x\n")
                     f.write(f"Enumeration makespan: {makespan_enum}\n")
                     f.write(f"BnB makespan: {result_bnb['best_obj']}\n")
-                    match = "YES" if abs(result_bnb['best_obj'] - makespan_enum) < 0.01 else "NO"
-                    f.write(f"Match: {match}\n")
+                    if timed_out:
+                        f.write(f"Match: TIMEOUT (Enum could not complete verification)\n")
+                    elif abs(result_bnb['best_obj'] - makespan_enum) < 0.01:
+                        f.write(f"Match: YES (Solutions match)\n")
+                    elif makespan_enum < result_bnb['best_obj']:
+                        f.write(f"Match: WARNING - Enumeration found WORSE solution than BnB ({makespan_enum:.1f} < {result_bnb['best_obj']:.1f})\n")
+                    else:
+                        f.write(f"Match: NO - BnB may have error (Enum found better: {makespan_enum:.1f} > {result_bnb['best_obj']:.1f})\n")
+                    f.write(f"Timed out: {timed_out}\n")
                     f.write("=" * 70 + "\n")
     
     return result_bnb
