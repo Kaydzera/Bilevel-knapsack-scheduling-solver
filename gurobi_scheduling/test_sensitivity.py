@@ -22,6 +22,7 @@ Usage:
 import argparse
 import csv
 import time
+import json
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Tuple
@@ -69,26 +70,26 @@ def generate_instance(n_jobs: int, m_machines: int, budget_multiplier: float, se
     return MainProblem(
         prices=prices,
         durations=durations,
-        m=m_machines,
-        budget=budget
+        anzahl_maschinen=m_machines,
+        budget_total=budget
     )
 
 
 def run_single_test(n_jobs: int, m_machines: int, budget_multiplier: float, 
-                   seed: int, max_nodes: int, time_limit: float) -> Dict:
+                   seed: int, max_nodes: int, time_limit: float, log_dir: str = "logs/sensitivity") -> Dict:
     """
     Run BnB on a single instance and collect performance metrics.
     
     Returns:
-        Dictionary with metrics: runtime, nodes_explored, pruned_budget, 
-        pruned_bound, pruning_rate, best_makespan, status
+        Dictionary with metrics: runtime, nodes_explored, pruned_bound, 
+        pruning_rate, best_makespan, status
     """
     # Generate instance
     problem = generate_instance(n_jobs, m_machines, budget_multiplier, seed)
     
-    # Create logger (suppress output during test)
+    # Create logger (suppress output during test) 
     instance_name = f"sensitivity_{n_jobs}j_{m_machines}m_{budget_multiplier}b_s{seed}"
-    logger = create_logger(instance_name=instance_name, log_dir="logs/sensitivity", log_level="ERROR")
+    logger = create_logger(instance_name=instance_name, log_dir=log_dir)
     
     # Run BnB
     start_time = time.time()
@@ -103,12 +104,20 @@ def run_single_test(n_jobs: int, m_machines: int, budget_multiplier: float,
         runtime = time.time() - start_time
         status = 'success'
         
+        # Read metrics from the logger's saved JSON file
+        metrics_file = Path(log_dir) / f"{logger.run_id}_metrics.json"
+        with open(metrics_file, 'r') as f:
+            logger_metrics = json.load(f)
+        
+        # Extract only bound_dominated pruning (the algorithmic contribution)
+        pruning_reasons = logger_metrics.get('pruning_reasons', {})
+        pruned_bound = pruning_reasons.get('bound_dominated', 0)
+        
         # Extract metrics
         metrics = {
             'runtime': runtime,
             'nodes_explored': result.get('nodes_explored', 0),
-            'pruned_budget': result.get('pruned_budget_infeasible', 0),
-            'pruned_bound': result.get('pruned_bound_dominated', 0),
+            'pruned_bound': pruned_bound,
             'best_makespan': result.get('best_obj', float('inf')),
             'status': status,
             'n_jobs': n_jobs,
@@ -117,11 +126,10 @@ def run_single_test(n_jobs: int, m_machines: int, budget_multiplier: float,
             'seed': seed,
         }
         
-        # Calculate pruning rate
-        total_pruned = metrics['pruned_budget'] + metrics['pruned_bound']
+        # Calculate pruning rate (only bound-dominated pruning)
         total_nodes = metrics['nodes_explored']
         if total_nodes > 0:
-            metrics['pruning_rate'] = total_pruned / total_nodes
+            metrics['pruning_rate'] = pruned_bound / total_nodes
         else:
             metrics['pruning_rate'] = 0.0
             
@@ -130,7 +138,6 @@ def run_single_test(n_jobs: int, m_machines: int, budget_multiplier: float,
         metrics = {
             'runtime': runtime,
             'nodes_explored': 0,
-            'pruned_budget': 0,
             'pruned_bound': 0,
             'best_makespan': float('inf'),
             'status': 'timeout',
@@ -145,7 +152,6 @@ def run_single_test(n_jobs: int, m_machines: int, budget_multiplier: float,
         metrics = {
             'runtime': runtime,
             'nodes_explored': 0,
-            'pruned_budget': 0,
             'pruned_bound': 0,
             'best_makespan': float('inf'),
             'status': f'error: {str(e)}',
@@ -175,6 +181,10 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
         repetitions: Number of random instances to test per value
         output_file: CSV file path to save results
     """
+    # Set up parameter-specific log directory
+    log_dir = f"logs/sensitivity_{parameter}"
+    Path(log_dir).mkdir(parents=True, exist_ok=True)
+    
     print(f"\n{'='*70}")
     print(f"SENSITIVITY ANALYSIS: {parameter.upper()}")
     print(f"{'='*70}")
@@ -182,6 +192,7 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
     print(f"Starting value: {start_value}")
     print(f"Step size: {step}")
     print(f"Repetitions per value: {repetitions}")
+    print(f"Log directory: {log_dir}")
     print(f"Stopping criteria:")
     if parameter == 'machines':
         print(f"  - First timeout (>{TIMEOUT_THRESHOLD}s) OR")
@@ -195,7 +206,7 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
     fieldnames = [
         'parameter', 'value', 'repetition', 'seed',
         'n_jobs', 'm_machines', 'budget_multiplier',
-        'runtime', 'nodes_explored', 'pruned_budget', 'pruned_bound', 
+        'runtime', 'nodes_explored', 'pruned_bound', 
         'pruning_rate', 'best_makespan', 'status'
     ]
     
@@ -248,7 +259,8 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
                     budget_multiplier=budget_multiplier,
                     seed=seed,
                     max_nodes=BASELINE['max_nodes'],
-                    time_limit=BASELINE['time_limit']
+                    time_limit=BASELINE['time_limit'],
+                    log_dir=log_dir
                 )
                 
                 # Add metadata
