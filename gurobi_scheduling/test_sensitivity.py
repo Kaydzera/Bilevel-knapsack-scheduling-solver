@@ -44,7 +44,7 @@ BASELINE = {
 }
 
 # Stopping criteria
-MAX_MACHINES = 500  # Hard limit on number of machines
+MAX_MACHINES = 50  # Hard limit on number of machines
 TIMEOUT_THRESHOLD = 300.0  # Stop increasing parameter if we hit this runtime
 
 

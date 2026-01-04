@@ -1,0 +1,2 @@
+parameter,value,repetition,seed,n_jobs,m_machines,budget_multiplier,runtime,nodes_explored,pruned_bound,pruning_rate,best_makespan,status
+budget,6.2,0,62000,8,4,6.2,504.44509744644165,35960,26333,0.732285873192436,440.0,success
