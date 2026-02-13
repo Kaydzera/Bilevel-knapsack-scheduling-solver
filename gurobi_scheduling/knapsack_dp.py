@@ -211,7 +211,6 @@ def compute_ip_bound_exact(problem: MainProblem, node: ProblemNode, time_limit=2
     return bound, selection
 
 
-# TODO: Review and understand this code line by line
 def compute_ip_bound_direct(items, depth, rem_budget, m, time_limit=2.0):
     """Compute exact integer-program upper bound using grouping (direct version).
     
@@ -444,20 +443,6 @@ if __name__ == "__main__":
 
 
 
-'''
-e you accumulate m additional items, your benefit increases by one more chunk. 
-To model this realistically under a knapsack budget constraint, the solver represents each item type not as infinitely buyable pieces,
- but as a fixed set of mutually exclusive 0-1 purchase options:
-   (1) a single-item option that costs cost[i] and yields one benefit block, and 
-   (2) multiple package options, each representing m units, each costing m*cost[i] and yielding one benefit block. 
-Importantly, each option can be taken at most once, ensuring that for each item type, you cannot repeatedly select the same package—each block of possible benefit is represented by its own 0-1 choice. 
-Because the maximum budget is known, the solver pre-generates all possible benefit-producing options for each item type that could ever fit within that budget and organizes them into “groups” tied to each item.
-It then builds a dynamic programming table dp_prefix[i][b] that computes the maximum achievable benefit using only the first i item types and a budget b,
-allowing for efficient queries that ask “What is the best result if only the first k item types are unlocked, and I have budget B?”. 
-Finally, using a separate decision-tracking structure, the solver can reconstruct the exact chosen combination of per-item singles and packages that achieve the optimal benefit, 
-automatically calculating the implied total item counts x[i]. 
-The end result is a flexible, reusable solver that can precompute once and answer many queries extremely fast, even under this non-linear ceil-based reward model.
-'''
 
 class CeilKnapsackSolver:
     """

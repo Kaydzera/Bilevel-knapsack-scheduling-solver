@@ -21,6 +21,7 @@ from solvers import solve_scheduling, solve_leader_knapsack, solve_scheduling_re
 from models import MainProblem, ProblemNode
 from logger import BnBLogger
 from knapsack_dp import CeilKnapsackSolver
+from maxlpt_bound import precompute_maxlpt_dp_tables, compute_maxlpt_bound
 
 
 def greedy_fractional_total(items, budget):
@@ -245,7 +246,7 @@ def compute_ip_bound_direct(items, depth, rem_budget, m, time_limit=2.0):
 
 def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False, 
                     logger: Optional[BnBLogger] = None, instance_name: str = "default",
-                    enable_logging: bool = True):
+                    enable_logging: bool = True, bound_type: str = 'ceiling'):
     """Branch-and-bound solver for the bilevel optimization problem.
     
     Uses depth-first search with exact IP bounds to prune the search tree.
@@ -258,6 +259,7 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         logger: Optional BnBLogger instance for detailed logging
         instance_name: Name for the instance (used if logger is None)
         enable_logging: Whether to create logs (default: True)
+        bound_type: Type of upper bound to use ('ceiling' or 'maxlpt')
         
     Returns:
         dict with:
@@ -282,9 +284,14 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         "budget": problem.budget_total,
         "prices": problem.prices,
         "durations": problem.durations,
-        "max_nodes": max_nodes
+        "max_nodes": max_nodes,
+        "bound_type": bound_type
     }
     logger.start_run(problem_data)
+    
+         # Validate bound_type
+    if bound_type not in ['ceiling', 'maxlpt']:
+        raise ValueError(f"Invalid bound_type: {bound_type}. Must be 'ceiling' or 'maxlpt'.")
     
     # Track timing statistics for bound computations
     
@@ -326,14 +333,30 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     # This allows us to query the last N items by querying the first N items in reversed solver
     # Example: if depth=1 (deciding item 1), remaining items are [2,3,4,...]
     # In reversed order, these become [last, ..., 4, 3, 2] which are the first items
-    logger.info("Initializing CeilKnapsackSolver with reversed item order...")
-    ceil_solver = CeilKnapsackSolver(
-        costs=list(reversed(problem.prices)),
-        durations=list(reversed(problem.durations)),
-        m=problem.machines,
-        max_budget=problem.budget_total
-    )
-    logger.info("CeilKnapsackSolver initialized successfully")
+    
+    ceil_solver = None
+    maxlpt_dp_solvers = None
+    
+    if bound_type == 'ceiling':
+        logger.info("Initializing CeilKnapsackSolver with reversed item order...")
+        ceil_solver = CeilKnapsackSolver(
+            costs=list(reversed(problem.prices)),
+            durations=list(reversed(problem.durations)),
+            m=problem.machines,
+            max_budget=problem.budget_total
+        )
+        logger.info("CeilKnapsackSolver initialized successfully")
+    elif bound_type == 'maxlpt':
+        logger.info("Precomputing Max-LPT DP tables for all depths...")
+        preprocessing_start = time.time()
+        maxlpt_dp_solvers = precompute_maxlpt_dp_tables(
+            problem.durations,
+            problem.prices,
+            problem.budget_total
+        )
+        preprocessing_time = time.time() - preprocessing_start
+        logger.info(f"Max-LPT preprocessing completed in {preprocessing_time:.3f}s "
+                   f"({n} DP tables computed)")
     
 
     logger.info(f"Starting branch-and-bound with max_nodes={max_nodes}")
@@ -416,35 +439,36 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         # Compute bound for potentially adding lower child (commit to next depth)
         if can_create['lower']:
             try:
-                # Solve bound using CeilKnapsackSolver (fast DP method)
-                # Remaining items are from depth+1 onwards
-                num_remaining_items = n - (node.depth + 1)
-                if num_remaining_items > 0:
-                    # Query the reversed solver for the first num_remaining_items
-                    # which correspond to the last num_remaining_items in original order
-                    result_ceil = ceil_solver.reconstruct(num_remaining_items, node.remaining_budget)
-                    solution_node = result_ceil['max_value']
-                else:
-                    solution_node = 0.0
-                
-
-                '''
-                # # Method 2: IP bound (for verification - currently disabled)
-                # solution_node_ip, ip_selection = compute_ip_bound_exact(problem, node, time_limit=2.0)
-                # 
-                # # Verify that both methods produce the same result
-                # if abs(solution_node - solution_node_ip) > 1e-6:
-                #     error_msg = (
-                #         f"Bound mismatch at depth={node.depth}, budget={node.remaining_budget}!\n"
-                #         f"  CeilKnapsackSolver: {solution_node:.6f}\n"
-                #         f"  IP bound:           {solution_node_ip:.6f}\n"
-                #         f"  Difference:         {abs(solution_node - solution_node_ip):.6f}\n"
-                #         f"  Node occurrences:   {node.job_occurrences}\n"
-                #         f"  Num remaining items: {num_remaining_items}"
-                #     )
-                #     logger.error(error_msg)
-                #     raise ValueError(error_msg)
-                '''
+                # Compute upper bound based on selected method
+                if bound_type == 'ceiling':
+                    # Method 1: CeilKnapsackSolver (fast DP method with ceiling)
+                    # Remaining items are from depth+1 onwards
+                    num_remaining_items = n - (node.depth + 1)
+                    if num_remaining_items > 0:
+                        # Query the reversed solver for the first num_remaining_items
+                        # which correspond to the last num_remaining_items in original order
+                        result_ceil = ceil_solver.reconstruct(num_remaining_items, node.remaining_budget)
+                        solution_node = result_ceil['max_value']
+                    else:
+                        solution_node = 0.0
+                    bound_method_name = "ceil_knapsack_dp"
+                    
+                elif bound_type == 'maxlpt':
+                    # Method 2: Max-LPT bound (tighter, 3/4-approximation)
+                    # Compute makespan contribution from remaining items using Max-LPT
+                    if node.depth + 1 < n:
+                        solution_node = compute_maxlpt_bound(
+                            problem.durations,
+                            problem.prices,
+                            node.remaining_budget,
+                            problem.machines,
+                            node.depth + 1,  # Remaining items start from depth+1
+                            maxlpt_dp_solvers,
+                            0.0  # We add already_committed separately below
+                        )
+                    else:
+                        solution_node = 0.0
+                    bound_method_name = "maxlpt"
 
                 # Add already committed jobs' contribution using optimized node tracking
                 # For 'right' branch: get_already_committed_length() returns max directly
@@ -457,7 +481,7 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                 bound = solution_node + already_committed_length
                 
                 # Log bound computation (one line)
-                logger.log_bound_computation(bound, "ceil_knapsack_dp", node.depth, 
+                logger.log_bound_computation(bound, bound_method_name, node.depth, 
                                             solution_node, already_committed_length)
                 
                 # Prune if bound <= incumbent
@@ -488,7 +512,9 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     sched = solve_scheduling_readable(len(proc), problem.machines, proc, verbose=False)
     
     # Calculate runtime before creating result
-    runtime = time.time() - logger.metrics['start_time'] if hasattr(logger, 'metrics') else None
+    runtime = None
+    if hasattr(logger, 'metrics') and 'start_time' in logger.metrics:
+        runtime = time.time() - logger.metrics['start_time']
     
     # Prepare final result
     result = {
@@ -557,188 +583,3 @@ if __name__ == "__main__":    # Simple test run
 
     print("\n" + "=" * 70)
 
-
-
-'''
-Lets look at the pruning logic in the code. I will start by describing the expected outcome on the example of Uniform Ratios, also known as example 2. 
-The starting incumbent has value 12.
-
-
-We can start by depth 1 and 'occurrences': [0, 0, 0, 0]. depth 1 means that the occurence-amount of the first item with price 2 and duration 4 is fixed, in this case to zero. 
-That means that for the computation of the Bound, we use item 2, 3 and 4 and remaining budget 12. The bound is 24, so we cannot not prune.
-
-At depth 2 and 'occurrences': [0, 0, 0, 0], the occurence-amount of the first two items is fixed to 0, and we can use item 3 and 4 for the bound computation and the remaining budget 12.
-The bound is 18, so we do not prune
-At depth 3 and 'occurrences': [0, 0, 0, 0], the occurence-amount of the first three items is fixed to 0, and we can use item 4 for the bound computation and the remaining budget 12.
-The bound is 10, so we can prune this node, as 10 <= 12 (the incumbent).
-
-Thus, we do not continue with depth 4 and 'occurrences': [0, 0, 0, 0].
-(Optimization potential: At depth 3, only one item is left, so we could just spend the remaining budget on item 4 directly and evaluate the schedule with the maximum amout of item 4 instead of computing the Bound.)
-
-
-
-Instead, we continue with depth 3 and 'occurrences': [0, 0, 1, 0]. Here, the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation, but with a remaining budget of 8 (as we used 4 for item 3).
-The computed bound is once again 10 as expected, but we have to add the value of the already fixed items, which is 8. Thus, the total bound is 18 and we cannot prune.
-At depth 4 and 'occurrences': [0, 0, 1, 0], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 8, which is worse than the incumbent of 12, so we cannot update the incumbent.
-
-
-At depth 4 and 'occurrences': [0, 0, 1, 1], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 10, which is worse than the incumbent of 12, so we cannot update the incumbent.
-The node with depth 4 and 'occurrences': [0, 0, 1, 2] cannot exist, as we would exceed the budget of 12 (4 + 5 = 9 already, so adding another item of price 5 would exceed the budget).
-
-The next node to consider is depth 3 and 'occurrences': [0, 0, 2, 0]. Here, the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation, but with a remaining budget of 4 (as we used 8 for two copies of item 3).
-The computed bound is 0, as we do not have enough budget to buy any copy of item 4. Once again, we have to add the value of the already fixed items, which is 8.
-Thus, the total bound is 8 and we can prune this node, as 8 <= 12 (the incumbent).
-IMPORTANT: WE ONLY PRUNE THE LOWER CHILD; AS THE BOUND ONLY PRUNES THE LOWER CHILD. THE RIGHT CHILD STILL NEEDS TO BE CONSIDERED.
-
-The next node to consider is depth 3 and 'occurrences': [0, 0, 3, 0]. Here, the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation, but with a remaining budget of 0 (as we used 12 for three copies of item 3).
-The computed bound is 0, as we do not have enough budget to buy any copy of item 4. Once again, we have to add the value of the already fixed items, which is 16.
-Thus, the total bound is 16 and we cannot prune.
-
-The next node to consider is depth 4 and 'occurrences': [0, 0, 3, 0]. Here, the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 16, which is better than the incumbent of 12, so we update the incumbent to 16.
-The node at depth 4 and 'occurrences': [0, 0, 3, 1] cannot exist, as we would exceed the budget of 12 (12 + 5 = 17 already, so adding another item of price 5 would exceed the budget).
-
-The next node to consider is depth 2 and 'occurrences': [0, 1, 0, 0]. Here, the occurence-amount of the first two items is fixed, and we can use item 3 and 4 for the bound computation and the remaining budget 9.
-The computed bound is 18, and the final bound including committed jobs is 24, so we cannot prune.
-
-At depth 3 and 'occurrences': [0, 1, 0, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 9.
-The computed bound is 10, and the final bound including committed jobs is 16, so we cannot prune.
-
-At depth 4 and 'occurrences': [0, 1, 0, 0], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 6, so we do not update the incumbent of 16.
-
-At depth 4 and 'occurrences': [0, 1, 0, 1], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 10, so we do not update the incumbent of 16.
-
-The node at depth 4 and 'occurrences': [0, 1, 0, 2], cannot exist, as we would exceed the budget of 12 (3 + 10 = 13 already, so adding another item of price 5 would exceed the budget).
-
-At depth 3 and 'occurrences': [0, 1, 1, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 5.
-The computed bound is 10, and the final bound including committed jobs is 16, so we cannot prune.
-At depth 4 and 'occurrences': [0, 1, 1, 0], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 8, so we do not update the incumbent of 16.
-At depth 4 and 'occurrences': [0, 1, 1, 1], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 14, so we do not update the incumbent of 16.
-The node at depth 4 and 'occurrences': [0, 1, 1, 2] cannot exist, as we would exceed the budget of 12 (10 + 4 + 3 = 17 > 12).
-
-At depth 3 and 'occurrences': [0, 1, 2, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 1.
-The computed bound is 0, and the final bound including committed jobs is 14, so we can prune the lower child node, as 14 < 16 (the incumbent).
-
-The Node at depth 3 and 'occurrences': [0, 1, 3, 0], cannot exist, as we would exceed the budget of 12 (3*3 = 9 > 12).
-
-At depth 2 and 'occurrences': [0, 2, 0, 0], the occurence-amount of the first two items is fixed, and we can use item 3 and 4 for the bound computation and the remaining budget 6.
-The computed bound is 10, and the final bound including committed jobs is 16, so we can prune.
-
-At depth 2 and 'occurrences': [0, 3, 0, 0], the occurence-amount of the first two items is fixed, and we can use item 3 and 4 for the bound computation and the remaining budget 3.
-The computed bound is 0, and the final bound including committed jobs is 12, so we can prune the lower child node, as 12 <= 16 (the incumbent).
-At depth 2 and 'occurrences': [0, 4, 0, 0], the occurence-amount of the first two items is fixed, and we can use item 3 and 4 for the bound computation and the remaining budget 0.
-The computed bound is 0, and the final bound including committed jobs is 12, so we can prune the lower child node, as 12 <= 16 (the incumbent).
-
-At depth 1 and 'occurrences': [1, 0, 0, 0], the occurence-amount of the first item is fixed, and we can use item 2, 3 and 4 for the bound computation and the remaining budget 10.
-The computed bound is 18, and the final bound including committed jobs is 22, so we cannot prune.
-
-At depth 2 and 'occurrences': [1, 0, 0, 0], the occurence-amount of the first two items is fixed, and we can use item 3 and 4 for the bound computation and the remaining budget 10.
-The computed bound is 18, and the final bound including committed jobs is 22, so we cannot prune.
-
-At depth 3 and 'occurrences': [1, 0, 0, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 10.
-The computed bound is 10, and the final bound including committed jobs is 14, so we can prune the lower child node, as 14 <= 16 (the incumbent).
-
-At depth 3 and 'occurrences': [1, 0, 1, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 6.
-The computed bound is 10, and the final bound including committed jobs is 22, so we cannot prune.
-At depth 4 and 'occurrences': [1, 0, 1, 0], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 8, so we do not update the incumbent of 16.
-At depth 4 and 'occurrences': [1, 0, 1, 1], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 12, so we do not update the incumbent of 16.
-At depth 3 and 'occurrences': [1, 0, 2, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 2.
-The computed bound is 0, and the final bound including committed jobs is 12, so we can prune the lower child node, as 12 <= 16 (the incumbent).
-At depth 3 and 'occurrences': [1, 0, 3, 0], the node cannot exist, as we would exceed the budget of 12 (4 + 3*4 = 16 > 12).
-
-At depth 2 and 'occurrences': [1, 1, 0, 0], the occurence-amount of the first two items is fixed, and we can use item 3 and 4 for the bound computation and the remaining budget 7.
-The computed bound is 10, and the final bound including committed jobs is 20, so we cannot prune.
-At depth 3 and 'occurrences': [1, 1, 0, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 7.
-The computed bound is 10, and the final bound including committed jobs is 20, so we cannot prune.
-At depth 4 and 'occurrences': [1, 1, 0, 0], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 6, so we do not update the incumbent of 16.
-At depth 4 and 'occurrences': [1, 1, 0, 1], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 10, so we do not update the incumbent of 16.
-At depth 3 and 'occurrences': [1, 1, 1, 0], the occurence-amount of the first three items is fixed, and we can use item 4 for the bound computation and the remaining budget 3.
-The computed bound is 0, and the final bound including committed jobs is 18, so we cannot prune.
-At depth 4 and 'occurrences': [1, 1, 1, 0], the occurence-amount of all four items is fixed, so we can evaluate the solution directly.
-This solution has makespan 10, so we do not update the incumbent of 16.
-
-At depth 4 and 'occurrences': [1, 1, 1, 1], the node cannot exist, as we would exceed the budget of 12 (2 + 3 + 4 + 5 = 14 > 12).
-
-
-
-
-
-
-
-No its not:
-Example 1: Starting with heuristic [0,0,2,0]
-
-depth 0, [0,0,2,0], remaining_budget = 6 - 0*5 = 6
-Lower child: depth 1, [0,0,2,0], remaining_budget = 6 - 05 - 04 = 6 ✓
-Lower child: depth 2, [0,0,2,0], remaining_budget = 6 - 05 - 04 - 2*3 = 0 ✓
-Lower child: depth 3, [0,0,2,0], remaining_budget = 0 - 0*2 = 0 ✓
-Example 2: Starting with [1,2,1,1], budget=10
-
-depth 0, [1,2,1,1], remaining_budget = 10 - 1*5 = 5
-Lower child: depth 1, [1,2,1,1], remaining_budget = 5 - 2*4 = -3 ✗ EXCEEDS!
-Fallback: depth 1, [1,0,1,1], remaining_budget = 5 - 0*4 = 5 ✓
-Lower child: depth 2, [1,0,1,1], remaining_budget = 5 - 1*3 = 2 ✓
-Lower child: depth 3, [1,0,1,1], remaining_budget = 2 - 1*2 = 0 ✓
-Example 3: Starting with [2,3,2,1], budget=12
-
-depth 0, [2,3,2,1], remaining_budget = 12 - 2*5 = 2
-Lower child: depth 1, [2,3,2,1], remaining_budget = 2 - 3*4 = -10 ✗ EXCEEDS!
-Fallback: depth 1, [2,0,2,1], remaining_budget = 2 - 0*4 = 2 ✓
-Lower child: depth 2, [2,0,2,1], remaining_budget = 2 - 2*3 = -4 ✗ EXCEEDS!
-Fallback: depth 2, [2,0,0,1], remaining_budget = 2 - 0*3 = 2 ✓
-Lower child: depth 3, [2,0,0,1], remaining_budget = 2 - 1*2 = 0 ✓
-Example 4: Starting with [1,1,1,1], budget=15
-
-depth 0, [1,1,1,1], remaining_budget = 15 - 1*5 = 10
-Lower child: depth 1, [1,1,1,1], remaining_budget = 10 - 1*4 = 6 ✓
-Lower child: depth 2, [1,1,1,1], remaining_budget = 6 - 1*3 = 3 ✓
-Lower child: depth 3, [1,1,1,1], remaining_budget = 3 - 1*2 = 1 ✓
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''

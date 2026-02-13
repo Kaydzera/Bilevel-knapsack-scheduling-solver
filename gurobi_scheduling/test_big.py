@@ -1,4 +1,4 @@
-"""Test 100 large and complex instances on both enumeration and BnB."""
+"""Test 140 large and complex instances on both enumeration and BnB."""
 import json
 import os
 import random
@@ -13,11 +13,11 @@ ENUMERATION_CACHE_FILE = "enumeration_results_cache_big.json"
 random.seed(42)
 
 # ============================================================
-# GENERATE 100 COMPLEX TEST INSTANCES
+# GENERATE 140 COMPLEX TEST INSTANCES
 # ============================================================
 
 def generate_instances():
-    """Generate 100 complex test instances with varying characteristics."""
+    """Generate 140 complex test instances with varying characteristics."""
     instances = []
     
     # Configuration ranges for complex instances
@@ -28,53 +28,70 @@ def generate_instances():
     instance_id = 1
     
     # Generate diverse instances
-    for iteration in range(100):
+    for iteration in range(140):
         # Vary complexity
         n_jobs = random.choice(job_counts)
         n_machines = random.choice(machine_counts)
         
         # Generate items with different characteristics
         items = []
-        total_min_cost = 0
+        total_price = 0
         
+        scheme_name = ""
         for j in range(n_jobs):
             # Generate durations and prices with different patterns
-            if iteration % 5 == 0:
+            if iteration % 7 == 0:
                 # Pattern 1: Uniform ratios
+                scheme_name = "uniform_ratios"
                 base_ratio = random.uniform(1.5, 3.0)
                 duration = random.randint(3, 15)
                 price = max(1, int(duration / base_ratio))
-            elif iteration % 5 == 1:
+            elif iteration % 7 == 1:
                 # Pattern 2: High variance - some cheap, some expensive
+                scheme_name = "high_variance"
                 if j % 2 == 0:
                     duration = random.randint(10, 20)  # Long and cheap
                     price = random.randint(1, 3)
                 else:
                     duration = random.randint(2, 5)  # Short and expensive
                     price = random.randint(8, 15)
-            elif iteration % 5 == 2:
+            elif iteration % 7 == 2:
                 # Pattern 3: Increasing durations and prices
+                scheme_name = "increasing"
                 duration = 3 + j * 2
                 price = 2 + j
-            elif iteration % 5 == 3:
+            elif iteration % 7 == 3:
                 # Pattern 4: Random but realistic
+                scheme_name = "random_realistic"
                 duration = random.randint(4, 18)
                 price = random.randint(2, 12)
-            else:
+            elif iteration % 7 == 4:
                 # Pattern 5: Extreme cases
+                scheme_name = "extreme"
                 if random.random() < 0.3:
                     duration = random.randint(20, 30)  # Very long
                     price = random.randint(1, 3)  # Very cheap
                 else:
                     duration = random.randint(3, 12)
                     price = random.randint(3, 10)
+            elif iteration % 7 == 5:
+                # Pattern 6: Strong correlation between duration and price
+                scheme_name = "strong_correlation"
+                duration = random.randint(4, 20)
+                price = max(1, int(0.8 * duration + random.uniform(-1.0, 1.0)))
+            else:
+                # Pattern 7: Subset-sum style (all items have same duration and price)
+                scheme_name = "subset_sum"
+                base_value = random.randint(4, 12)
+                duration = base_value
+                price = base_value
             
             items.append(Item(name=f"J{j+1}", duration=duration, price=price))
-            total_min_cost += price
+            total_price += price
         
-        # Set budget based on total minimum cost and a multiplier
+        # Set budget based on average item price and a multiplier
         budget_mult = random.choice(budget_multipliers)
-        budget = int(total_min_cost * budget_mult / n_jobs) + random.randint(5, 20)
+        budget = int(total_price * budget_mult / n_jobs) + random.randint(5, 20)
         
         # Create instance name based on characteristics
         avg_duration = sum(item.duration for item in items) / len(items)
@@ -88,6 +105,7 @@ def generate_instances():
             "items": items,
             "machines": n_machines,
             "budget": budget,
+            "scheme": scheme_name,
             "id": instance_id
         })
         
@@ -98,7 +116,7 @@ def generate_instances():
 # Generate all instances
 instances = generate_instances()
 
-# ============================================================
+# ============================================   ================
 # ENUMERATION CACHE MANAGEMENT
 # ============================================================
 
@@ -137,6 +155,7 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     m = instance_data["machines"]
     budget = instance_data["budget"]
     name = instance_data["name"]
+    scheme = instance_data.get("scheme", "unknown")
     
     prices = [i.price for i in items]
     durations = [i.duration for i in items]
@@ -144,7 +163,7 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     print("\n" + "=" * 70)
     print(f"INSTANCE: {name}")
     print("=" * 70)
-    print(f"Jobs: {len(items)}, Machines: {m}, Budget: {budget}")
+    print(f"Jobs: {len(items)}, Machines: {m}, Budget: {budget}, Scheme: {scheme}")
     print("Items (duration/price/ratio):")
     for item in items:
         ratio = item.duration / item.price
@@ -154,14 +173,80 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     # Create problem
     problem = MainProblem(prices, durations, m, budget)
     
-    # Run BnB
-    print("\n### Branch-and-Bound ###")
+    # Run BnB (ceiling bound)
+    print("\n### Branch-and-Bound (Ceiling Bound) ###")
     from logger import create_logger
-    logger = create_logger(instance_name=name, log_dir="logs/test_big") if enable_logging else None
-    result_bnb = run_bnb_classic(problem, max_nodes=100000, verbose=False, logger=logger, instance_name=name, enable_logging=enable_logging)
-    print(f"BnB Result: makespan={result_bnb['best_obj']:.1f}, "
-          f"selection={result_bnb['best_selection']}, "
-          f"nodes={result_bnb['nodes_explored']}")
+    logger_ceiling = create_logger(instance_name=f"{name}_ceiling", log_dir="logs/test_big") if enable_logging else None
+    if enable_logging and logger_ceiling is not None:
+        try:
+            from pathlib import Path
+            log_dir = Path("logs/test_big")
+            log_pattern = f"{name}_ceiling_*.log"
+            log_files = list(log_dir.glob(log_pattern))
+            if log_files:
+                most_recent_log = max(log_files, key=lambda p: p.stat().st_mtime)
+                with open(most_recent_log, 'a') as f:
+                    f.write("\n" + "=" * 70 + "\n")
+                    f.write("INSTANCE GENERATION SCHEME\n")
+                    f.write("=" * 70 + "\n")
+                    f.write(f"Scheme: {scheme}\n")
+                    f.write("Bound: ceiling\n")
+                    f.write("=" * 70 + "\n")
+        except Exception as e:
+            print(f"Warning: Could not log scheme info (ceiling): {e}")
+    result_bnb_ceiling = run_bnb_classic(
+        problem,
+        max_nodes=100000,
+        verbose=False,
+        logger=logger_ceiling,
+        instance_name=f"{name}_ceiling",
+        enable_logging=enable_logging,
+        bound_type='ceiling'
+    )
+    print(f"BnB (Ceiling) Result: makespan={result_bnb_ceiling['best_obj']:.1f}, "
+          f"selection={result_bnb_ceiling['best_selection']}, "
+          f"nodes={result_bnb_ceiling['nodes_explored']}")
+
+    # Run BnB (Max-LPT bound)
+    print("\n### Branch-and-Bound (Max-LPT Bound) ###")
+    logger_maxlpt = create_logger(instance_name=f"{name}_maxlpt", log_dir="logs/test_big") if enable_logging else None
+    if enable_logging and logger_maxlpt is not None:
+        try:
+            from pathlib import Path
+            log_dir = Path("logs/test_big")
+            log_pattern = f"{name}_maxlpt_*.log"
+            log_files = list(log_dir.glob(log_pattern))
+            if log_files:
+                most_recent_log = max(log_files, key=lambda p: p.stat().st_mtime)
+                with open(most_recent_log, 'a') as f:
+                    f.write("\n" + "=" * 70 + "\n")
+                    f.write("INSTANCE GENERATION SCHEME\n")
+                    f.write("=" * 70 + "\n")
+                    f.write(f"Scheme: {scheme}\n")
+                    f.write("Bound: maxlpt\n")
+                    f.write("=" * 70 + "\n")
+        except Exception as e:
+            print(f"Warning: Could not log scheme info (maxlpt): {e}")
+    result_bnb_maxlpt = run_bnb_classic(
+        problem,
+        max_nodes=100000,
+        verbose=False,
+        logger=logger_maxlpt,
+        instance_name=f"{name}_maxlpt",
+        enable_logging=enable_logging,
+        bound_type='maxlpt'
+    )
+    print(f"BnB (Max-LPT) Result: makespan={result_bnb_maxlpt['best_obj']:.1f}, "
+          f"selection={result_bnb_maxlpt['best_selection']}, "
+          f"nodes={result_bnb_maxlpt['nodes_explored']}")
+
+    # Compare BnB bounds
+    if abs(result_bnb_ceiling['best_obj'] - result_bnb_maxlpt['best_obj']) < 0.01:
+        print("BnB Bound Comparison: OK - Both bounds match")
+    else:
+        print("BnB Bound Comparison: WARNING - Bounds differ")
+        print(f"  Ceiling: {result_bnb_ceiling['best_obj']:.2f}")
+        print(f"  Max-LPT: {result_bnb_maxlpt['best_obj']:.2f}")
     
     # Optionally run enumeration (only for smaller instances due to time)
     if use_enumeration:
@@ -197,8 +282,8 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
                     nodes_enum = 0  # Fallback if message format changes
                 # Use partial results from the enumeration attempt
                 # Since we don't have partial results, use BnB results with a flag
-                makespan_enum = result_bnb['best_obj']
-                occ_enum = result_bnb['best_selection']
+                makespan_enum = result_bnb_ceiling['best_obj']
+                occ_enum = result_bnb_ceiling['best_selection']
                 runtime_enum = 3600.0
                 timed_out = True
                 print(f"Recording timeout in cache with BnB solution: makespan={makespan_enum}, nodes checked: {nodes_enum}")
@@ -217,11 +302,13 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             print(f"Enumeration Result: TIMED OUT (using BnB solution: makespan={makespan_enum:.1f})")
         else:
             print(f"Enumeration Result: makespan={makespan_enum:.1f}, selection={occ_enum}")
-        
-        print(f"Nodes: BnB explored {result_bnb['nodes_explored']}, Enumeration evaluated {nodes_enum}")
+
+        print(f"Nodes: BnB (ceiling) explored {result_bnb_ceiling['nodes_explored']}, "
+              f"BnB (maxlpt) explored {result_bnb_maxlpt['nodes_explored']}, "
+              f"Enumeration evaluated {nodes_enum}")
         
         # Compare runtimes
-        bnb_runtime = result_bnb.get('runtime', None)
+        bnb_runtime = result_bnb_ceiling.get('runtime', None)
         if bnb_runtime is not None and runtime_enum is not None:
             speedup = runtime_enum / bnb_runtime if bnb_runtime > 0 else float('inf')
             print(f"Runtime: BnB {bnb_runtime:.4f}s, Enumeration {runtime_enum:.4f}s (Speedup: {speedup:.2f}x)")
@@ -229,9 +316,9 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
         # Compare results
         if timed_out:
             print("TIMEOUT - Enumeration could not verify BnB solution within time limit")
-        elif abs(result_bnb['best_obj'] - makespan_enum) < 0.01:
+        elif abs(result_bnb_ceiling['best_obj'] - makespan_enum) < 0.01:
             print("OK - Results match!")
-        elif makespan_enum < result_bnb['best_obj']:
+        elif makespan_enum < result_bnb_ceiling['best_obj']:
             print("WARNING - Enumeration found worse solution (possible enumeration bug or early termination)")
         else:
             print("FAIL - Results differ! (BnB may have error)")
@@ -244,7 +331,7 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             
             # Find the most recent log file for this instance
             log_dir = Path("logs/test_big")
-            log_pattern = f"{name}_*.log"
+            log_pattern = f"{name}_ceiling_*.log"
             log_files = list(log_dir.glob(log_pattern))
             
             if log_files:
@@ -256,35 +343,43 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
                     f.write("\n" + "=" * 70 + "\n")
                     f.write("ENUMERATION COMPARISON\n")
                     f.write("=" * 70 + "\n")
-                    f.write(f"BnB nodes explored: {result_bnb['nodes_explored']}\n")
+                    f.write(f"BnB (ceiling) nodes explored: {result_bnb_ceiling['nodes_explored']}\n")
+                    f.write(f"BnB (maxlpt) nodes explored: {result_bnb_maxlpt['nodes_explored']}\n")
                     f.write(f"Enumeration nodes evaluated: {nodes_enum}\n")
                     if nodes_enum > 0:
-                        f.write(f"Ratio (BnB/Enum): {result_bnb['nodes_explored']/nodes_enum:.2f}x\n")
+                        f.write(f"Ratio (BnB ceiling/Enum): {result_bnb_ceiling['nodes_explored']/nodes_enum:.2f}x\n")
+                        f.write(f"Ratio (BnB maxlpt/Enum): {result_bnb_maxlpt['nodes_explored']/nodes_enum:.2f}x\n")
                     if bnb_runtime is not None and runtime_enum is not None:
-                        f.write(f"BnB runtime: {bnb_runtime:.4f}s\n")
+                        f.write(f"BnB (ceiling) runtime: {bnb_runtime:.4f}s\n")
+                        if result_bnb_maxlpt.get('runtime', None) is not None:
+                            f.write(f"BnB (maxlpt) runtime: {result_bnb_maxlpt['runtime']:.4f}s\n")
                         f.write(f"Enumeration runtime: {runtime_enum:.4f}s\n")
                         speedup = runtime_enum / bnb_runtime if bnb_runtime > 0 else float('inf')
-                        f.write(f"Speedup (Enum/BnB): {speedup:.2f}x\n")
+                        f.write(f"Speedup (Enum/BnB ceiling): {speedup:.2f}x\n")
                     f.write(f"Enumeration makespan: {makespan_enum}\n")
-                    f.write(f"BnB makespan: {result_bnb['best_obj']}\n")
+                    f.write(f"BnB (ceiling) makespan: {result_bnb_ceiling['best_obj']}\n")
+                    f.write(f"BnB (maxlpt) makespan: {result_bnb_maxlpt['best_obj']}\n")
                     if timed_out:
                         f.write(f"Match: TIMEOUT (Enum could not complete verification)\n")
-                    elif abs(result_bnb['best_obj'] - makespan_enum) < 0.01:
+                    elif abs(result_bnb_ceiling['best_obj'] - makespan_enum) < 0.01:
                         f.write(f"Match: YES (Solutions match)\n")
-                    elif makespan_enum < result_bnb['best_obj']:
-                        f.write(f"Match: WARNING - Enumeration found WORSE solution than BnB ({makespan_enum:.1f} < {result_bnb['best_obj']:.1f})\n")
+                    elif makespan_enum < result_bnb_ceiling['best_obj']:
+                        f.write(f"Match: WARNING - Enumeration found WORSE solution than BnB ({makespan_enum:.1f} < {result_bnb_ceiling['best_obj']:.1f})\n")
                     else:
-                        f.write(f"Match: NO - BnB may have error (Enum found better: {makespan_enum:.1f} > {result_bnb['best_obj']:.1f})\n")
+                        f.write(f"Match: NO - BnB may have error (Enum found better: {makespan_enum:.1f} > {result_bnb_ceiling['best_obj']:.1f})\n")
                     f.write(f"Timed out: {timed_out}\n")
                     f.write("=" * 70 + "\n")
     
-    return result_bnb
+    return {
+        "ceiling": result_bnb_ceiling,
+        "maxlpt": result_bnb_maxlpt
+    }
 
 
 # Run all instances
 if __name__ == "__main__":
     print("\n" + "=" * 70)
-    print("TESTING 100 COMPLEX INSTANCES")
+    print("TESTING 140 COMPLEX INSTANCES")
     print("=" * 70)
     
     # Print summary of instance characteristics

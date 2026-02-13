@@ -64,6 +64,10 @@ def solve_bilevel_simpler(
     
     # Generate candidates (bounded enumeration)
     ranges = [range(max_per_job[i] + 1) for i in range(n)]
+
+    #find item with the lowest price:
+    min_price = min(items[i].price for i in range(n))
+    min_price_index = next(i for i in range(n) if items[i].price == min_price)
     
     for occurrences in itertools.product(*ranges):
         # Check time limit
@@ -79,7 +83,15 @@ def solve_bilevel_simpler(
             continue
         
         count += 1
-        
+
+        #check if occurrences can be expaned by one more job of type 0 without violating budget
+        if occurrences[min_price_index] < max_per_job[min_price_index]:
+            new_cost = cost + items[min_price_index].price
+            if new_cost <= budget:
+                # If we can add one more job of the cheapest type, skip this combination and let the next iteration handle it
+                continue
+
+
         # Create job list from occurrences
         jobs = []
         for i in range(n):
