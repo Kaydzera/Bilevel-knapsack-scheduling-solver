@@ -154,16 +154,3 @@ if __name__ == "__main__":
     makespan, occ, assign, nodes, runtime = solve_bilevel_simpler(items, m, budget, time_limit=60.0)
 
 
-
-'''
-pls explain the follwing points or tell me a littlebit about these:
-Real-world applications (how is this related to cloud computing?)
-Node representation and branching rules
-Bound dominance pruning
-Optimality dominance pruning
-List scheduling algorithm
-Gurobi MIP formulation (optional benchmark)
-Node priority queue
-
-Pruning mechanisms - Bound dominance vs optimality dominance
-'''
