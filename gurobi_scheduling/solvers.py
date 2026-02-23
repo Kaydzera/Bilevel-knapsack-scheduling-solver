@@ -20,7 +20,7 @@ def solve_scheduling(n_jobs, n_machines, processing_times, time_limit=None, verb
     This is the follower's problem in the bilevel optimization.
     
     Args:
-        n_jobs: Number of jobs to schedule
+        n_jobs: Number of jobs to schedule 
         n_machines: Number of identical machines
         processing_times: List of processing times for each job
         time_limit: Optional time limit in seconds for Gurobi

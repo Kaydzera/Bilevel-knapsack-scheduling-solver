@@ -137,7 +137,7 @@ def test_multiple_instances():
             "prices": [2, 3, 4, 5],
             "m": 3,
             "budget": 15
-        },
+         },
         {
             "name": "Medium uniform (5 items, 3 machines)",
             "durations": [6, 8, 10, 12, 14],
