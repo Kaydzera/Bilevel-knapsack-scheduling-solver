@@ -1,6 +1,5 @@
-"""Branch-and-bound solver for the bilevel optimization problem.
-
-This module implements the branch-and-bound algorithm that solves the
+"""Branch-and-bound solver for the bilevel optimization problem
+This module implements the branch-and-   bound algorithm that solves the
 leader's problem by enumerating selections and using bounds to prune.
 Includes exact IP bounds and heuristic initialization.
 """
@@ -21,7 +20,7 @@ from solvers import solve_scheduling, solve_leader_knapsack, solve_scheduling_re
 from models import MainProblem, ProblemNode
 from logger import BnBLogger
 from knapsack_dp import CeilKnapsackSolver
-from maxlpt_bound import precompute_maxlpt_dp_tables, compute_maxlpt_bound
+from maxlpt_bound import precompute_maxlpt_dp_tables, compute_maxlpt_bound, UnboundedKnapsackDP
 
 
 def greedy_fractional_total(items, budget):
@@ -93,6 +92,166 @@ def initialize_bnb_state_from_heuristic(items, budget, m, verbose=False):
         sched = solve_scheduling(len(proc), m, proc, verbose=False)
         makespan = sched.get('makespan', 0.0)
     return {'best_obj': makespan, 'best_selection': sel, 'proc_len': len(proc)}
+
+
+def solve_max_lpt_with_selection(durations, prices, budget, m, dp_solver):
+    """Solve Max-LPT problem and return both the value and selection.
+    
+    The Max-LPT problem finds the job selection that maximizes the makespan
+    when jobs are scheduled using the Longest Processing Time (LPT) rule.
+    
+    This version reconstructs the actual selection, not just the makespan value.
+    
+    Args:
+        durations: List of job durations
+        prices: List of job prices  
+        budget: Total budget available
+        m: Number of machines
+        dp_solver: Pre-computed UnboundedKnapsackDP solver
+        
+    Returns:
+        dict with:
+            - makespan: Maximum makespan achievable with LPT scheduling
+            - selection: List of item counts in optimal solution
+            - last_job_type: Index of the job type used as "last job" on each machine
+    """
+    n = len(durations)
+    z_star = 0.0
+    best_J = None
+    best_B_i = None
+    
+    for J in range(n):
+        # Compute per-machine budget
+        B_i = budget // m
+        B_hat = budget - m * B_i
+        
+        # Check if remaining budget is sufficient for item J
+        if B_hat < prices[J]:
+            # Adjust B_i downward until we have enough remaining budget
+            k = 0
+            while B_hat < prices[J] and B_i > 0:
+                k += 1
+                B_i = (budget - k * m) // m
+                B_hat = budget - m * B_i
+                
+                # Safety check to prevent infinite loop
+                if B_i < 0 or B_hat < 0:
+                    break
+            
+            # If still not enough budget, skip this item
+            if B_hat < prices[J]:
+                continue
+        
+        # Evaluate this configuration
+        dp_value = dp_solver.query(J + 1, B_i)
+        z = dp_value + durations[J]
+        
+        if z > z_star:
+            z_star = z
+            best_J = J
+            best_B_i = B_i
+    
+    # Reconstruct the selection for the best configuration
+    if best_J is None:
+        # No feasible solution found
+        return {
+            'makespan': 0.0,
+            'selection': [0] * n,
+            'last_job_type': None
+        }
+    
+    # Get the counts from DP for filling m machines with budget B_i each               
+    dp_result = dp_solver.reconstruct(best_J + 1, best_B_i)
+    base_counts = dp_result['counts']
+    
+    # Create full selection array initialized with zeros
+    selection = [0] * n
+    
+    # Fill in the counts for items 0 through best_J (multiply by m)
+    for i in range(len(base_counts)):
+        selection[i] = base_counts[i] * m
+    
+    # Add one more copy of the last job type
+    selection[best_J] += 1
+    
+    return {
+        'makespan': z_star,
+        'selection': selection,
+        'last_job_type': best_J
+    }
+
+
+def initialize_bnb_state_from_maxlpt(problem: MainProblem, bound_type: str = 'ceiling',
+                                     maxlpt_dp_solvers=None, verbose=False):
+    """Initialize branch-and-bound with Max-LPT incumbent.
+    
+    Solves the Max-LPT problem to find the best selection according to the
+    LPT scheduling rule, then evaluates the actual makespan using solve_scheduling.
+    
+    If the Max-LPT upper bound equals the actual makespan, the problem is proven
+    optimal and we can skip the branch-and-bound search entirely.
+    
+    Args:
+        problem: MainProblem instance
+        bound_type: Type of bound being used ('ceiling' or 'maxlpt')
+        maxlpt_dp_solvers: Optional pre-computed DP solvers (if bound_type='maxlpt')
+        verbose: Whether to show solver output
+        
+    Returns:
+        dict with:
+            - best_obj: Makespan from Max-LPT selection
+            - best_selection: Counts list
+            - maxlpt_bound: Upper bound from Max-LPT
+            - is_proven_optimal: True if makespan equals Max-LPT bound
+            - proc_len: Number of jobs in selection
+    """
+    n = problem.n_job_types
+    budget = problem.budget_total
+    m = problem.machines
+    
+    # Get or create the DP solver for depth 0 (all items)
+    if bound_type == 'maxlpt' and maxlpt_dp_solvers is not None:
+        # Reuse pre-computed solver for depth 0
+        dp_solver = maxlpt_dp_solvers[0]
+    else:
+        # Compute just one DP table for all items
+        dp_solver = UnboundedKnapsackDP(problem.durations, problem.prices, budget)
+    
+    # Solve Max-LPT problem to get the selection
+    maxlpt_result = solve_max_lpt_with_selection(
+        problem.durations,
+        problem.prices,
+        budget,
+        m,
+        dp_solver
+    )
+    
+    maxlpt_bound = maxlpt_result['makespan']
+    selection = maxlpt_result['selection']
+    
+    # Build processing times for actual scheduling
+    proc = []
+    for i, cnt in enumerate(selection):
+        proc += [problem.durations[i]] * cnt
+    
+    if len(proc) == 0:
+        actual_makespan = 0.0
+    else:
+        # Solve actual scheduling problem
+        sched = solve_scheduling(len(proc), m, proc, verbose=verbose)
+        actual_makespan = sched.get('makespan', 0.0)
+    
+    # Check if the solution is proven optimal
+    # Max-LPT provides an upper bound, so if actual makespan equals it, we're done
+    is_proven_optimal = abs(actual_makespan - maxlpt_bound) < 1e-6
+    
+    return {
+        'best_obj': actual_makespan,
+        'best_selection': selection,
+        'maxlpt_bound': maxlpt_bound,
+        'is_proven_optimal': is_proven_optimal,
+        'proc_len': len(proc)
+    }
 
 
 def compute_ip_bound_exact(problem: MainProblem, node: ProblemNode, time_limit=2.0):
@@ -246,7 +405,8 @@ def compute_ip_bound_direct(items, depth, rem_budget, m, time_limit=2.0):
 
 def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False, 
                     logger: Optional[BnBLogger] = None, instance_name: str = "default",
-                    enable_logging: bool = True, bound_type: str = 'ceiling'):
+                    enable_logging: bool = True, bound_type: str = 'ceiling',
+                    time_limit: float = None):
     """Branch-and-bound solver for the bilevel optimization problem.
     
     Uses depth-first search with exact IP bounds to prune the search tree.
@@ -260,6 +420,7 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         instance_name: Name for the instance (used if logger is None)
         enable_logging: Whether to create logs (default: True)
         bound_type: Type of upper bound to use ('ceiling' or 'maxlpt')
+        time_limit: Maximum runtime in seconds (None = no limit)
         
     Returns:
         dict with:
@@ -303,36 +464,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     frontier = deque()
     seen = set()
 
-    # Get initial incumbent from heuristic
-    logger.info("Computing initial heuristic solution...")
-
-    init_state = initialize_bnb_state_from_heuristic(
-        [type("_", (), {'duration':d,'price':p})() for d,p in zip(problem.durations, problem.prices)],
-        problem.budget_total, problem.machines, verbose=False)
-    incumbent = init_state['best_obj']
-    incumbent_sel = init_state['best_selection']
-    
-    logger.log_incumbent_update(incumbent, incumbent_sel, node_count=0)
-    if verbose:
-        print(f"Initial incumbent from heuristic: makespan={incumbent}, selection={incumbent_sel}")
-
-    # Initialize root node at depth=0 with heuristic solution
-    # At depth 0, only job at index 0 is "paid for"
-    budget_spent_at_depth_0 = incumbent_sel[0] * problem.prices[0]
-    remaining_budget_at_depth_0 = problem.budget_total - budget_spent_at_depth_0
-    
-    init_node = ProblemNode(incumbent_sel, depth=0, remaining_budget=remaining_budget_at_depth_0, 
-                           n_job_types=n, m=problem.machines, branch_type='root')
-    frontier.append(init_node)
-
-    # Track seen nodes to avoid duplicates, this part is obsolete
-    seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
-
-   
-    # Initialize CeilKnapsackSolver with REVERSED item order
-    # This allows us to query the last N items by querying the first N items in reversed solver
-    # Example: if depth=1 (deciding item 1), remaining items are [2,3,4,...]
-    # In reversed order, these become [last, ..., 4, 3, 2] which are the first items
+    # Initialize CeilKnapsackSolver or Max-LPT DP tables based on bound_type
+    # This must be done BEFORE initialization so we can reuse tables if needed
     
     ceil_solver = None
     maxlpt_dp_solvers = None
@@ -357,15 +490,96 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         preprocessing_time = time.time() - preprocessing_start
         logger.info(f"Max-LPT preprocessing completed in {preprocessing_time:.3f}s "
                    f"({n} DP tables computed)")
+
+    # Get initial incumbent using Max-LPT approach
+    logger.info("Computing initial Max-LPT solution...")
+
+    init_state = initialize_bnb_state_from_maxlpt(
+        problem, bound_type=bound_type, maxlpt_dp_solvers=maxlpt_dp_solvers, verbose=False)
     
+    incumbent = init_state['best_obj']
+    incumbent_sel = init_state['best_selection']
+    maxlpt_bound = init_state['maxlpt_bound']
+    is_proven_optimal = init_state['is_proven_optimal']
+    
+    logger.log_incumbent_update(incumbent, incumbent_sel, node_count=0)
+    if verbose:
+        print(f"Initial incumbent from Max-LPT: makespan={incumbent}, selection={incumbent_sel}")
+        print(f"Max-LPT upper bound: {maxlpt_bound}")
+        if is_proven_optimal:
+            print(f"✓ PROVEN OPTIMAL: Max-LPT bound equals actual makespan!")
+    
+    # If the solution is proven optimal, we can skip BnB entirely
+    if is_proven_optimal:
+        logger.info("Solution proven optimal by Max-LPT, skipping branch-and-bound")
+        if verbose:
+            print("Solution proven optimal by Max-LPT, skipping branch-and-bound")
+        
+        # Solve the scheduling for the best selection found
+        logger.info("Computing final schedule for optimal solution...")
+        proc = []
+        for i, cnt in enumerate(incumbent_sel):
+            proc += [problem.durations[i]] * cnt
+        sched = solve_scheduling_readable(len(proc), problem.machines, proc, verbose=False)
+        
+        # Calculate runtime
+        runtime = None
+        if hasattr(logger, 'metrics') and 'start_time' in logger.metrics:
+            runtime = time.time() - logger.metrics['start_time']
+        
+        # Prepare final result
+        result = {
+            'best_obj': incumbent, 
+            'best_selection': incumbent_sel, 
+            'best_schedule': sched, 
+            'nodes_explored': 0,  # No BnB nodes explored
+            'runtime': runtime,
+            'proven_optimal': True
+        }
+        
+        # End logging
+        logger.end_run(result)
+        
+        return result
+    
+    # Continue with branch-and-bound if not proven optimal
+
+    # Initialize root node at depth=0 with Max-LPT solution
+    # At depth 0, only job at index 0 is "paid for"
+    budget_spent_at_depth_0 = incumbent_sel[0] * problem.prices[0]
+    remaining_budget_at_depth_0 = problem.budget_total - budget_spent_at_depth_0
+    
+    init_node = ProblemNode(incumbent_sel, depth=0, remaining_budget=remaining_budget_at_depth_0, 
+                           n_job_types=n, m=problem.machines, branch_type='root')
+    frontier.append(init_node)
+
+    # Track seen nodes to avoid duplicates, this part is obsolete
+    seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
 
     logger.info(f"Starting branch-and-bound with max_nodes={max_nodes}")
-    print(f"Starting branch-and-bound with max_nodes={max_nodes}")
+    if verbose:
+        print(f"Starting branch-and-bound with max_nodes={max_nodes}")
 
     #Node counter
     nodes = 0
 
     while frontier:
+        # Check node limit before processing next node
+        if nodes >= max_nodes:
+            logger.warning(f"Node limit {max_nodes} reached, stopping")
+            if verbose:
+                print(f"Node limit {max_nodes} reached, stopping")
+            break
+        
+        # Check time limit if specified
+        if time_limit is not None and 'start_time' in logger.metrics:
+            elapsed = time.time() - logger.metrics['start_time']
+            if elapsed >= time_limit:
+                logger.warning(f"Time limit {time_limit}s reached after {elapsed:.1f}s, stopping")
+                if verbose:
+                    print(f"Time limit {time_limit}s reached after {elapsed:.1f}s, stopping")
+                break
+            
         node = frontier.pop()  # DFS
         nodes += 1
         
@@ -497,12 +711,6 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             lower_child = node.commit_current(duration=duration, price_at_new_depth=price_at_new_depth)            
             if lower_child is not None:
                 added = try_add(lower_child)
-
-        if nodes >= max_nodes:
-            logger.warning(f"Node limit {max_nodes} reached, stopping")
-            if verbose:
-                print(f"Node limit {max_nodes} reached, stopping")
-            break
     
     # Solve the scheduling for the best selection found
     logger.info("Computing final schedule for best solution...")
@@ -522,7 +730,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         'best_selection': incumbent_sel, 
         'best_schedule': sched, 
         'nodes_explored': nodes,
-        'runtime': runtime
+        'runtime': runtime,
+        'proven_optimal': False  # Not proven optimal through Max-LPT
     }
     
     # End logging

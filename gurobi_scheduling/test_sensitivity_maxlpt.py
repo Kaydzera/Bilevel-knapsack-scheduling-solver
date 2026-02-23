@@ -40,12 +40,12 @@ BASELINE = {
     'm_machines': 4,
     'budget_multiplier': 2.0,
     'max_nodes': 500000,
-    'time_limit': 300.0,
+    'time_limit': 3600.0,
 }
 
 # Stopping criteria
 MAX_MACHINES = 50
-TIMEOUT_THRESHOLD = 300.0
+TIMEOUT_THRESHOLD = 3600.0
 
 
 def generate_instance(n_jobs: int, m_machines: int, budget_multiplier: float, seed: int) -> MainProblem:
@@ -95,7 +95,8 @@ def run_single_bound(problem: MainProblem, bound_type: str, instance_name: str,
             logger=logger,
             instance_name=instance_name,
             bound_type=bound_type,
-            verbose=False
+            verbose=False,
+            time_limit=time_limit
         )
         runtime = time.time() - start_time
         status = 'success'
@@ -213,20 +214,44 @@ def run_comparison_test(n_jobs: int, m_machines: int, budget_multiplier: float,
 
 
 def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
-                            repetitions: int, output_file: str):
+                            repetitions: int, output_dir: str, log_dir: str,
+                            resume_rep: int = 0):
     """
     Run sensitivity analysis comparing ceiling vs maxlpt bounds.
+    
+    Args:
+        parameter: Parameter to vary ('jobs', 'machines', 'budget')
+        start_value: Starting value for parameter
+        step: Step size for parameter increments
+        repetitions: Number of repetitions per value
+        output_dir: Directory for results CSV (with timestamp)
+        log_dir: Directory for log files (with timestamp)
+        resume_rep: Which repetition to start from (0 = start fresh, >0 = resume)
     """
-    log_dir = f"logs/sensitivity_maxlpt_{parameter}"
+    # Create directories
     Path(log_dir).mkdir(parents=True, exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    
+    # Output CSV file path
+    output_file = f"{output_dir}/sensitivity_{parameter}.csv"
+    
+    # Check if we're resuming
+    file_exists = Path(output_file).exists()
+    mode = 'a' if file_exists else 'w'
     
     print(f"\n{'='*80}")
-    print(f"SENSITIVITY ANALYSIS: CEILING vs MAX-LPT - {parameter.upper()}")
+    if resume_rep > 0:
+        print(f"RESUMING SENSITIVITY ANALYSIS: CEILING vs MAX-LPT - {parameter.upper()}")
+    else:
+        print(f"SENSITIVITY ANALYSIS: CEILING vs MAX-LPT - {parameter.upper()}")
     print(f"{'='*80}")
     print(f"Parameter: {parameter}")
     print(f"Starting value: {start_value}")
+    if resume_rep > 0:
+        print(f"Resuming from repetition: {resume_rep}")
     print(f"Step size: {step}")
     print(f"Repetitions per value: {repetitions}")
+    print(f"Results directory: {output_dir}")
     print(f"Log directory: {log_dir}")
     print(f"Stopping criteria:")
     if parameter == 'machines':
@@ -253,9 +278,10 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
     
     Path(output_file).parent.mkdir(parents=True, exist_ok=True)
     
-    with open(output_file, 'w', newline='') as csvfile:
+    with open(output_file, mode, newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
+        if not file_exists:
+            writer.writeheader()
         
         completed = 0
         value = start_value
@@ -285,8 +311,9 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
             
             hit_timeout = False
             
-            # Run repetitions
-            for rep in range(repetitions):
+            # Run repetitions (start from resume_rep on first value, then 0)
+            start_rep = resume_rep if value == start_value else 0
+            for rep in range(start_rep, repetitions):
                 seed = 1000 * int(value * 10) + rep
                 
                 print(f"  Rep {rep+1}/{repetitions} (seed={seed})...", end=' ', flush=True)
@@ -368,19 +395,37 @@ Examples:
                        help='Repetitions per value (default: 10)')
     parser.add_argument('--output-dir', type=str, default='results/sensitivity_maxlpt',
                        help='Output directory (default: results/sensitivity_maxlpt)')
+    parser.add_argument('--resume-rep', type=int, default=0,
+                       help='Resume from this repetition (0 = start fresh, >0 = resume)')
+    parser.add_argument('--resume-timestamp', type=str, default=None,
+                       help='Use existing timestamp folder instead of creating new one (for resuming)')
     
     args = parser.parse_args()
     
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_file = f"{args.output_dir}/sensitivity_{args.parameter}_{timestamp}.csv"
+    # Create timestamp for this run or use existing one for resume
+    if args.resume_timestamp:
+        timestamp = args.resume_timestamp
+        print(f"Resuming analysis with timestamp: {timestamp}")
+    else:
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    # Create timestamped directories for this sensitivity run
+    base_output_dir = args.output_dir if args.output_dir else 'results/sensitivity_maxlpt'
+    output_dir = f"{base_output_dir}_{args.parameter}_{timestamp}"
+    log_dir = f"logs/sensitivity_maxlpt_{args.parameter}_{timestamp}"
     
     run_sensitivity_analysis(
         parameter=args.parameter,
         start_value=args.start,
         step=args.step,
         repetitions=args.repetitions,
-        output_file=output_file
+        output_dir=output_dir,
+        log_dir=log_dir,
+        resume_rep=args.resume_rep
     )
+    
+    # Output file path for user reference
+    output_file = f"{output_dir}/sensitivity_{args.parameter}.csv"
     
     print("\nAnalyze results with pandas:")
     print(f"  df = pd.read_csv('{output_file}')")

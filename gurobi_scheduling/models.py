@@ -47,13 +47,19 @@ class MainProblem:
             budget_total: Total budget constraint
         """
         assert len(prices) == len(durations)
-        self.prices = list(prices)
-        self.durations = list(durations)
+        
+        # Sort job types by price (descending - most expensive first)
+        # This can improve branch-and-bound performance by exploring high-value items first
+        paired = list(zip(prices, durations))
+        paired_sorted = sorted(paired, key=lambda x: x[0], reverse=True)
+        
+        self.prices = [p for p, d in paired_sorted]
+        self.durations = [d for p, d in paired_sorted]
         self.n_job_types = len(prices)
         self.machines = int(anzahl_maschinen)
         self.budget_total = int(budget_total)
         # Store items as objects for compatibility with bounds computation
-        self.items = [type("_", (), {'duration': durations[i], 'price': prices[i]})() 
+        self.items = [type("_", (), {'duration': self.durations[i], 'price': self.prices[i]})() 
                       for i in range(self.n_job_types)]
 
     def __repr__(self):
