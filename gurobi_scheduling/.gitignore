@@ -21,8 +21,7 @@ env/
 logs/
 *.log
 
-# Results and cache files
-results/
+# Cache files
 enumeration_results_cache*.json
 
 # Gurobi
