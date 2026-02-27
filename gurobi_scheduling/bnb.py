@@ -202,7 +202,7 @@ def initialize_bnb_state_from_maxlpt(problem: MainProblem, bound_type: str = 'ce
             - best_obj: Makespan from Max-LPT selection
             - best_selection: Counts list
             - maxlpt_bound: Upper bound from Max-LPT
-            - is_proven_optimal: True if makespan equals Max-LPT bound
+            - starting_incumbent_optimal: True if makespan equals Max-LPT bound
             - proc_len: Number of jobs in selection
     """
     n = problem.n_job_types
@@ -243,13 +243,13 @@ def initialize_bnb_state_from_maxlpt(problem: MainProblem, bound_type: str = 'ce
     
     # Check if the solution is proven optimal
     # Max-LPT provides an upper bound, so if actual makespan equals it, we're done
-    is_proven_optimal = abs(actual_makespan - maxlpt_bound) < 1e-6
+    starting_incumbent_optimal = abs(actual_makespan - maxlpt_bound) < 1e-6
     
     return {
         'best_obj': actual_makespan,
         'best_selection': selection,
         'maxlpt_bound': maxlpt_bound,
-        'is_proven_optimal': is_proven_optimal,
+        'starting_incumbent_optimal': starting_incumbent_optimal,
         'proc_len': len(proc)
     }
 
@@ -428,7 +428,13 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             - best_selection: Counts for each job type in best solution
             - best_schedule: Readable schedule for best solution
             - nodes_explored: Number of nodes visited
+            - runtime: Total runtime in seconds
+            - proven_optimal: Whether solution is proven optimal
+            - initial_makespan: Initial makespan before BnB search
     """
+    # Track start time independently of logger
+    start_time = time.time()
+    
     # Create logger if not provided and logging is enabled
     if logger is None and enable_logging:
         from logger import create_logger
@@ -500,17 +506,18 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     incumbent = init_state['best_obj']
     incumbent_sel = init_state['best_selection']
     maxlpt_bound = init_state['maxlpt_bound']
-    is_proven_optimal = init_state['is_proven_optimal']
+    starting_incumbent_optimal = init_state['starting_incumbent_optimal']
+    initial_incumbent = incumbent  # Save initial solution for comparison
     
     logger.log_incumbent_update(incumbent, incumbent_sel, node_count=0)
     if verbose:
         print(f"Initial incumbent from Max-LPT: makespan={incumbent}, selection={incumbent_sel}")
         print(f"Max-LPT upper bound: {maxlpt_bound}")
-        if is_proven_optimal:
+        if starting_incumbent_optimal:
             print(f"✓ PROVEN OPTIMAL: Max-LPT bound equals actual makespan!")
     
     # If the solution is proven optimal, we can skip BnB entirely
-    if is_proven_optimal:
+    if starting_incumbent_optimal:
         logger.info("Solution proven optimal by Max-LPT, skipping branch-and-bound")
         if verbose:
             print("Solution proven optimal by Max-LPT, skipping branch-and-bound")
@@ -534,7 +541,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             'best_schedule': sched, 
             'nodes_explored': 0,  # No BnB nodes explored
             'runtime': runtime,
-            'proven_optimal': True
+            'proven_optimal': True,
+            'initial_makespan': initial_incumbent
         }
         
         # End logging
@@ -572,8 +580,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             break
         
         # Check time limit if specified
-        if time_limit is not None and 'start_time' in logger.metrics:
-            elapsed = time.time() - logger.metrics['start_time']
+        if time_limit is not None:
+            elapsed = time.time() - start_time
             if elapsed >= time_limit:
                 logger.warning(f"Time limit {time_limit}s reached after {elapsed:.1f}s, stopping")
                 if verbose:
@@ -719,10 +727,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         proc += [problem.durations[i]] * cnt
     sched = solve_scheduling_readable(len(proc), problem.machines, proc, verbose=False)
     
-    # Calculate runtime before creating result
-    runtime = None
-    if hasattr(logger, 'metrics') and 'start_time' in logger.metrics:
-        runtime = time.time() - logger.metrics['start_time']
+    # Calculate runtime
+    runtime = time.time() - start_time
     
     # Prepare final result
     result = {
@@ -731,7 +737,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         'best_schedule': sched, 
         'nodes_explored': nodes,
         'runtime': runtime,
-        'proven_optimal': False  # Not proven optimal through Max-LPT
+        'proven_optimal': False,  # Not proven optimal through Max-LPT
+        'initial_makespan': initial_incumbent
     }
     
     # End logging
