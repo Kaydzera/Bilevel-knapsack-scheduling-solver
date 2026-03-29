@@ -12,7 +12,7 @@ pd.set_option('display.width', 200)  # Wider display
 pd.set_option('display.max_colwidth', 35)  # Max column width
 
 print("="*150)
-print("COMPLETE TEST RESULTS - ALL 100 INSTANCES")
+print("COMPLETE TEST RESULTS - ALL INSTANCES")
 print("="*150)
 print()
 

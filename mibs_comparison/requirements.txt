@@ -1,0 +1,26 @@
+# Python dependencies for MibS comparison project
+
+# Core scientific computing
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Optimization
+gurobipy>=11.0.0  # Already have this from main project
+
+# Visualization and analysis
+matplotlib>=3.7.0
+seaborn>=0.12.0
+jupyter>=1.0.0
+notebook>=7.0.0
+
+# MibS solver
+# Note: Install via conda-forge, not pip
+# conda install -c conda-forge coinbrew
+
+# Utilities
+tqdm>=4.65.0  # Progress bars
+psutil>=5.9.0  # Memory monitoring
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0

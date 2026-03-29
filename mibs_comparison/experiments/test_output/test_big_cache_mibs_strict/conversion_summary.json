@@ -1,0 +1,108 @@
+{
+  "cache_path": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\gurobi_scheduling\\enumeration_results_cache_big.json",
+  "output_dir": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict",
+  "limit": 10,
+  "generated": [
+    {
+      "cache_key": "Complex_001_J6_M3_B12_3_12_[(6, 2), (14, 7), (14, 8), (4, 1), (3, 1), (6, 3)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_001_J6_M3_B12.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_001_J6_M3_B12.txt",
+      "n_jobs": 6,
+      "n_machines": 3,
+      "budget": 12.0,
+      "timed_out": false,
+      "enumeration_makespan": 16.0
+    },
+    {
+      "cache_key": "Complex_002_J12_M4_B26_4_26_[(20, 3), (5, 11), (17, 3), (4, 8), (12, 3), (5, 13), (14, 1), (3, 13), (11, 1), (5, 9), (15, 2), (4, 8)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_002_J12_M4_B26.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_002_J12_M4_B26.txt",
+      "n_jobs": 12,
+      "n_machines": 4,
+      "budget": 26.0,
+      "timed_out": true,
+      "enumeration_makespan": 98.0
+    },
+    {
+      "cache_key": "Complex_003_J10_M3_B40_3_40_[(3, 2), (5, 3), (7, 4), (9, 5), (11, 6), (13, 7), (15, 8), (17, 9), (19, 10), (21, 11)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_003_J10_M3_B40.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_003_J10_M3_B40.txt",
+      "n_jobs": 10,
+      "n_machines": 3,
+      "budget": 40.0,
+      "timed_out": false,
+      "enumeration_makespan": 38.0
+    },
+    {
+      "cache_key": "Complex_004_J12_M5_B19_5_19_[(13, 5), (15, 3), (4, 12), (7, 6), (5, 5), (17, 3), (10, 6), (11, 12), (17, 7), (6, 7), (9, 5), (14, 6)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_004_J12_M5_B19.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_004_J12_M5_B19.txt",
+      "n_jobs": 12,
+      "n_machines": 5,
+      "budget": 19.0,
+      "timed_out": false,
+      "enumeration_makespan": 34.0
+    },
+    {
+      "cache_key": "Complex_005_J12_M4_B21_4_21_[(26, 2), (11, 6), (3, 6), (8, 9), (23, 3), (8, 6), (9, 10), (22, 1), (11, 7), (9, 9), (5, 10), (20, 1)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_005_J12_M4_B21.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_005_J12_M4_B21.txt",
+      "n_jobs": 12,
+      "n_machines": 4,
+      "budget": 21.0,
+      "timed_out": false,
+      "enumeration_makespan": 132.0
+    },
+    {
+      "cache_key": "Complex_006_J10_M8_B18_8_18_[(9, 5), (10, 4), (11, 4), (3, 1), (4, 1), (11, 4), (15, 5), (4, 1), (5, 2), (14, 6)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_006_J10_M8_B18.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_006_J10_M8_B18.txt",
+      "n_jobs": 10,
+      "n_machines": 8,
+      "budget": 18.0,
+      "timed_out": false,
+      "enumeration_makespan": 15.0
+    },
+    {
+      "cache_key": "Complex_007_J12_M3_B30_3_30_[(20, 2), (3, 10), (15, 1), (2, 13), (17, 1), (2, 13), (14, 1), (2, 11), (19, 1), (2, 15), (11, 3), (3, 10)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_007_J12_M3_B30.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_007_J12_M3_B30.txt",
+      "n_jobs": 12,
+      "n_machines": 3,
+      "budget": 30.0,
+      "timed_out": true,
+      "enumeration_makespan": 190.0
+    },
+    {
+      "cache_key": "Complex_008_J8_M8_B40_8_40_[(3, 2), (5, 3), (7, 4), (9, 5), (11, 6), (13, 7), (15, 8), (17, 9)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_008_J8_M8_B40.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_008_J8_M8_B40.txt",
+      "n_jobs": 8,
+      "n_machines": 8,
+      "budget": 40.0,
+      "timed_out": false,
+      "enumeration_makespan": 17.0
+    },
+    {
+      "cache_key": "Complex_009_J7_M8_B25_8_25_[(16, 5), (15, 6), (10, 12), (14, 7), (11, 10), (11, 3), (7, 5)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_009_J7_M8_B25.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_009_J7_M8_B25.txt",
+      "n_jobs": 7,
+      "n_machines": 8,
+      "budget": 25.0,
+      "timed_out": false,
+      "enumeration_makespan": 16.0
+    },
+    {
+      "cache_key": "Complex_010_J6_M8_B28_8_28_[(12, 6), (30, 1), (20, 2), (23, 2), (6, 5), (12, 10)]",
+      "mps": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_010_J6_M8_B28.mps",
+      "aux": "C:\\Users\\oleda\\.vscode\\Solving stuff with Gurobi\\mibs_comparison\\experiments\\test_output\\test_big_cache_mibs_strict\\Complex_010_J6_M8_B28.txt",
+      "n_jobs": 6,
+      "n_machines": 8,
+      "budget": 28.0,
+      "timed_out": false,
+      "enumeration_makespan": 120.0
+    }
+  ],
+  "skipped": []
+}

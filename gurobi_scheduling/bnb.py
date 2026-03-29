@@ -284,7 +284,7 @@ def compute_ip_bound_exact(problem: MainProblem, node: ProblemNode, time_limit=2
     return bound, selection
 
 
-# TODO: Review and understand this code line by line
+
 def compute_ip_bound_direct(items, depth, rem_budget, m, time_limit=2.0):
     """Compute exact integer-program upper bound using grouping (direct version).
     
@@ -403,10 +403,15 @@ def compute_ip_bound_direct(items, depth, rem_budget, m, time_limit=2.0):
         return 0.0
 
 
-def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False, 
+class LeafTimeoutError(Exception):
+    """Raised when a single leaf node evaluation exceeds the timeout limit."""
+    pass
+
+
+def run_bnb_classic(problem: MainProblem, max_nodes=1_000_000_000, verbose=False, 
                     logger: Optional[BnBLogger] = None, instance_name: str = "default",
-                    enable_logging: bool = True, bound_type: str = 'ceiling',
-                    time_limit: float = None):
+                    enable_logging: bool = False, bound_type: str = 'ceiling',
+                    time_limit: float = None, leaf_timeout: float = 900.0):
     """Branch-and-bound solver for the bilevel optimization problem.
     
     Uses depth-first search with exact IP bounds to prune the search tree.
@@ -418,9 +423,10 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         verbose: Whether to print progress to console
         logger: Optional BnBLogger instance for detailed logging
         instance_name: Name for the instance (used if logger is None)
-        enable_logging: Whether to create logs (default: True)
+        enable_logging: Whether to create logs (default: False)
         bound_type: Type of upper bound to use ('ceiling' or 'maxlpt')
         time_limit: Maximum runtime in seconds (None = no limit)
+        leaf_timeout: Maximum time for single leaf evaluation (default: 900s = 15 min)
         
     Returns:
         dict with:
@@ -434,15 +440,15 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
     """
     # Track start time independently of logger
     start_time = time.time()
+    print(f"[BnB] Starting run_bnb_classic: bound_type={bound_type}, time_limit={time_limit}")
     
-    # Create logger if not provided and logging is enabled
-    if logger is None and enable_logging:
-        from logger import create_logger
-        logger = create_logger(instance_name=instance_name)
-    elif logger is None:
-        # Create a no-op logger when logging is disabled
+    # Always use NoOpLogger when logging is disabled
+    if not enable_logging:
         from logger import NoOpLogger
         logger = NoOpLogger()
+    elif logger is None:
+        from logger import create_logger
+        logger = create_logger(instance_name=instance_name)
     
     # Log problem characteristics
     problem_data = {
@@ -484,7 +490,21 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             m=problem.machines,
             max_budget=problem.budget_total
         )
+        print(f"[BnB] CeilKnapsackSolver initialized in {time.time()-start_time:.2f}s")
         logger.info("CeilKnapsackSolver initialized successfully")
+        # Check if we've already exceeded time limit during initialization
+        if time_limit is not None and (time.time() - start_time) >= time_limit:
+            logger.warning(f"Time limit exceeded during CeilKnapsackSolver initialization")
+            print(f"[BnB] ERROR: Time limit exceeded during CeilKnapsackSolver initialization")
+            return {
+                'best_obj': None,
+                'best_selection': None,
+                'best_schedule': None,
+                'nodes_explored': 0,
+                'runtime': time.time() - start_time,
+                'proven_optimal': False,
+                'initial_makespan': None
+            }
     elif bound_type == 'maxlpt':
         logger.info("Precomputing Max-LPT DP tables for all depths...")
         preprocessing_start = time.time()
@@ -494,14 +514,42 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             problem.budget_total
         )
         preprocessing_time = time.time() - preprocessing_start
+        print(f"[BnB] Max-LPT preprocessing completed in {preprocessing_time:.3f}s")
         logger.info(f"Max-LPT preprocessing completed in {preprocessing_time:.3f}s "
                    f"({n} DP tables computed)")
+        # Check if we've already exceeded time limit during preprocessing
+        if time_limit is not None and (time.time() - start_time) >= time_limit:
+            logger.warning(f"Time limit exceeded during Max-LPT preprocessing")
+            return {
+                'best_obj': None,
+                'best_selection': None,
+                'best_schedule': None,
+                'nodes_explored': 0,
+                'runtime': time.time() - start_time,
+                'proven_optimal': False,
+                'initial_makespan': None
+            }
 
     # Get initial incumbent using Max-LPT approach
     logger.info("Computing initial Max-LPT solution...")
 
     init_state = initialize_bnb_state_from_maxlpt(
         problem, bound_type=bound_type, maxlpt_dp_solvers=maxlpt_dp_solvers, verbose=False)
+    print(f"[BnB] Initial solution computed in {time.time()-start_time:.2f}s: makespan={init_state.get('best_obj')}")
+    
+    # Check if we've already exceeded time limit after initial solution
+    if time_limit is not None and (time.time() - start_time) >= time_limit:
+        logger.warning(f"Time limit exceeded during initial solution computation")
+        print(f"[BnB] ERROR: Time limit exceeded during initial solution computation")
+        return {
+            'best_obj': init_state.get('best_obj'),
+            'best_selection': init_state.get('best_selection'),
+            'best_schedule': None,
+            'nodes_explored': 0,
+            'runtime': time.time() - start_time,
+            'proven_optimal': False,
+            'initial_makespan': init_state.get('best_obj')
+        }
     
     incumbent = init_state['best_obj']
     incumbent_sel = init_state['best_selection']
@@ -529,10 +577,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             proc += [problem.durations[i]] * cnt
         sched = solve_scheduling_readable(len(proc), problem.machines, proc, verbose=False)
         
-        # Calculate runtime
-        runtime = None
-        if hasattr(logger, 'metrics') and 'start_time' in logger.metrics:
-            runtime = time.time() - logger.metrics['start_time']
+        # Use solver-local start_time so runtime is consistent for all logger types
+        runtime = time.time() - start_time
         
         # Prepare final result
         result = {
@@ -561,21 +607,26 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                            n_job_types=n, m=problem.machines, branch_type='root')
     frontier.append(init_node)
 
-    # Track seen nodes to avoid duplicates, this part is obsolete
-    seen.add((tuple(init_node.job_occurrences), init_node.depth, init_node.remaining_budget))
-
     logger.info(f"Starting branch-and-bound with max_nodes={max_nodes}")
     if verbose:
         print(f"Starting branch-and-bound with max_nodes={max_nodes}")
+    print(f"[BnB] Entering main loop with frontier size={len(frontier)}")
 
     #Node counter
     nodes = 0
-
+    last_progress_time = time.time()  # Track last progress report
+    leaf_nodes_evaluated = 0  # Track number of leaf nodes evaluated
     while frontier:
+        # Periodic progress report every 1 minute
+        if time.time() - last_progress_time >= 60:
+            elapsed = time.time() - start_time
+            print(f"[BnB Progress] nodes={nodes:,},  frontier={len(frontier):,}, leaf_nodes={leaf_nodes_evaluated:,}, incumbent={incumbent}, elapsed={elapsed:.1f}s")
+            last_progress_time = time.time()
+            
         # Check node limit before processing next node
         if nodes >= max_nodes:
             logger.warning(f"Node limit {max_nodes} reached, stopping")
-            if verbose:
+            if True:  # Always print node limit reached regardless of verbose flag
                 print(f"Node limit {max_nodes} reached, stopping")
             break
         
@@ -584,8 +635,8 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
             elapsed = time.time() - start_time
             if elapsed >= time_limit:
                 logger.warning(f"Time limit {time_limit}s reached after {elapsed:.1f}s, stopping")
-                if verbose:
-                    print(f"Time limit {time_limit}s reached after {elapsed:.1f}s, stopping")
+                # Always print timeout regardless of verbose flag
+                print(f"[BnB] Time limit {time_limit}s reached after {elapsed:.1f}s at node {nodes}, stopping")
                 break
             
         node = frontier.pop()  # DFS
@@ -616,16 +667,72 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         price = problem.prices[node.depth]
         duration = problem.durations[node.depth]
         
-        # Try to add right child (increment current item) if allowed
-        if can_create['right']:
+        # OPTIMIZATION: If we're at depth n-1 and can create right child, 
+        # jump directly to maximum budget-feasible count instead of incrementing by 1
+        # This avoids evaluating all intermediate leaf nodes that would have lower makespan
+        if can_create['right'] and node.depth == n - 1:
+            # Calculate maximum additional copies we can afford for current item
+            max_additional_copies = node.remaining_budget // price
+            
+            if max_additional_copies > 0:
+                # Create the final optimized state directly
+                new_occ = list(node.job_occurrences)
+                new_occ[node.depth] += max_additional_copies
+                new_budget = node.remaining_budget - (max_additional_copies * price)
+                
+                # Update machine loads if they exist
+                new_loads = None
+                if node._machine_loads is not None and len(node._machine_loads) > 0:
+                    new_loads = list(node._machine_loads)
+                    # Add all the additional jobs to machines
+                    for _ in range(max_additional_copies):
+                        # Add to least loaded machine (first in sorted list)
+                        new_loads[0] += duration
+                        val = new_loads.pop(0)
+                        # Insert back in sorted order - find correct position
+                        inserted = False
+                        for i in range(len(new_loads)):
+                            if val <= new_loads[i]:
+                                new_loads.insert(i, val)
+                                inserted = True
+                                break
+                        if not inserted:
+                            new_loads.append(val)
+                    
+                    # Compute LPT upper bound and check against incumbent
+                    lpt_makespan = max(new_loads)
+                    if lpt_makespan <= incumbent:
+                        logger.log_node_pruned("lpt_bound_dominated", nodes)
+                        if max_additional_copies > 1:
+                            logger.info(f"LPT pruning: Skipped +{max_additional_copies} for item {node.depth} " +
+                                       f"(LPT makespan {lpt_makespan} <= incumbent {incumbent})")
+                        continue
+                
+                # Create the optimized right child directly using ProblemNode constructor
+                optimized_right_child = ProblemNode(
+                    new_occ, node.depth, new_budget, node.n_job_types,
+                    m=node._m, branch_type='right', machine_loads=new_loads
+                )
+                try_add(optimized_right_child)
+                
+                if max_additional_copies > 1:
+                    logger.info(f"Optimization: Jumped +{max_additional_copies} for item {node.depth} " +
+                               f"(skipped {max_additional_copies-1} intermediate evaluations)")
+            else:
+                logger.log_node_pruned("budget_infeasible", nodes)
+        
+        # Regular right child increment for all other depths  
+        elif can_create['right']:
             right_child = node.increment_current(price, duration=duration)
             if right_child is not None:
                 added = try_add(right_child)
             else:
                 logger.log_node_pruned("budget_infeasible", nodes)
         
-        # Try to add left child (decrement current item) if allowed
-        if can_create['left']:
+        # Try to add left child (decrement current item) if allowed.
+        # At leaf depth (n-1), left descendants only remove jobs from a fully decided
+        # solution and cannot improve the maximization objective, so skip them.
+        if can_create['left'] and node.depth != n - 1:
             left_child = node.decrement_current(price)
             if left_child is not None:
                 added = try_add(left_child)
@@ -636,14 +743,51 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
         # At depth n-1, all items are decided, treat as leaf
         if node.depth == n - 1:
             # All items are decided at this depth, evaluate as leaf directly
+            leaf_nodes_evaluated += 1  # Increment leaf node counter
             proc = []
             for i, cnt in enumerate(node.job_occurrences):
                 proc += [problem.durations[i]] * cnt
             if len(proc) == 0:
                 makespan = 0.0
             else:
-                sched = solve_scheduling(len(proc), problem.machines, proc, verbose=False)
+                leaf_start = time.time()
+                # Pass leaf_timeout directly to Gurobi solver to prevent hanging
+                sched = solve_scheduling(len(proc), problem.machines, proc, 
+                                       time_limit=leaf_timeout, verbose=False)
                 makespan = sched.get('makespan', None)
+                leaf_time = time.time() - leaf_start
+                
+                # Check for leaf timeout (should rarely trigger now that Gurobi has timeout)
+                if leaf_timeout is not None and leaf_time > leaf_timeout:
+                    print(f"\n{'='*80}")
+                    print(f"LEAF TIMEOUT DETAILED ANALYSIS")
+                    print(f"{'='*80}")
+                    print(f"Node {nodes} took {leaf_time:.1f}s (limit: {leaf_timeout:.1f}s)")
+                    print(f"Node details:")
+                    print(f"  - Depth: {node.depth}")
+                    print(f"  - Job occurrences: {node.job_occurrences}")
+                    print(f"  - Remaining budget: {node.remaining_budget}")
+                    print(f"  - Branch type: {node._branch_type}")
+                    print(f"  - Machine loads: {node._machine_loads}")
+                    print(f"  - Number of job types: {node.n_job_types}")
+                    print(f"  - Number of machines: {node._m}")
+                    print(f"  - Total jobs to schedule: {len(proc)} (sum: {sum(node.job_occurrences)})")
+                    print(f"  - Job durations in scheduling: {proc[:10]}{'...' if len(proc) > 10 else ''}")
+                    print(f"  - Problem prices: {problem.prices}")
+                    print(f"  - Problem durations: {problem.durations}")
+                    if hasattr(node, 'extendable'):
+                        print(f"  - Node extendable: {node.extendable}")
+                    print(f"{'='*80}")
+                    print(f"TERMINATING TEST due to leaf timeout")
+                    print(f"{'='*80}\n")
+                    raise LeafTimeoutError(f"Leaf node evaluation exceeded {leaf_timeout}s limit")
+                
+                # Log leaf solving time
+                logger.info(f"Leaf node {nodes} solved in {leaf_time:.3f}s (jobs: {len(proc)})")
+                
+                # Print to console if solving took more than a minute
+                if leaf_time > 60.0:
+                    print(f"WARNING: Leaf node {nodes} took {leaf_time:.3f}s to solve ({len(proc)} jobs)")
             
             if makespan is not None:
                 logger.log_node_evaluated(makespan, node_info)
@@ -669,8 +813,12 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                     if num_remaining_items > 0:
                         # Query the reversed solver for the first num_remaining_items
                         # which correspond to the last num_remaining_items in original order
+                        dp_start = time.time()
                         result_ceil = ceil_solver.reconstruct(num_remaining_items, node.remaining_budget)
                         solution_node = result_ceil['max_value']
+                        dp_time = time.time() - dp_start
+                        if dp_time > 0.1:  # Log slow DP queries
+                            print(f"[BnB] Slow DP query: {dp_time:.2f}s, items={num_remaining_items}, budget={node.remaining_budget}")
                     else:
                         solution_node = 0.0
                     bound_method_name = "ceil_knapsack_dp"
@@ -701,17 +849,29 @@ def run_bnb_classic(problem: MainProblem, max_nodes=100000, verbose=False,
                     already_committed_length = node.get_already_committed_length(duration_at_depth=duration)
 
                 bound = solution_node + already_committed_length
-                
-                # Log bound computation (one line)
-                logger.log_bound_computation(bound, bound_method_name, node.depth, 
-                                            solution_node, already_committed_length)
-                
+            except Exception as e:
+                msg = (
+                    "Critical error: bound computation failed "
+                    f"at node {nodes} (depth={node.depth}, "
+                    f"bound_type={bound_type}, remaining_budget={node.remaining_budget})."
+                )
+                logger.warning(f"{msg} Original error: {e}")
+                raise RuntimeError(msg) from e
+
+            if bound is not None:
+                # Logging should never affect solver correctness.
+                try:
+                    logger.log_bound_computation(
+                        bound, bound_method_name, node.depth,
+                        solution_node, already_committed_length
+                    )
+                except Exception as e:
+                    logger.warning(f"Bound logging failed: {e}")
+
                 # Prune if bound <= incumbent
                 if bound <= incumbent:
                     logger.log_node_pruned("bound_dominated", nodes)
                     continue
-            except Exception as e:
-                logger.warning(f"Bound computation failed: {e}")
 
             # Expand node: lower_child (commit)
             # Pass the price at the NEW depth for budget calculation

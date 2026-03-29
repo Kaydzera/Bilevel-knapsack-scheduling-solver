@@ -5,18 +5,18 @@ This script tests how the relative performance of ceiling vs Max-LPT bounds
 changes when varying problem parameters:
 - Number of job types (n)
 - Number of machines (m)
-- Budget multiplier (relative to minimum cost)
+- Budget multiplier (relative to average job cost)
 
 For each parameter value:
-1. Generate multiple random instances
+1. Generate multiple random instances until we find one that is not solved at the root node and both bounds solve within time limit
 2. Run BnB with BOTH ceiling and maxlpt bounds
 3. Compare metrics: runtime, nodes explored, pruning effectiveness
 4. Save results to CSV for analysis
 
 Usage:
-    python test_sensitivity_maxlpt.py --parameter jobs --start 4 --step 2 --repetitions 10
-    python test_sensitivity_maxlpt.py --parameter machines --start 2 --step 1 --repetitions 10
-    python test_sensitivity_maxlpt.py --parameter budget --start 1.2 --step 0.2 --repetitions 10
+    python test_sensitivity_maxlpt.py --parameter jobs --start 4 --step 2 --repetitions 5
+    python test_sensitivity_maxlpt.py --parameter machines --start 2 --step 1 --repetitions 5
+    python test_sensitivity_maxlpt.py --parameter budget --start 2.0 --step 0.5 --repetitions 5
 """
 
 import argparse
@@ -34,14 +34,18 @@ from bnb import run_bnb_classic
 from logger import create_logger
 
 
+
 # Baseline configuration
 BASELINE = {
-    'n_jobs': 8,
-    'm_machines': 4,
-    'budget_multiplier': 2.0,
-    'max_nodes': 500000,
-    'time_limit': 3600.0,
+    'n_jobs': 20,
+    'm_machines': 10,
+    'budget_multiplier': 2.5,  # Budget = 2.5x average job cost * number of machines
+    'max_nodes': 1_000_000_000,  # Increased node limit to 1 billion
+    'time_limit': 3600.0,  # 1 hour per instance
 }
+
+# Leaf timeout in seconds (15 minutes)
+LEAF_TIMEOUT = 900.0
 
 # Stopping criteria
 MAX_MACHINES = 50
@@ -52,12 +56,12 @@ def generate_instance(n_jobs: int, m_machines: int, budget_multiplier: float, se
     """Generate a test instance with specified parameters."""
     random.seed(seed)
     
-    durations = [random.randint(5, 20) for _ in range(n_jobs)]
-    prices = [random.randint(2, 15) for _ in range(n_jobs)]
-    
-    min_cost = sum(prices)
-    budget = int(budget_multiplier * min_cost)
-    
+    prices = [random.randint(10, 100) for _ in range(n_jobs)]
+    durations = [random.randint(5, 50) for _ in range(n_jobs)]
+
+    avg_job_cost = sum(prices) / n_jobs
+    budget = int(avg_job_cost * m_machines * budget_multiplier)
+
     return MainProblem(
         prices=prices,
         durations=durations,
@@ -82,47 +86,40 @@ def run_single_bound(problem: MainProblem, bound_type: str, instance_name: str,
     Returns:
         Dictionary with metrics
     """
-    logger = create_logger(
-        instance_name=f"{instance_name}_{bound_type}", 
-        log_dir=log_dir
-    )
-    
+    # Logging is disabled; collect metrics directly from BnB result
     start_time = time.time()
     try:
         result = run_bnb_classic(
             problem=problem,
             max_nodes=max_nodes,
-            logger=logger,
+            logger=None,  # No logger
             instance_name=instance_name,
             bound_type=bound_type,
             verbose=False,
-            time_limit=time_limit
+            time_limit=time_limit,
+            leaf_timeout=LEAF_TIMEOUT  # Pass leaf timeout to BnB if supported
         )
         runtime = time.time() - start_time
         status = 'success'
-        
-        # Read metrics from logger's JSON
-        metrics_file = Path(log_dir) / f"{logger.run_id}_metrics.json"
-        with open(metrics_file, 'r') as f:
-            logger_metrics = json.load(f)
-        
-        pruning_reasons = logger_metrics.get('pruning_reasons', {})
-        pruned_bound = pruning_reasons.get('bound_dominated', 0)
-        
+
+        # Try to extract metrics directly from result
         metrics = {
             'runtime': runtime,
             'nodes_explored': result.get('nodes_explored', 0),
-            'pruned_bound': pruned_bound,
+            'pruned_bound': result.get('pruned_bound', 0),
             'best_makespan': result.get('best_obj', float('inf')),
             'status': status,
+            'leaf_timeout_hit': result.get('leaf_timeout_hit', False),
+            'leaf_nodes_evaluated': result.get('nodes_evaluated', 0),
         }
-        
+
         total_nodes = metrics['nodes_explored']
+        pruned_bound = metrics['pruned_bound']
         if total_nodes > 0:
             metrics['pruning_rate'] = pruned_bound / total_nodes
         else:
             metrics['pruning_rate'] = 0.0
-            
+
     except TimeoutError:
         runtime = time.time() - start_time
         metrics = {
@@ -132,6 +129,7 @@ def run_single_bound(problem: MainProblem, bound_type: str, instance_name: str,
             'best_makespan': float('inf'),
             'status': 'timeout',
             'pruning_rate': 0.0,
+            'leaf_timeout_hit': False,
         }
     except Exception as e:
         runtime = time.time() - start_time
@@ -142,8 +140,9 @@ def run_single_bound(problem: MainProblem, bound_type: str, instance_name: str,
             'best_makespan': float('inf'),
             'status': f'error: {str(e)}',
             'pruning_rate': 0.0,
+            'leaf_timeout_hit': False,
         }
-    
+
     return metrics
 
 
@@ -159,15 +158,14 @@ def run_comparison_test(n_jobs: int, m_machines: int, budget_multiplier: float,
     problem = generate_instance(n_jobs, m_machines, budget_multiplier, seed)
     
     instance_name = f"sensitivity_{n_jobs}j_{m_machines}m_{budget_multiplier:.1f}b_s{seed}"
-    
-    # Run ceiling bound
+
+    # Run ceiling bound (no log_dir)
     ceiling_metrics = run_single_bound(
-        problem, 'ceiling', instance_name, max_nodes, time_limit, log_dir
+        problem, 'ceiling', instance_name, max_nodes, time_limit, None
     )
-    
-    # Run maxlpt bound
+
     maxlpt_metrics = run_single_bound(
-        problem, 'maxlpt', instance_name, max_nodes, time_limit, log_dir
+        problem, 'maxlpt', instance_name, max_nodes, time_limit, None
     )
     
     # Combine results
@@ -176,7 +174,7 @@ def run_comparison_test(n_jobs: int, m_machines: int, budget_multiplier: float,
         'm_machines': m_machines,
         'budget_multiplier': budget_multiplier,
         'seed': seed,
-        
+
         # Ceiling metrics
         'ceiling_runtime': ceiling_metrics['runtime'],
         'ceiling_nodes': ceiling_metrics['nodes_explored'],
@@ -184,7 +182,9 @@ def run_comparison_test(n_jobs: int, m_machines: int, budget_multiplier: float,
         'ceiling_pruning_rate': ceiling_metrics['pruning_rate'],
         'ceiling_makespan': ceiling_metrics['best_makespan'],
         'ceiling_status': ceiling_metrics['status'],
-        
+        'ceiling_leaf_timeout': ceiling_metrics.get('leaf_timeout_hit', False),
+        'ceiling_leaf_nodes': ceiling_metrics.get('leaf_nodes_evaluated', 0),
+
         # Max-LPT metrics
         'maxlpt_runtime': maxlpt_metrics['runtime'],
         'maxlpt_nodes': maxlpt_metrics['nodes_explored'],
@@ -192,7 +192,9 @@ def run_comparison_test(n_jobs: int, m_machines: int, budget_multiplier: float,
         'maxlpt_pruning_rate': maxlpt_metrics['pruning_rate'],
         'maxlpt_makespan': maxlpt_metrics['best_makespan'],
         'maxlpt_status': maxlpt_metrics['status'],
-        
+        'maxlpt_leaf_timeout': maxlpt_metrics.get('leaf_timeout_hit', False),
+        'maxlpt_leaf_nodes': maxlpt_metrics.get('leaf_nodes_evaluated', 0),
+
         # Comparison metrics
         'match_makespan': ceiling_metrics['best_makespan'] == maxlpt_metrics['best_makespan'],
     }
@@ -228,8 +230,7 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
         log_dir: Directory for log files (with timestamp)
         resume_rep: Which repetition to start from (0 = start fresh, >0 = resume)
     """
-    # Create directories
-    Path(log_dir).mkdir(parents=True, exist_ok=True)
+    # Create results directory only
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
     # Output CSV file path
@@ -266,14 +267,16 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
     fieldnames = [
         'parameter', 'value', 'repetition', 'seed',
         'n_jobs', 'm_machines', 'budget_multiplier',
-        
-        'ceiling_runtime', 'ceiling_nodes', 'ceiling_pruned_bound', 
-        'ceiling_pruning_rate', 'ceiling_makespan', 'ceiling_status',
-        
+
+        'ceiling_runtime', 'ceiling_nodes', 'ceiling_pruned_bound',
+        'ceiling_pruning_rate', 'ceiling_makespan', 'ceiling_status', 'ceiling_leaf_timeout', 'ceiling_leaf_nodes',
+
         'maxlpt_runtime', 'maxlpt_nodes', 'maxlpt_pruned_bound',
-        'maxlpt_pruning_rate', 'maxlpt_makespan', 'maxlpt_status',
-        
-        'match_makespan', 'node_reduction_pct', 'speedup'
+        'maxlpt_pruning_rate', 'maxlpt_makespan', 'maxlpt_status', 'maxlpt_leaf_timeout', 'maxlpt_leaf_nodes',
+
+        'match_makespan', 'node_reduction_pct', 'speedup',
+        'root_solved_skipped',
+        'ceiling_timeout', 'maxlpt_timeout'
     ]
     
     Path(output_file).parent.mkdir(parents=True, exist_ok=True)
@@ -286,10 +289,10 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
         completed = 0
         value = start_value
         should_stop = False
-        
+
         while not should_stop:
             print(f"\n--- Testing {parameter} = {value} ---")
-            
+
             # Set parameters
             if parameter == 'jobs':
                 n_jobs = int(value)
@@ -308,16 +311,16 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
                 budget_multiplier = value
             else:
                 raise ValueError(f"Unknown parameter: {parameter}")
-            
-            hit_timeout = False
-            
-            # Run repetitions (start from resume_rep on first value, then 0)
-            start_rep = resume_rep if value == start_value else 0
-            for rep in range(start_rep, repetitions):
-                seed = 1000 * int(value * 10) + rep
-                
-                print(f"  Rep {rep+1}/{repetitions} (seed={seed})...", end=' ', flush=True)
-                
+
+            # Try up to 25 instances to get one valid repetition
+            max_attempts = 25
+            attempt = 0
+            found_valid = False
+            root_solved_count = 0
+            while attempt < max_attempts and not found_valid:
+                seed = 1000 * int(value * 10) + attempt
+                print(f"  Attempt {attempt+1}/{max_attempts} (seed={seed})...", end=' ', flush=True)
+
                 metrics = run_comparison_test(
                     n_jobs=n_jobs,
                     m_machines=m_machines,
@@ -325,45 +328,57 @@ def run_sensitivity_analysis(parameter: str, start_value: float, step: float,
                     seed=seed,
                     max_nodes=BASELINE['max_nodes'],
                     time_limit=BASELINE['time_limit'],
-                    log_dir=log_dir
+                    log_dir=None
                 )
-                
-                # Add metadata
-                metrics['parameter'] = parameter
-                metrics['value'] = value
-                metrics['repetition'] = rep
-                
-                writer.writerow(metrics)
-                csvfile.flush()
-                
-                completed += 1
-                
-                # Print summary
-                c_status = metrics['ceiling_status']
-                m_status = metrics['maxlpt_status']
-                c_nodes = metrics['ceiling_nodes']
-                m_nodes = metrics['maxlpt_nodes']
-                node_red = metrics.get('node_reduction_pct')
-                
-                if node_red is not None:
-                    print(f"Done! C:{c_status} ({c_nodes}n) | M:{m_status} ({m_nodes}n) | Red:{node_red:.1f}%")
+
+                # Check if solved at root node (nodes_explored == 0 for both bounds)
+                if metrics['ceiling_nodes'] == 0 and metrics['maxlpt_nodes'] == 0:
+                    root_solved_count += 1
+                    print("Solved at root node. Skipping.")
+                    attempt += 1
+                    continue
+
+                # If either bound explores at least one node, record as valid
+                if metrics['ceiling_nodes'] > 0 or metrics['maxlpt_nodes'] > 0:
+                    found_valid = True
+                    metrics['parameter'] = parameter
+                    metrics['value'] = value
+                    metrics['repetition'] = 0
+                    metrics['root_solved_skipped'] = root_solved_count
+                    metrics['ceiling_timeout'] = metrics['ceiling_runtime'] >= TIMEOUT_THRESHOLD or metrics.get('ceiling_leaf_timeout', False)
+                    metrics['maxlpt_timeout'] = metrics['maxlpt_runtime'] >= TIMEOUT_THRESHOLD or metrics.get('maxlpt_leaf_timeout', False)
+                    writer.writerow(metrics)
+                    csvfile.flush()
+                    completed += 1
+                    c_status = metrics['ceiling_status']
+                    m_status = metrics['maxlpt_status']
+                    c_nodes = metrics['ceiling_nodes']
+                    m_nodes = metrics['maxlpt_nodes']
+                    node_red = metrics.get('node_reduction_pct')
+                    timeout_info = f"C_timeout:{metrics['ceiling_timeout']} | M_timeout:{metrics['maxlpt_timeout']}"
+                    if node_red is not None:
+                        print(f"Done! C:{c_status} ({c_nodes}n) | M:{m_status} ({m_nodes}n) | Red:{node_red:.1f}% | Skipped:{root_solved_count} | {timeout_info}")
+                    else:
+                        print(f"Done! C:{c_status} ({c_nodes}n) | M:{m_status} ({m_nodes}n) | Skipped:{root_solved_count} | {timeout_info}")
                 else:
-                    print(f"Done! C:{c_status} ({c_nodes}n) | M:{m_status} ({m_nodes}n)")
-                
-                # Check timeout on EITHER bound
-                if (metrics['ceiling_runtime'] >= TIMEOUT_THRESHOLD or 
-                    metrics['maxlpt_runtime'] >= TIMEOUT_THRESHOLD):
-                    hit_timeout = True
-            
-            # Check stopping criteria
-            if hit_timeout:
-                print(f"\n*** First timeout reached at {parameter}={value}. Stopping. ***")
-                should_stop = True
+                    print("Timeout or invalid. Skipping.")
+                    attempt += 1
+
+            # If not found, print info
+            if not found_valid:
+                print(f"No valid instance found for {parameter}={value} after {max_attempts} attempts. Skipped {root_solved_count} root-solved instances.")
+
+            # Stopping criteria: if either bound hit timeout or leaf timeout in the valid instance, stop
+            if found_valid:
+                if (metrics['ceiling_runtime'] >= TIMEOUT_THRESHOLD or metrics.get('ceiling_leaf_timeout', False)) and \
+                   (metrics['maxlpt_runtime'] >= TIMEOUT_THRESHOLD or metrics.get('maxlpt_leaf_timeout', False)):
+                    print(f"\n*** Timeout or leaf timeout reached for both bounds at {parameter}={value}. Stopping. ***")
+                    should_stop = True
+            # Next parameter value
+            if parameter in ['jobs', 'machines']:
+                value = int(value + step)
             else:
-                if parameter in ['jobs', 'machines']:
-                    value = int(value + step)
-                else:
-                    value = round(value + step, 2)
+                value = round(value + step, 2)
     
     print(f"\n{'='*80}")
     print(f"Sensitivity analysis complete!")
@@ -412,15 +427,13 @@ Examples:
     # Create timestamped directories for this sensitivity run
     base_output_dir = args.output_dir if args.output_dir else 'results/sensitivity_maxlpt'
     output_dir = f"{base_output_dir}_{args.parameter}_{timestamp}"
-    log_dir = f"logs/sensitivity_maxlpt_{args.parameter}_{timestamp}"
-    
     run_sensitivity_analysis(
         parameter=args.parameter,
         start_value=args.start,
         step=args.step,
         repetitions=args.repetitions,
         output_dir=output_dir,
-        log_dir=log_dir,
+        log_dir=None,
         resume_rep=args.resume_rep
     )
     

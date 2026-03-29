@@ -326,6 +326,9 @@ class NoOpLogger:
             "nodes_explored": 0,
             "nodes_pruned": 0,
             "nodes_evaluated": 0,
+            "start_time": None,
+            "end_time": None,
+            "total_runtime": None,
         }
         # Create a fake logger attribute for logger.logger.debug() calls
         self.logger = self
@@ -334,35 +337,37 @@ class NoOpLogger:
         """No-op debug message."""
         pass
     
-    def start_run(self, problem_data: Dict[str, Any]):
+    def start_run(self, problem_data: Optional[Dict[str, Any]] = None):
         """No-op start run."""
-        pass
+        self.metrics["start_time"] = time.time()
     
     def end_run(self, final_result: Optional[Dict[str, Any]] = None):
         """No-op end run."""
-        pass
+        self.metrics["end_time"] = time.time()
+        if self.metrics["start_time"] is not None:
+            self.metrics["total_runtime"] = self.metrics["end_time"] - self.metrics["start_time"]
     
-    def log_node(self, node_data: Dict[str, Any]):
-        """No-op log node."""
-        pass
-    
-    def log_node_visit(self, node_data: Dict[str, Any]):
+    def log_node_visit(self, node_info: Dict[str, Any]):
         """No-op log node visit."""
-        pass
+        self.metrics["nodes_explored"] += 1
     
-    def log_node_pruned(self, reason: str, node_data: Dict[str, Any]):
+    def log_node_pruned(self, reason: str, node_number: Optional[int] = None):
         """No-op log pruned node."""
-        pass
+        if reason == "bound_dominated":
+            self.metrics["nodes_pruned"] += 1
     
-    def log_node_evaluated(self, makespan: float, node_data: Dict[str, Any]):
+    def log_node_evaluated(self, makespan: float, node_info: Optional[Dict[str, Any]] = None):
         """No-op log evaluated node."""
-        pass
+        self.metrics["nodes_evaluated"] += 1
     
-    def log_incumbent_update(self, makespan: float, selection: list, node_count: int):
+    def log_incumbent_update(self, new_incumbent: float, selection: list,
+                            node_count: Optional[int] = None):
         """No-op log incumbent update."""
         pass
     
-    def log_bound_computation(self, bound: float, method: str, depth: int, time_taken: float = 0.0):
+    def log_bound_computation(self, bound_value: float, bound_type: str,
+                             node_depth: int, remaining_bound: Optional[float] = None,
+                             committed_value: Optional[float] = None):
         """No-op log bound computation."""
         pass
     

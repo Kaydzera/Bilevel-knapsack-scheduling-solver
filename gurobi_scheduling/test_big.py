@@ -6,8 +6,8 @@ from models import MainProblem, Item
 from bnb import run_bnb_classic
 from bilevel_gurobi import solve_bilevel_simpler
 
-# Path to cache enumeration results
-ENUMERATION_CACHE_FILE = "enumeration_results_cache_big.json"
+# Path to cache enumeration results (corrected to subfolder)
+ENUMERATION_CACHE_FILE = os.path.join(os.path.dirname(__file__), "enumeration_results_cache_big.json")
 
 # Set seed for reproducibility
 random.seed(42)
@@ -122,13 +122,19 @@ instances = generate_instances()
 
 def load_enumeration_cache():
     """Load cached enumeration results from file."""
+    abs_path = os.path.abspath(ENUMERATION_CACHE_FILE)
+    print(f"[DEBUG] Attempting to load cache from: {abs_path}")
     if os.path.exists(ENUMERATION_CACHE_FILE):
         try:
             with open(ENUMERATION_CACHE_FILE, 'r') as f:
-                return json.load(f)
+                cache = json.load(f)
+            print(f"[DEBUG] Cache loaded successfully. Entries: {len(cache)}")
+            return cache
         except Exception as e:
             print(f"Warning: Could not load cache file: {e}")
             return {}
+    else:
+        print(f"[DEBUG] Cache file does not exist at: {abs_path}")
     return {}
 
 def save_enumeration_cache(cache):
@@ -149,7 +155,7 @@ def get_instance_key(name, items, m, budget):
 # RUN TESTS
 # ============================================================
 
-def run_instance(instance_data, use_enumeration=False, enable_logging=True):
+def run_instance(instance_data, use_enumeration=False, enable_logging=True, cache_only=False):
     """Run BnB (and optionally enumeration) on an instance."""
     items = instance_data["items"]
     m = instance_data["machines"]
@@ -172,6 +178,7 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     
     # Create problem
     problem = MainProblem(prices, durations, m, budget)
+    verification_status = "NOT_CHECKED"
     
     # Run BnB (ceiling bound)
     print("\n### Branch-and-Bound (Ceiling Bound) ###")
@@ -251,22 +258,30 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     # Optionally run enumeration (only for smaller instances due to time)
     if use_enumeration:
         print("\n### Complete Enumeration ###")
-        
         # Load cache
         cache = load_enumeration_cache()
         instance_key = get_instance_key(name, items, m, budget)
-        
+        print(f"[DEBUG] Checking instance_key: {instance_key}")
         # Check if result is cached
+        cache_missing = False
         if instance_key in cache:
-            print("Using cached enumeration result...")
+            print("[DEBUG] Using cached enumeration result...")
             cached = cache[instance_key]
             makespan_enum = cached['makespan']
             occ_enum = cached['selection']
             nodes_enum = cached['nodes_evaluated']
             runtime_enum = cached.get('runtime', None)
             timed_out = cached.get('timed_out', False)
+        elif cache_only:
+            print(f"[DEBUG] No cached enumeration result found for key - skipping enumeration (cache_only=True)")
+            makespan_enum = None
+            occ_enum = None
+            nodes_enum = 0
+            runtime_enum = None
+            timed_out = False
+            cache_missing = True
         else:
-            print("Running enumeration (not cached)...")
+            print("[DEBUG] Running enumeration (not cached)...")
             timed_out = False
             try:
                 makespan_enum, occ_enum, _, nodes_enum, runtime_enum = solve_bilevel_simpler(items, m, budget, time_limit=3600.0, verbose=True)
@@ -298,7 +313,9 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             }
             save_enumeration_cache(cache)
         
-        if timed_out:
+        if cache_missing:
+            print("Enumeration Result: MISSING IN CACHE")
+        elif timed_out:
             print(f"Enumeration Result: TIMED OUT (using BnB solution: makespan={makespan_enum:.1f})")
         else:
             print(f"Enumeration Result: makespan={makespan_enum:.1f}, selection={occ_enum}")
@@ -314,14 +331,21 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
             print(f"Runtime: BnB {bnb_runtime:.4f}s, Enumeration {runtime_enum:.4f}s (Speedup: {speedup:.2f}x)")
         
         # Compare results
-        if timed_out:
+        if cache_missing:
+            print("SKIP - Cannot verify this instance without cached enumeration value")
+            verification_status = "MISSING_CACHE"
+        elif timed_out:
             print("TIMEOUT - Enumeration could not verify BnB solution within time limit")
+            verification_status = "TIMEOUT"
         elif abs(result_bnb_ceiling['best_obj'] - makespan_enum) < 0.01:
             print("OK - Results match!")
+            verification_status = "OK"
         elif makespan_enum < result_bnb_ceiling['best_obj']:
             print("WARNING - Enumeration found worse solution (possible enumeration bug or early termination)")
+            verification_status = "WARN"
         else:
             print("FAIL - Results differ! (BnB may have error)")
+            verification_status = "FAIL"
         
         # Log comparison to BnB log if logging enabled
         if enable_logging:
@@ -372,20 +396,35 @@ def run_instance(instance_data, use_enumeration=False, enable_logging=True):
     
     return {
         "ceiling": result_bnb_ceiling,
-        "maxlpt": result_bnb_maxlpt
+        "maxlpt": result_bnb_maxlpt,
+        "verification_status": verification_status,
     }
 
 
 # Run all instances
 if __name__ == "__main__":
+    # Print first 5 instance keys for cache comparison
+    print("First 5 instance keys generated by current code:")
+    for inst in instances[:5]:
+        key = get_instance_key(inst['name'], inst['items'], inst['machines'], inst['budget'])
+        print(key)
+    import csv
+    from datetime import datetime
+
+    # Default execution mode for daily validation runs.
+    USE_ENUMERATION = True
+    ENABLE_LOGGING = False  # Always off for CSV mode
+    CACHE_ONLY = True
+
     print("\n" + "=" * 70)
     print("TESTING 140 COMPLEX INSTANCES")
     print("=" * 70)
-    
+    print(f"Settings: use_enumeration={USE_ENUMERATION}, enable_logging={ENABLE_LOGGING}, cache_only={CACHE_ONLY}")
+
     # Print summary of instance characteristics
     print("\nInstance Summary:")
     print(f"Total instances: {len(instances)}")
-    
+
     job_counts = {}
     machine_counts = {}
     for inst in instances:
@@ -393,14 +432,88 @@ if __name__ == "__main__":
         n_machines = inst['machines']
         job_counts[n_jobs] = job_counts.get(n_jobs, 0) + 1
         machine_counts[n_machines] = machine_counts.get(n_machines, 0) + 1
-    
+
     print(f"Job types distribution: {dict(sorted(job_counts.items()))}")
     print(f"Machine counts distribution: {dict(sorted(machine_counts.items()))}")
-    
-    # Run instances with enumeration for all (using 1 hour time limit per instance)
-    for i in range(len(instances)):
-        run_instance(instances[i], use_enumeration=True, enable_logging=True)
-    
+
+    summary = {
+        "TOTAL": len(instances),
+        "OK": 0,
+        "FAIL": 0,
+        "WARN": 0,
+        "TIMEOUT": 0,
+        "MISSING_CACHE": 0,
+        "NOT_CHECKED": 0,
+    }
+
+    # Prepare CSV output
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_dir = "results/test_big"
+    os.makedirs(out_dir, exist_ok=True)
+    csv_path = os.path.join(out_dir, f"test_big_results_{ts}.csv")
+    fields = [
+        "timestamp", "instance_name", "scheme", "n_jobs", "n_machines", "budget",
+        "bnb_ceiling_makespan", "bnb_ceiling_nodes", "bnb_ceiling_runtime",
+        "bnb_maxlpt_makespan", "bnb_maxlpt_nodes", "bnb_maxlpt_runtime",
+        "enumeration_runtime",
+        "verification_status", "instance_key"
+    ]
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+
+        # Run instances with enumeration for all (using 1 hour time limit per instance)
+        for i, instance in enumerate(instances, start=1):
+            print(f"\nProgress: [{i}/{len(instances)}]")
+            result = run_instance(
+                instance,
+                use_enumeration=USE_ENUMERATION,
+                enable_logging=ENABLE_LOGGING,
+                cache_only=CACHE_ONLY,
+            )
+            status = result.get("verification_status", "NOT_CHECKED")
+            summary[status] = summary.get(status, 0) + 1
+
+            # Get enumeration runtime if available
+            enumeration_runtime = None
+            if "enumeration_runtime" in result:
+                enumeration_runtime = result["enumeration_runtime"]
+            else:
+                # Try to get from cache if present
+                cache = load_enumeration_cache()
+                instance_key = get_instance_key(instance["name"], instance["items"], instance["machines"], instance["budget"])
+                if instance_key in cache:
+                    enumeration_runtime = cache[instance_key].get("runtime")
+            row = {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "instance_name": instance["name"],
+                "scheme": instance.get("scheme", "unknown"),
+                "n_jobs": len(instance["items"]),
+                "n_machines": instance["machines"],
+                "budget": instance["budget"],
+                "bnb_ceiling_makespan": result["ceiling"].get("best_obj"),
+                "bnb_ceiling_nodes": result["ceiling"].get("nodes_explored"),
+                "bnb_ceiling_runtime": result["ceiling"].get("runtime"),
+                "bnb_maxlpt_makespan": result["maxlpt"].get("best_obj"),
+                "bnb_maxlpt_nodes": result["maxlpt"].get("nodes_explored"),
+                "bnb_maxlpt_runtime": result["maxlpt"].get("runtime"),
+                "enumeration_runtime": enumeration_runtime,
+                "verification_status": status,
+                "instance_key": get_instance_key(instance["name"], instance["items"], instance["machines"], instance["budget"]),
+            }
+            writer.writerow(row)
+            f.flush()
+
+    print(f"\nCSV results written to: {csv_path}")
+
     print("\n" + "=" * 70)
     print("ALL TESTS COMPLETED")
     print("=" * 70)
+    print("\nVerification Summary:")
+    print(f"TOTAL={summary['TOTAL']}")
+    print(f"OK_MATCH={summary['OK']}")
+    print(f"FAIL_DIFF={summary['FAIL']}")
+    print(f"WARN_ENUM_WORSE={summary['WARN']}")
+    print(f"TIMEOUTS={summary['TIMEOUT']}")
+    print(f"MISSING_CACHE={summary['MISSING_CACHE']}")
+    print(f"NOT_CHECKED={summary['NOT_CHECKED']}")

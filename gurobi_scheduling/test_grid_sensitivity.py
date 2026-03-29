@@ -23,7 +23,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from bnb import run_bnb_classic
+from bnb import run_bnb_classic, LeafTimeoutError
 from models import MainProblem
 
 
@@ -66,7 +66,7 @@ def run_grid_sensitivity(
     budget_multipliers=(1.3,),  # Single budget per run (comma needed for tuple)
     repetitions=5,
     time_limit=3600.0,
-    node_limit=500000,
+    node_limit=10000000,
     resume_machines=None,
     resume_jobs=None,
     resume_multiplier=None,
@@ -90,10 +90,14 @@ def run_grid_sensitivity(
     # Create output directory with timestamp
     if resume_timestamp:
         timestamp = resume_timestamp
+        # Handle case where timestamp already includes "grid_" prefix
+        if timestamp.startswith("grid_"):
+            output_path = Path(output_dir) / timestamp
+        else:
+            output_path = Path(output_dir) / f"grid_{timestamp}"
     else:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
-    output_path = Path(output_dir) / f"grid_{timestamp}"
+        output_path = Path(output_dir) / f"grid_{timestamp}"
     output_path.mkdir(parents=True, exist_ok=True)
     
     csv_file = output_path / "sensitivity_grid.csv"
@@ -102,6 +106,18 @@ def run_grid_sensitivity(
     file_exists = csv_file.exists()
     mode = 'a' if file_exists else 'w'
     
+    # Load already completed tests to avoid duplicates
+    completed_tests = set()
+    if file_exists:
+        with open(csv_file, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                # Track (m_machines, n_jobs, budget_multiplier, repetition) tuples
+                key = (int(row['m_machines']), int(row['n_jobs']), 
+                       float(row['budget_multiplier']), int(row['repetition']))
+                completed_tests.add(key)
+        print(f"Loaded {len(completed_tests)} already completed tests from CSV\n")
+    
     # Generate parameter ranges
     machines_values = list(range(machines_range[0], machines_range[1] + 1, machines_range[2]))
     jobs_values = list(range(jobs_range[0], jobs_range[1] + 1, jobs_range[2]))
@@ -109,7 +125,9 @@ def run_grid_sensitivity(
     print(f"\n{'='*80}")
     print(f"GRID SENSITIVITY ANALYSIS")
     print(f"{'='*80}")
-    print(f"Timestamp: {timestamp}")
+    # Show clean timestamp (without grid_ prefix) for display
+    display_timestamp = timestamp.replace("grid_", "") if timestamp.startswith("grid_") else timestamp
+    print(f"Timestamp: {display_timestamp}")
     print(f"Output: {output_path}")
     print(f"\nParameters:")
     print(f"  Machines: {machines_values[0]} to {machines_values[-1]} ({len(machines_values)} values)")
@@ -118,7 +136,7 @@ def run_grid_sensitivity(
     print(f"  Repetitions: {repetitions}")
     print(f"  Time limit: {time_limit}s")
     print(f"  Node limit: {node_limit:,}")
-    print(f"\nTotal tests: {len(machines_values)} × {len(jobs_values)} × {len(budget_multipliers)} × {repetitions}")
+    print(f"\nTotal tests: {len(machines_values)} x {len(jobs_values)} x {len(budget_multipliers)} x {repetitions}")
     print(f"            = {len(machines_values) * len(jobs_values) * len(budget_multipliers) * repetitions:,} tests")
     print(f"{'='*80}\n")
     
@@ -162,6 +180,11 @@ def run_grid_sensitivity(
                         start_rep = resume_rep  # Resume from this repetition
                     
                     for rep in range(start_rep, repetitions):
+                        # Skip if already completed (check CSV)
+                        test_key = (m_machines, n_jobs, budget_mult, rep + 1)
+                        if test_key in completed_tests:
+                            continue
+                        
                         test_count += 1
                         elapsed = time.time() - start_time
                         
@@ -182,78 +205,129 @@ def run_grid_sensitivity(
                         )
                         
                         print(f"Budget: {problem.budget_total:.2f}")
+                        print(f"Prices: {problem.prices}")
+                        print(f"Durations: {problem.durations}")
+
+                        # Initialize default values so we can always persist progress,
+                        # even if one solver times out/errors.
+                        ceil_status = 'not_run'
+                        ceil_nodes = 0
+                        ceil_time = 0.0
+                        ceil_initial = None
+                        ceil_final = None
+                        ceil_improvement = 0.0
+
+                        maxlpt_status = 'not_run'
+                        maxlpt_nodes = 0
+                        maxlpt_time = 0.0
+                        maxlpt_initial = None
+                        maxlpt_final = None
+                        maxlpt_improvement = 0.0
                         
                         # Test with ceiling bound
                         print(f"  [Ceiling] Running...")
                         ceil_start = time.time()
-                        result_ceil = run_bnb_classic(
-                            problem=problem,
-                            bound_type='ceiling',
-                            enable_logging=False,
-                            max_nodes=node_limit,
-                            time_limit=time_limit,
-                            verbose=False
-                        )
-                        ceil_time = time.time() - ceil_start
-                        
-                        ceil_nodes = result_ceil.get('nodes_explored', 0)
-                        ceil_initial = result_ceil.get('initial_makespan', None)
-                        ceil_final = result_ceil.get('best_obj', None)
-                        ceil_improvement = (ceil_initial - ceil_final) if (ceil_initial and ceil_final) else 0
-                        
-                        # Determine status
-                        if result_ceil.get('proven_optimal', False):
-                            ceil_status = 'optimal'
-                        elif ceil_nodes >= node_limit:
-                            ceil_status = 'node_limit'
-                        elif ceil_time >= time_limit:
-                            ceil_status = 'timeout'
-                        else:
-                            ceil_status = 'completed'
+                        try:
+                            result_ceil = run_bnb_classic(
+                                problem=problem,
+                                max_nodes=node_limit,
+                                verbose=False,
+                                logger=None,
+                                enable_logging=False,
+                                bound_type='ceiling',
+                                time_limit=time_limit,
+                                leaf_timeout=900.0  # 15 minutes
+                            )
+                            ceil_time = time.time() - ceil_start
+                            
+                            ceil_nodes = result_ceil.get('nodes_explored', 0)
+                            ceil_initial = result_ceil.get('initial_makespan', None)
+                            ceil_final = result_ceil.get('best_obj', None)
+                            ceil_improvement = (ceil_initial - ceil_final) if (ceil_initial and ceil_final) else 0
+                            
+                            # Determine status
+                            if result_ceil.get('proven_optimal', False):
+                                ceil_status = 'optimal'
+                            elif ceil_nodes >= node_limit:
+                                ceil_status = 'node_limit'
+                            elif ceil_time >= time_limit:
+                                ceil_status = 'timeout'
+                            else:
+                                ceil_status = 'completed'
+                                
+                        except LeafTimeoutError as e:
+                            # Persist partial result instead of skipping this test.
+                            ceil_time = time.time() - ceil_start
+                            ceil_status = 'leaf_timeout'
+                            print(f"  [Ceiling] LEAF TIMEOUT - {str(e)}")
+
+                        except Exception as e:
+                            ceil_time = time.time() - ceil_start
+                            ceil_status = f"error:{type(e).__name__}"
+                            print(f"  [Ceiling] ERROR - {e}")
                         
                         # Format output safely
                         ceil_initial_str = f"{ceil_initial:.2f}" if ceil_initial is not None else "N/A"
                         ceil_final_str = f"{ceil_final:.2f}" if ceil_final is not None else "N/A"
                         
                         print(f"  [Ceiling] {ceil_status} | Nodes: {ceil_nodes:,} | "
-                              f"Time: {ceil_time:.2f}s | Initial: {ceil_initial_str} → Final: {ceil_final_str} "
-                              f"(Δ={ceil_improvement:.2f})")
+                            f"Time: {ceil_time:.2f}s | Initial: {ceil_initial_str} -> Final: {ceil_final_str} "
+                            f"(delta={ceil_improvement:.2f})")
                         
-                        # Test with MaxLPT bound
+                        # Test with MaxLPT bound even if Ceiling hit leaf timeout.
                         print(f"  [MaxLPT] Running...")
                         maxlpt_start = time.time()
-                        result_maxlpt = run_bnb_classic(
-                            problem=problem,
-                            bound_type='maxlpt',
-                            enable_logging=False,
-                            max_nodes=node_limit,
-                            time_limit=time_limit,
-                            verbose=False
-                        )
-                        maxlpt_time = time.time() - maxlpt_start
-                        
-                        maxlpt_nodes = result_maxlpt.get('nodes_explored', 0)
-                        maxlpt_initial = result_maxlpt.get('initial_makespan', None)
-                        maxlpt_final = result_maxlpt.get('best_obj', None)
-                        maxlpt_improvement = (maxlpt_initial - maxlpt_final) if (maxlpt_initial and maxlpt_final) else 0
-                        
-                        # Determine status
-                        if result_maxlpt.get('proven_optimal', False):
-                            maxlpt_status = 'optimal'
-                        elif maxlpt_nodes >= node_limit:
-                            maxlpt_status = 'node_limit'
-                        elif maxlpt_time >= time_limit:
-                            maxlpt_status = 'timeout'
-                        else:
-                            maxlpt_status = 'completed'
+                        try:
+                            result_maxlpt = run_bnb_classic(
+                                problem=problem,
+                                max_nodes=node_limit,
+                                verbose=False,
+                                logger=None,
+                                enable_logging=False,
+                                bound_type='maxlpt',
+                                time_limit=time_limit,
+                                leaf_timeout=900.0  # 15 minutes
+                            )
+                            maxlpt_time = time.time() - maxlpt_start
+
+                            maxlpt_nodes = result_maxlpt.get('nodes_explored', 0)
+                            maxlpt_initial = result_maxlpt.get('initial_makespan', None)
+                            maxlpt_final = result_maxlpt.get('best_obj', None)
+                            maxlpt_improvement = (maxlpt_initial - maxlpt_final) if (maxlpt_initial and maxlpt_final) else 0
+
+                            # Determine status
+                            if result_maxlpt.get('proven_optimal', False):
+                                maxlpt_status = 'optimal'
+                            elif maxlpt_nodes >= node_limit:
+                                maxlpt_status = 'node_limit'
+                            elif maxlpt_time >= time_limit:
+                                maxlpt_status = 'timeout'
+                            else:
+                                maxlpt_status = 'completed'
+
+                        except LeafTimeoutError as e:
+                            maxlpt_time = time.time() - maxlpt_start
+                            maxlpt_nodes = 0
+                            maxlpt_initial = ceil_initial  # Use ceiling initial as fallback
+                            maxlpt_final = ceil_initial
+                            maxlpt_improvement = 0
+                            maxlpt_status = 'leaf_timeout'
+                            print(f"  [MaxLPT] LEAF TIMEOUT - {str(e)}")
+
+                        except Exception as e:
+                            maxlpt_time = time.time() - maxlpt_start
+                            maxlpt_status = f"error:{type(e).__name__}"
+                            maxlpt_initial = ceil_initial
+                            maxlpt_final = ceil_final
+                            print(f"  [MaxLPT] ERROR - {e}")
                         
                         # Format output safely
                         maxlpt_initial_str = f"{maxlpt_initial:.2f}" if maxlpt_initial is not None else "N/A"
                         maxlpt_final_str = f"{maxlpt_final:.2f}" if maxlpt_final is not None else "N/A"
                         
                         print(f"  [MaxLPT] {maxlpt_status} | Nodes: {maxlpt_nodes:,} | "
-                              f"Time: {maxlpt_time:.2f}s | Initial: {maxlpt_initial_str} → Final: {maxlpt_final_str} "
-                              f"(Δ={maxlpt_improvement:.2f})")
+                            f"Time: {maxlpt_time:.2f}s | Initial: {maxlpt_initial_str} -> Final: {maxlpt_final_str} "
+                            f"(delta={maxlpt_improvement:.2f})")
                         
                         # Write result to CSV
                         writer.writerow([
@@ -266,6 +340,9 @@ def run_grid_sensitivity(
                             maxlpt_initial, maxlpt_final, f"{maxlpt_improvement:.4f}"
                         ])
                         f.flush()  # Ensure data is written immediately
+                        
+                        # Mark test as completed to avoid re-running in this session
+                        completed_tests.add(test_key)
     
     total_elapsed = time.time() - start_time
     print(f"\n{'='*80}")
@@ -343,8 +420,8 @@ def main():
     parser.add_argument(
         '--node-limit',
         type=int,
-        default=500000,
-        help='Node limit per bound type (default: 500,000)'
+        default=1000000,
+        help='Node limit per bound type (default: 1,000,000)'
     )
     parser.add_argument(
         '--resume-machines',

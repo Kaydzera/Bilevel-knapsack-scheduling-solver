@@ -103,6 +103,16 @@ This will resume from:
 - 14 job types  
 - Repetition 3 (0-indexed rep=2)
 
+### PowerShell Resume (Working Example)
+
+If you encounter PowerShell execution policy issues, use this command format:
+
+```powershell
+cd "c:\Users\oleda\.vscode\Solving stuff with Gurobi\gurobi_scheduling" ; & "c:\Users\oleda\.vscode\Solving stuff with Gurobi\.venv311\Scripts\python.exe" test_grid_sensitivity.py --resume-timestamp 20260302_112308 --resume-machines 12 --resume-jobs 20 --resume-multiplier 1.3 --resume-rep 4
+```
+
+This bypasses activation script issues by directly calling the venv Python executable with the `&` operator.
+
 ## Output
 
 ### Directory Structure
