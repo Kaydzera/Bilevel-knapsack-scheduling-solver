@@ -7,7 +7,7 @@ This test suite evaluates solver performance across a comprehensive grid of prob
 - **Number of job types** (n_jobs)  
 - **Budget multiplier** (low/medium/high)
 
-The key innovation is **proportional budget scaling**: when machines increase by X%, the budget also increases by X%, allowing us to observe how the solver scales with problem size under different resource constraints.
+We use **proportional budget scaling**: when machines increase by X%, the budget also increases by X%, allowing us to observe how the solver scales with problem size under different resource constraints.
 
 ## Test Design
 
@@ -39,23 +39,6 @@ budget = base_cost × m_machines × budget_multiplier
 - **Medium (2.5)**: Balanced scenario - reasonable budget for scheduling
 - **High (5.0)**: Generous budget - less constrained by cost
 
-## Research Questions
-
-This test suite helps answer:
-
-1. **Scalability**: How do ceiling vs MaxLPT bounds perform as problem size increases?
-
-2. **Budget Impact**: Does budget tightness affect the relative performance of the two bounding strategies?
-
-3. **Interaction Effects**: Are there interesting interactions between:
-   - Machine count and job type count?
-   - Budget level and problem size?
-   - Specific size combinations where one bound excels?
-
-4. **Practical Thresholds**: At what problem sizes do we hit:
-   - Timeout limits (3600s)?
-   - Node limits (500,000)?
-   - Optimality gaps?
 
 ## Usage
 
@@ -147,37 +130,3 @@ results/sensitivity_grid/
 | maxlpt_final | Final makespan after BnB search (MaxLPT) |
 | maxlpt_improvement | Improvement (initial - final) with MaxLPT |
 
-## Expected Runtime
-
-**Conservative estimate** (assuming many tests hit timeout):
-- 540 tests × 2 bounds × 3600s timeout = ~1,100 hours worst case
-- In practice, many tests will complete much faster
-- Estimated realistic runtime: **30-120 hours** (1.3-5 days)
-
-**For low budget only (180 tests)**:
-- Estimated runtime: **10-40 hours** (0.4-1.7 days)
-
-**Recommendations**:
-- Run on a dedicated machine
-- Use screen/tmux session to prevent disconnection
-- Monitor progress via CSV file growth
-- Consider parallelization for faster completion
-
-## Analysis Ideas
-
-After completion, analyze:
-
-1. **Performance comparison**: Plot nodes/time for ceiling vs MaxLPT across the grid
-2. **Scaling trends**: How does runtime grow with m_machines and n_jobs?
-3. **Budget sensitivity**: Does one bound handle tight budgets better?
-4. **Heatmaps**: Visualize success/timeout rates across the grid
-5. **Statistical tests**: Formal comparison of bound effectiveness
-
-## Notes
-
-- Each test uses a deterministic seed based on (n_jobs, m_machines, budget_mult, rep)
-- Job types are automatically sorted by price (descending) via MainProblem
-- Both bounds use the same timeout (3600s) and node limit (500,000)
-- Results are flushed to CSV after each test for resume capability
-- **Initial makespan**: Both bound types start from the same Max-LPT heuristic solution
-- **Improvement**: Measures how much the BnB search improves upon the initial solution (positive = better)

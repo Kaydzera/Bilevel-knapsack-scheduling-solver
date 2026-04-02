@@ -1,0 +1,114 @@
+{
+  "Tiny Baseline_2_10_[(5, 3), (8, 6), (3, 2), (7, 4)]": {
+    "makespan": 10.0,
+    "selection": [
+      0,
+      0,
+      1,
+      2
+    ],
+    "nodes_evaluated": 11,
+    "runtime": 0.017001628875732422
+  },
+  "Uniform Ratios_2_12_[(4, 2), (6, 3), (8, 4), (10, 5)]": {
+    "makespan": 16.0,
+    "selection": [
+      0,
+      0,
+      3,
+      0
+    ],
+    "nodes_evaluated": 17,
+    "runtime": 0.026339292526245117
+  },
+  "Dominant Item_2_10_[(20, 2), (3, 5), (5, 4), (4, 3)]": {
+    "makespan": 60.0,
+    "selection": [
+      5,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 12,
+    "runtime": 0.008997440338134766
+  },
+  "Large Budget_2_20_[(3, 2), (7, 3), (5, 4), (9, 5)]": {
+    "makespan": 24.0,
+    "selection": [
+      1,
+      6,
+      0,
+      0
+    ],
+    "nodes_evaluated": 51,
+    "runtime": 0.05100536346435547
+  },
+  "More Machines_4_15_[(6, 3), (8, 4), (4, 2), (10, 5)]": {
+    "makespan": 12.0,
+    "selection": [
+      5,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 27,
+    "runtime": 0.045780181884765625
+  },
+  "Extreme Ratios_2_12_[(15, 1), (2, 10), (8, 4), (6, 3)]": {
+    "makespan": 90.0,
+    "selection": [
+      12,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 12,
+    "runtime": 0.009999752044677734
+  },
+  "Five Jobs_3_15_[(4, 2), (6, 3), (8, 5), (5, 4), (7, 3)]": {
+    "makespan": 14.0,
+    "selection": [
+      0,
+      0,
+      0,
+      0,
+      5
+    ],
+    "nodes_evaluated": 62,
+    "runtime": 0.10699892044067383
+  },
+  "Tight Budget_2_6_[(10, 5), (8, 4), (6, 3), (4, 2)]": {
+    "makespan": 10.0,
+    "selection": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "nodes_evaluated": 5,
+    "runtime": 0.001999378204345703
+  },
+  "Expensive Items_2_15_[(3, 8), (5, 10), (4, 9), (2, 7)]": {
+    "makespan": 5.0,
+    "selection": [
+      0,
+      1,
+      0,
+      0
+    ],
+    "nodes_evaluated": 4,
+    "runtime": 0.002001523971557617
+  },
+  "Mixed Characteristics_3_18_[(12, 2), (3, 8), (7, 4), (5, 5), (9, 3)]": {
+    "makespan": 36.0,
+    "selection": [
+      7,
+      0,
+      0,
+      0,
+      1
+    ],
+    "nodes_evaluated": 53,
+    "runtime": 0.07300066947937012
+  }
+}
