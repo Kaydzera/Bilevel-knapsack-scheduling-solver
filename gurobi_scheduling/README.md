@@ -2,6 +2,18 @@
 
 A bilevel optimization framework for scheduling jobs on identical parallel machines. The **leader** selects job types under a budget constraint to maximize the follower's makespan, while the **follower** schedules the selected jobs to minimize makespan. The project implements a custom branch-and-bound solver with two bounding strategies (ceiling bound and Max-LPT bound) and includes comprehensive sensitivity analysis tooling.
 
+# Acknowledegement
+
+- English Version: 
+Parts of this code were generated, revised, and/or improved using AI-powered tools (GitHub Copilot (GPT-4.1), Anthropic Claude (Claude Opus 4.6, Claude Sonnet 4, Claude Sonnet 4.6)). 
+AI was used for various tasks, including creating initial versions, revising algorithms, fixing bugs, and optimizing code. All generated or modified sections were carefully reviewed, understood, and, if necessary, adapted by me. The code reflects my understanding and responsibility.
+
+- Deutsche Version: 
+Teile dieses Codes wurden mithilfe von KI-gestützten Werkzeugen (GitHub Copilot (GPT-4.1), Anthropic Claude (Claude Opus 4.6, Claude Sonnet 4, Claude Sonnet 4.6)) generiert,überarbeitet und/oder verbessert. Die KI wurde für verschiedene Aufgaben eingesetzt, darunter das Erstellen
+von Grundversionen, das Überarbeiten von Algorithmen, das Beheben von Fehlern und das Optimieren von Code.
+Alle generierten oder modifizierten Abschnitte wurden von mir sorgfältig geprüft, nachvollzogen und ggf.
+angepasst. Der Code entspricht meinem Verständnis und meiner Verantwortung.
+
 ## Problem Description
 
 - **Leader (upper level):** Chooses how many copies of each job type to include, constrained by a total budget. Goal: maximize the follower's makespan.
